@@ -1,0 +1,41 @@
+{
+  "name": "@eventcatalog/sdk",
+  "version": "0.0.0",
+  "description": "SDK to integrate with EventCatalog",
+  "scripts": {
+    "build": "tsup ./src",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.14.10",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.2"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": [
+        "./dist/index.d.ts",
+        "./dist/events.t.ts"
+      ]
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "glob": "^11.0.0",
+    "gray-matter": "^4.0.3"
+  }
+}
