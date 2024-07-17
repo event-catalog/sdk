@@ -5,12 +5,7 @@ import { dirname } from 'node:path';
 import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './internal/utils';
 import type { Event } from './types';
 
-/**
- * Returns an events from EventCatalog
- * @param id - The id of the event to retrieve
- * @param version - Optional id of the version to get
- * @returns
- */
+
 export const getEvent =
   (directory: string) =>
   async (id: string, version?: string): Promise<Event> => {
@@ -29,13 +24,7 @@ export const getEvent =
     } as Event;
   };
 
-/**
- * Adds an event to EventCatalog
- *
- * @param event - The event to write
- * @param options - Optional options to write the event
- *
- */
+
 export const writeEvent =
   (directory: string) =>
   async (event: Event, options: { path: string } = { path: '' }) => {
@@ -53,22 +42,12 @@ export const writeEvent =
     await fs.writeFile(join(directory, path, 'index.md'), document);
   };
 
-/**
- * Remove an event to EventCatalog (modeled on the standard POSIX rm utility)
- *
- * @param path - The path to your event, e.g. `/Inventory/InventoryAdjusted`
- *
- */
+
 export const rmEvent = (directory: string) => async (path: string) => {
   await fs.rm(join(directory, path), { recursive: true });
 };
 
-/**
- * Remove an event by an Event id
- *
- * @param id - The id of the event you want to remove
- *
- */
+
 export const rmEventById = (directory: string) => async (id: string, version?: string) => {
   // Find all the events in the directory
   const files = await getFiles(`${directory}/**/index.md`);
@@ -82,10 +61,7 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
   await Promise.all(matchedFiles.map((file) => fs.rm(file)));
 };
 
-/**
- * Moves a given event id to the version directory
- * @param directory
- */
+
 export const versionEvent = (directory: string) => async (id: string) => {
   // Find all the events in the directory
   const files = await getFiles(`${directory}/**/index.md`);
@@ -120,13 +96,7 @@ export const versionEvent = (directory: string) => async (id: string) => {
   });
 };
 
-/**
- * Adds a file to the given event
- * @param id - The id of the event to add the file to
- * @param file - File contents to add including the content and the file name
- * @param version - Optional version of the event to add the file to
- * @returns
- */
+
 export const addFileToEvent =
   (directory: string) =>
   async (id: string, file: { content: string; fileName: string }, version?: string) => {
@@ -136,13 +106,7 @@ export const addFileToEvent =
     await fs.writeFile(join(contentDirectory, file.fileName), file.content);
   };
 
-/**
- * Adds a schema to the given event
- * @param id - The id of the event to add the schema to
- * @param schema - Schema contents to add including the content and the file name
- * @param version - Optional version of the event to add the schema to
- * @returns
- */
+
 export const addSchemaToEvent =
   (directory: string) =>
   async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
