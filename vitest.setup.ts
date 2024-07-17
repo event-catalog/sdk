@@ -28,14 +28,12 @@ expect.extend({
 
     if (normalizedReceived === normalizedExpected) {
       return {
-        message: () =>
-          `expected ${received} not to match Markdown ${expected} ignoring whitespace`,
+        message: () => `expected ${received} not to match Markdown ${expected} ignoring whitespace`,
         pass: true,
       };
     } else {
       return {
-        message: () =>
-          `expected ${received} to match Markdown ${expected} ignoring whitespace`,
+        message: () => `expected ${received} to match Markdown ${expected} ignoring whitespace`,
         pass: false,
       };
     }

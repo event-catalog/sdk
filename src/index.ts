@@ -1,13 +1,5 @@
 import { join } from 'node:path';
-import {
-  rmEvent,
-  rmEventById,
-  writeEvent,
-  versionEvent,
-  getEvent,
-  addFileToEvent,
-  addSchemaToEvent,
-} from './events';
+import { rmEvent, rmEventById, writeEvent, versionEvent, getEvent, addFileToEvent, addSchemaToEvent } from './events';
 
 /**
  * Init the SDK for EventCatalog

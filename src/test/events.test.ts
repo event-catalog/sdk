@@ -6,8 +6,7 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog');
 
-const { writeEvent, getEvent, rmEvent, rmEventById, versionEvent, addFileToEvent, addSchemaToEvent } =
-  utils(CATALOG_PATH);
+const { writeEvent, getEvent, rmEvent, rmEventById, versionEvent, addFileToEvent, addSchemaToEvent } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -72,9 +71,7 @@ describe('Events SDK', () => {
     });
 
     it('throws an error if the event is not found', async () => {
-      await expect(getEvent('InventoryAdjusted')).rejects.toThrowError(
-        'No event found for the given id: InventoryAdjusted'
-      );
+      await expect(getEvent('InventoryAdjusted')).rejects.toThrowError('No event found for the given id: InventoryAdjusted');
     });
 
     it('throws an error if the event is  found but not the version', async () => {
@@ -104,9 +101,7 @@ describe('Events SDK', () => {
 
       const event = await getEvent('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
 
       expect(event).toEqual({
         id: 'InventoryAdjusted',
@@ -129,9 +124,7 @@ describe('Events SDK', () => {
         { path: '/Inventory/InventoryAdjusted' }
       );
 
-      expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory/InventoryAdjusted', 'index.md'))
-      ).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory/InventoryAdjusted', 'index.md'))).toBe(true);
     });
 
     it('throws an error when trying to write an event that already exists', async () => {
@@ -168,15 +161,11 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
 
       await rmEvent('/InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        false
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
     });
   });
 
@@ -190,15 +179,11 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
 
       await rmEventById('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        false
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
     });
 
     it('removes an event from eventcatalog by id and version', async () => {
@@ -210,15 +195,11 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
 
       await rmEventById('InventoryAdjusted', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        false
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the event', async () => {
@@ -242,26 +223,14 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        true
-      );
-      expect(
-        fs.existsSync(
-          path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.md')
-        )
-      ).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.md'))).toBe(true);
 
       await rmEventById('InventoryAdjusted', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
 
-      expect(
-        fs.existsSync(
-          path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md')
-        )
-      ).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(false);
     });
   });
 
@@ -280,15 +249,9 @@ describe('Events SDK', () => {
 
       await versionEvent('InventoryAdjusted');
 
-      expect(
-        fs.existsSync(
-          path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md')
-        )
-      ).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        false
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
     });
     it('adds the given event to the versioned directory and all files that are associated to it', async () => {
       await writeEvent({
@@ -300,32 +263,17 @@ describe('Events SDK', () => {
       });
 
       // Add random file in there
-      await fs.writeFileSync(
-        path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'),
-        'SCHEMA!'
-      );
+      await fs.writeFileSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'), 'SCHEMA!');
 
       await versionEvent('InventoryAdjusted');
 
-      expect(
-        fs.existsSync(
-          path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md')
-        )
-      ).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(true);
 
-      expect(
-        fs.existsSync(
-          path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'schema.json')
-        )
-      ).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'schema.json'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(
-        false
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
 
-      expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))
-      ).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(false);
     });
   });
 
@@ -343,14 +291,10 @@ describe('Events SDK', () => {
 
       await addFileToEvent('InventoryAdjusted', file);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'test.txt'))).toBe(
-        true
-      );
-
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'test.txt'))).toBe(true);
     });
 
     it('takes a given file and version and writes the file to the correct location', async () => {
-
       const file = { content: 'hello', fileName: 'test.txt' };
 
       await writeEvent({
@@ -366,27 +310,18 @@ describe('Events SDK', () => {
 
       await addFileToEvent('InventoryAdjusted', file, '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'test.txt'))).toBe(
-        true
-      );
-
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'test.txt'))).toBe(true);
     });
 
     it('throws an error when trying to write to a event that does not exist', () => {
-
       const file = { content: 'hello', fileName: 'test.txt' };
 
-      expect(addFileToEvent('InventoryAdjusted', file)).rejects.toThrowError(
-        'Cannot find directory to write file to'
-      );
-
+      expect(addFileToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
     });
-
   });
 
   describe('addSchemaToEvent', () => {
     it('takes a given file and writes it to the location of the given event', async () => {
-
       const schema = `{
         "type": "object",
         "properties": {
@@ -398,7 +333,7 @@ describe('Events SDK', () => {
           }
         }
       }`;
-      const file = { schema , fileName: 'schema.json' };
+      const file = { schema, fileName: 'schema.json' };
 
       await writeEvent({
         id: 'InventoryAdjusted',
@@ -410,14 +345,10 @@ describe('Events SDK', () => {
 
       await addSchemaToEvent('InventoryAdjusted', file);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(
-        true
-      );
-
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(true);
     });
 
     it('takes a given file and version and writes the file to the correct location', async () => {
-
       const schema = `{
         "type": "object",
         "properties": {
@@ -429,8 +360,7 @@ describe('Events SDK', () => {
           }
         }
       }`;
-      const file = { schema , fileName: 'schema.json' };
-
+      const file = { schema, fileName: 'schema.json' };
 
       await writeEvent({
         id: 'InventoryAdjusted',
@@ -445,21 +375,13 @@ describe('Events SDK', () => {
 
       await addSchemaToEvent('InventoryAdjusted', file, '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'schema.json'))).toBe(
-        true
-      );
-
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'schema.json'))).toBe(true);
     });
 
     it('throws an error when trying to write to a event that does not exist', () => {
-
       const file = { schema: 'hello', fileName: 'test.txt' };
 
-      expect(addSchemaToEvent('InventoryAdjusted', file)).rejects.toThrowError(
-        'Cannot find directory to write file to'
-      );
-
+      expect(addSchemaToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
     });
-
   });
 });

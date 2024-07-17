@@ -12,11 +12,7 @@ export const versionExists = async (catalogDir: string, id: string, version: str
   return matchedFiles.length > 0;
 };
 
-export const findFileById = async (
-  catalogDir: string,
-  id: string,
-  version?: string
-): Promise<string | undefined> => {
+export const findFileById = async (catalogDir: string, id: string, version?: string): Promise<string | undefined> => {
   const files = await getFiles(`${catalogDir}/**/index.md`);
   const matchedFiles = (await searchFilesForId(files, id)) || [];
 
@@ -68,12 +64,7 @@ export const searchFilesForId = async (files: string[], id: string, version?: st
  * @param target
  * @param filter
  */
-export const copyDir = async (
-  catalogDir: string,
-  source: string,
-  target: string,
-  filter?: CopyFilterAsync | CopyFilterSync
-) => {
+export const copyDir = async (catalogDir: string, source: string, target: string, filter?: CopyFilterAsync | CopyFilterSync) => {
   const tmpDirectory = join(catalogDir, 'tmp');
   await fs.mkdir(tmpDirectory, { recursive: true });
 

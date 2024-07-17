@@ -4,7 +4,9 @@
   "description": "SDK to integrate with EventCatalog",
   "scripts": {
     "build": "tsup ./src",
-    "test": "vitest"
+    "test": "vitest",
+    "format": "prettier --write .",
+    "format:diff": "prettier --list-different ."
   },
   "keywords": [],
   "author": "",
@@ -12,6 +14,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.14.10",
+    "prettier": "^3.3.3",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3",
     "vitest": "^2.0.2"

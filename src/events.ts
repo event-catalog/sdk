@@ -5,16 +5,12 @@ import { dirname } from 'node:path';
 import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './internal/utils';
 import type { Event } from './types';
 
-
 export const getEvent =
   (directory: string) =>
   async (id: string, version?: string): Promise<Event> => {
     const file = await findFileById(directory, id, version);
 
-    if (!file)
-      throw new Error(
-        `No event found for the given id: ${id}` + (version ? ` and version ${version}` : '')
-      );
+    if (!file) throw new Error(`No event found for the given id: ${id}` + (version ? ` and version ${version}` : ''));
 
     const { data, content } = matter.read(file);
 
@@ -23,7 +19,6 @@ export const getEvent =
       markdown: content.trim(),
     } as Event;
   };
-
 
 export const writeEvent =
   (directory: string) =>
@@ -42,11 +37,9 @@ export const writeEvent =
     await fs.writeFile(join(directory, path, 'index.md'), document);
   };
 
-
 export const rmEvent = (directory: string) => async (path: string) => {
   await fs.rm(join(directory, path), { recursive: true });
 };
-
 
 export const rmEventById = (directory: string) => async (id: string, version?: string) => {
   // Find all the events in the directory
@@ -60,7 +53,6 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
 
   await Promise.all(matchedFiles.map((file) => fs.rm(file)));
 };
-
 
 export const versionEvent = (directory: string) => async (id: string) => {
   // Find all the events in the directory
@@ -96,19 +88,15 @@ export const versionEvent = (directory: string) => async (id: string) => {
   });
 };
 
-
 export const addFileToEvent =
-  (directory: string) =>
-  async (id: string, file: { content: string; fileName: string }, version?: string) => {
+  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) => {
     const pathToEvent = await findFileById(directory, id, version);
     if (!pathToEvent) throw new Error('Cannot find directory to write file to');
     const contentDirectory = dirname(pathToEvent);
     await fs.writeFile(join(contentDirectory, file.fileName), file.content);
   };
 
-
 export const addSchemaToEvent =
-  (directory: string) =>
-  async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
+  (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
     await addFileToEvent(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
   };
