@@ -5,6 +5,24 @@ import { dirname } from 'node:path';
 import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './internal/utils';
 import type { Event } from './types';
 
+/**
+ * Returns an event from EventCatalog.
+ * 
+ * You can optionally specify a version to get a specific version of the event.
+ * 
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils`;
+ * 
+ * const { getEvent } = utils('/path/to/eventcatalog');
+ * 
+ * // Gets the latest version of the event
+ * cont event = await getEvent('InventoryAdjusted');
+ * 
+ * // Gets a version of the event
+ * cont event = await getEvent('InventoryAdjusted', '0.0.1');
+ * ```
+ */
 export const getEvent =
   (directory: string) =>
   async (id: string, version?: string): Promise<Event> => {

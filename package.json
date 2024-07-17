@@ -6,7 +6,9 @@
     "build": "tsup ./src",
     "test": "vitest",
     "format": "prettier --write .",
-    "format:diff": "prettier --list-different ."
+    "format:diff": "prettier --list-different .",
+    "changeset": "changeset",
+    "release": "changeset publish"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "dependencies": {
+    "@changesets/cli": "^2.27.7",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
     "gray-matter": "^4.0.3"
