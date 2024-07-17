@@ -1,4 +1,4 @@
-# Make sure the EventCatalog can build OK
+# Make sure the EventCatalog SDK OK
 name: Verify Build
 
 on:
@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: '20.x'
+          version: 8
       - name: Installation
-        run: npm i
+        run: pnpm i
       - name: Build
-        run: npm run build
+        run: pnpm run build
