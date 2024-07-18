@@ -94,14 +94,14 @@ export default (path: string) => {
      *
      */
     rmService: rmService(join(path, 'services')),
-     /**
+    /**
      * Remove an service by an service id
      *
      * @param id - The id of the service you want to remove
      *
      */
-     rmServiceById: rmServiceById(join(path, 'services')),
-     /**
+    rmServiceById: rmServiceById(join(path, 'services')),
+    /**
      * Adds a file to the given service
      * @param id - The id of the service to add the file to
      * @param file - File contents to add including the content and the file name
