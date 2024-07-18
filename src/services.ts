@@ -17,10 +17,10 @@ import { addFileToResource, getResource, rmResourceById, versionResource, writeR
  * const { getService } = utils('/path/to/eventcatalog');
  *
  * // Gets the latest version of the event
- * cont event = await getService('InventoryService');
+ * const service = await getService('InventoryService');
  *
  * // Gets a version of the event
- * cont event = await getService('InventoryService', '0.0.1');
+ * const service = await getService('InventoryService', '0.0.1');
  * ```
  */
 export const getService =

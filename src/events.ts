@@ -18,10 +18,10 @@ import { addFileToResource, getResource, rmResourceById, versionResource, writeR
  * const { getEvent } = utils('/path/to/eventcatalog');
  *
  * // Gets the latest version of the event
- * cont event = await getEvent('InventoryAdjusted');
+ * const event = await getEvent('InventoryAdjusted');
  *
  * // Gets a version of the event
- * cont event = await getEvent('InventoryAdjusted', '0.0.1');
+ * const event = await getEvent('InventoryAdjusted', '0.0.1');
  * ```
  */
 export const getEvent =
@@ -151,7 +151,7 @@ export const addFileToEvent =
 /**
  * Add a schema to an event by it's id.
  *
- * Optionally specify a version to add a schame to a specific version of the event.
+ * Optionally specify a version to add a schema to a specific version of the event.
  *
  * @example
  * ```ts
