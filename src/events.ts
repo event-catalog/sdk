@@ -7,23 +7,18 @@ import type { Event } from './types';
 
 /**
  * Returns an event from EventCatalog.
- * 
+ *
  * You can optionally specify a version to get a specific version of the event.
- * 
+ *
  * @example
  * ```ts
-<<<<<<< Updated upstream
- * import utils from '@eventcatalog/utils`;
- * 
-=======
- * import utils from '@eventcatalog/utils';
+ * * import utils from '@eventcatalog/utils';
  *
->>>>>>> Stashed changes
  * const { getEvent } = utils('/path/to/eventcatalog');
- * 
+ *
  * // Gets the latest version of the event
  * cont event = await getEvent('InventoryAdjusted');
- * 
+ *
  * // Gets a version of the event
  * cont event = await getEvent('InventoryAdjusted', '0.0.1');
  * ```
