@@ -3,6 +3,7 @@ import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from
 import type { Service } from './types';
 import fs from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
 
 /**
  * Returns a service from EventCatalog.
@@ -24,19 +25,8 @@ import { dirname, join } from 'node:path';
  */
 export const getService =
   (directory: string) =>
-  async (id: string, version?: string): Promise<Service> => {
-    const file = await findFileById(directory, id, version);
-
-    if (!file) throw new Error(`No service found for the given id: ${id}` + (version ? ` and version ${version}` : ''));
-
-    const { data, content } = matter.read(file);
-
-    return {
-      ...data,
-      markdown: content.trim(),
-    } as Service;
-  };
-
+  async (id: string, version?: string): Promise<Service> =>
+    getResource(directory, id, version, { type: 'service' }) as Promise<Service>;
 /**
  * Write an event to EventCatalog.
  *
@@ -71,20 +61,8 @@ export const getService =
  */
 export const writeService =
   (directory: string) =>
-  async (service: Service, options: { path: string } = { path: '' }) => {
-    // Get the path
-    const path = options.path || `/${service.id}`;
-    const exists = await versionExists(directory, service.id, service.version);
-
-    if (exists) {
-      throw new Error(`Failed to write service as the version ${service.version} already exists`);
-    }
-
-    const { markdown, ...frontmatter } = service;
-    const document = matter.stringify(markdown.trim(), frontmatter);
-    await fs.mkdir(join(directory, path), { recursive: true });
-    await fs.writeFile(join(directory, path, 'index.md'), document);
-  };
+  async (service: Service, options: { path: string } = { path: '' }) =>
+    writeResource(directory, { ...service }, { ...options, type: 'service' });
 
 /**
  * Version a service by it's id.
@@ -104,39 +82,7 @@ export const writeService =
  *
  * ```
  */
-export const versionService = (directory: string) => async (id: string) => {
-  // Find all the events in the directory
-  const files = await getFiles(`${directory}/**/index.md`);
-  const matchedFiles = await searchFilesForId(files, id);
-
-  if (matchedFiles.length === 0) {
-    throw new Error(`No service found with id: ${id}`);
-  }
-
-  // Service that is in the route of the project
-  const file = matchedFiles[0];
-  const eventDirectory = dirname(file);
-  const { data: { version = '0.0.1' } = {} } = matter.read(file);
-  const targetDirectory = join(eventDirectory, 'versioned', version);
-
-  await fs.mkdir(targetDirectory, { recursive: true });
-
-  // Copy the service to the versioned directory
-  await copyDir(directory, eventDirectory, targetDirectory, (src) => {
-    return !src.includes('versioned');
-  });
-
-  // Remove all the files in the root of the resource as they have now been versioned
-  await fs.readdir(eventDirectory).then(async (resourceFiles) => {
-    await Promise.all(
-      resourceFiles.map(async (file) => {
-        if (file !== 'versioned') {
-          await fs.rm(join(eventDirectory, file), { recursive: true });
-        }
-      })
-    );
-  });
-};
+export const versionService = (directory: string) => async (id: string) => versionResource(directory, id);
 
 /**
  * Delete a service at it's given path.
@@ -173,18 +119,8 @@ export const rmService = (directory: string) => async (path: string) => {
  * await rmServiceById('InventoryService', '0.0.1');
  * ```
  */
-export const rmServiceById = (directory: string) => async (id: string, version?: string) => {
-  // Find all the events in the directory
-  const files = await getFiles(`${directory}/**/index.md`);
-
-  const matchedFiles = await searchFilesForId(files, id, version);
-
-  if (matchedFiles.length === 0) {
-    throw new Error(`No service found with id: ${id}`);
-  }
-
-  await Promise.all(matchedFiles.map((file) => fs.rm(file)));
-};
+export const rmServiceById = (directory: string) => async (id: string, version?: string) =>
+  rmResourceById(directory, id, version, { type: 'service' });
 
 /**
  * Add a file to a service by it's id.
@@ -205,10 +141,7 @@ export const rmServiceById = (directory: string) => async (id: string, version?:
  *
  * ```
  */
+
 export const addFileToService =
-  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) => {
-    const pathToEvent = await findFileById(directory, id, version);
-    if (!pathToEvent) throw new Error('Cannot find directory to write file to');
-    const contentDirectory = dirname(pathToEvent);
-    await fs.writeFile(join(contentDirectory, file.fileName), file.content);
-  };
+  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
+    addFileToResource(directory, id, file, version);
