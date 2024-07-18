@@ -1,5 +1,14 @@
 import { join } from 'node:path';
 import { rmEvent, rmEventById, writeEvent, versionEvent, getEvent, addFileToEvent, addSchemaToEvent } from './events';
+import {
+  rmCommand,
+  rmCommandById,
+  writeCommand,
+  versionCommand,
+  getCommand,
+  addFileToCommand,
+  addSchemaToCommand,
+} from './commands';
 import { writeService, getService, versionService, rmService, rmServiceById, addFileToService } from './services';
 
 /**
@@ -60,6 +69,63 @@ export default (path: string) => {
      * @returns
      */
     addSchemaToEvent: addSchemaToEvent(join(path, 'events')),
+
+    /**
+     * ================================
+     *            Commands
+     * ================================
+     */
+
+    /**
+     * Returns a command from EventCatalog
+     * @param id - The id of the command to retrieve
+     * @param version - Optional id of the version to get
+     * @returns
+     */
+    getCommand: getCommand(join(path, 'commands')),
+    /**
+     * Adds an command to EventCatalog
+     *
+     * @param command - The command to write
+     * @param options - Optional options to write the command
+     *
+     */
+    writeCommand: writeCommand(join(path, 'commands')),
+    /**
+     * Remove an command to EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your command, e.g. `/Inventory/InventoryAdjusted`
+     *
+     */
+    rmCommand: rmCommand(join(path, 'commands')),
+    /**
+     * Remove an command by an Event id
+     *
+     * @param id - The id of the command you want to remove
+     *
+     */
+    rmCommandById: rmCommandById(join(path, 'commands')),
+    /**
+     * Moves a given command id to the version directory
+     * @param directory
+     */
+    versionCommand: versionCommand(join(path, 'commands')),
+    /**
+     * Adds a file to the given command
+     * @param id - The id of the command to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the command to add the file to
+     * @returns
+     */
+    addFileToCommand: addFileToCommand(join(path, 'commands')),
+    /**
+     * Adds a schema to the given command
+     * @param id - The id of the command to add the schema to
+     * @param schema - Schema contents to add including the content and the file name
+     * @param version - Optional version of the command to add the schema to
+     * @returns
+     */
+    addSchemaToCommand: addSchemaToCommand(join(path, 'commands')),
 
     /**
      * ================================
