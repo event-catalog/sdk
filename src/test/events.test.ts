@@ -4,7 +4,7 @@ import utils from '../index';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const CATALOG_PATH = path.join(__dirname, 'catalog');
+const CATALOG_PATH = path.join(__dirname, 'catalog-events');
 
 const { writeEvent, getEvent, rmEvent, rmEventById, versionEvent, addFileToEvent, addSchemaToEvent } = utils(CATALOG_PATH);
 
@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
+  fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
 });
 
 describe('Events SDK', () => {

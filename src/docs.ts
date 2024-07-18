@@ -26,3 +26,4 @@
  * @module docs
  */
 export * from './events';
+export * from './services';
