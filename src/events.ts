@@ -12,7 +12,7 @@ import type { Event } from './types';
  *
  * @example
  * ```ts
- * * import utils from '@eventcatalog/utils';
+ * import utils from '@eventcatalog/utils';
  *
  * const { getEvent } = utils('/path/to/eventcatalog');
  *
@@ -49,7 +49,7 @@ export const getEvent =
  *
  * const { writeEvent } = utils('/path/to/eventcatalog');
  *
- * // Write an event to the catalog 
+ * // Write an event to the catalog
  * // Event would be written to events/InventoryAdjusted
  * await writeEvent({
  *   id: 'InventoryAdjusted',
@@ -61,7 +61,7 @@ export const getEvent =
  *
  * // Write an event to the catalog but override the path
  * // Event would be written to events/Inventory/InventoryAdjusted
-* await writeEvent({
+ * await writeEvent({
  *    id: 'InventoryAdjusted',
  *    name: 'Inventory Adjusted',
  *    version: '0.0.1',
@@ -69,7 +69,7 @@ export const getEvent =
  *    markdown: '# Hello world',
  * }, { path: "/Inventory/InventoryAdjusted"});
  * ```
- */  
+ */
 export const writeEvent =
   (directory: string) =>
   async (event: Event, options: { path: string } = { path: '' }) => {
@@ -100,14 +100,14 @@ export const writeEvent =
  * // Removes the event at events/InventoryAdjusted
  * await rmEvent('/InventoryAdjusted');
  * ```
- */    
+ */
 export const rmEvent = (directory: string) => async (path: string) => {
   await fs.rm(join(directory, path), { recursive: true });
 };
 
 /**
  * Delete an event by it's id.
- * 
+ *
  * Optionally specify a version to delete a specific version of the event.
  *
  * @example
@@ -118,11 +118,11 @@ export const rmEvent = (directory: string) => async (path: string) => {
  *
  * // deletes the latest InventoryAdjusted event
  * await rmEventById('InventoryAdjusted');
- * 
+ *
  * // deletes a specific version of the InventoryAdjusted event
  * await rmEventById('InventoryAdjusted', '0.0.1');
  * ```
- */    
+ */
 export const rmEventById = (directory: string) => async (id: string, version?: string) => {
   // Find all the events in the directory
   const files = await getFiles(`${directory}/**/index.md`);
@@ -138,7 +138,7 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
 
 /**
  * Version an event by it's id.
- * 
+ *
  * Takes the latest event and moves it to a versioned directory.
  *
  * @example
@@ -150,9 +150,9 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
  * // moves the latest InventoryAdjusted event to a versioned directory
  * // the version within that event is used as the version number.
  * await verionEvent('InventoryAdjusted');
- * 
+ *
  * ```
- */    
+ */
 export const versionEvent = (directory: string) => async (id: string) => {
   // Find all the events in the directory
   const files = await getFiles(`${directory}/**/index.md`);
@@ -187,10 +187,9 @@ export const versionEvent = (directory: string) => async (id: string) => {
   });
 };
 
-
 /**
  * Add a file to an event by it's id.
- * 
+ *
  * Optionally specify a version to add a file to a specific version of the event.
  *
  * @example
@@ -201,12 +200,12 @@ export const versionEvent = (directory: string) => async (id: string) => {
  *
  * // adds a file to the latest InventoryAdjusted event
  * await addFileToEvent('InventoryAdjusted', { content: 'Hello world', fileName: 'hello.txt' });
- * 
+ *
  * // adds a file to a specific version of the InventoryAdjusted event
  * await addFileToEvent('InventoryAdjusted', { content: 'Hello world', fileName: 'hello.txt' }, '0.0.1');
- * 
+ *
  * ```
- */ 
+ */
 export const addFileToEvent =
   (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) => {
     const pathToEvent = await findFileById(directory, id, version);
@@ -217,7 +216,7 @@ export const addFileToEvent =
 
 /**
  * Add a schema to an event by it's id.
- * 
+ *
  * Optionally specify a version to add a schame to a specific version of the event.
  *
  * @example
@@ -225,7 +224,7 @@ export const addFileToEvent =
  * import utils from '@eventcatalog/utils';
  *
  * const { addSchemaToEvent } = utils('/path/to/eventcatalog');
- * 
+ *
  * // JSON schema example
  * const schema = {
  *    "$schema": "http://json-schema.org/draft-07/schema#",
@@ -243,12 +242,12 @@ export const addFileToEvent =
  *
  * // adds a schema to the latest InventoryAdjusted event
  * await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
- * 
+ *
  * // adds a file to a specific version of the InventoryAdjusted event
  * await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' }, '0.0.1');
- * 
+ *
  * ```
- */ 
+ */
 export const addSchemaToEvent =
   (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
     await addFileToEvent(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
