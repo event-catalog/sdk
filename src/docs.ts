@@ -25,6 +25,7 @@
  *
  * @module docs
  */
-export * from './events';
+export * from './domains';
 export * from './services';
+export * from './events';
 export * from './commands';
