@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.4
+
+### Patch Changes
+
+- fcd03f6: feat(sdk): added support for services
+
 ## 0.0.3
 
 ### Patch Changes
