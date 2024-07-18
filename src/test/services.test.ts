@@ -4,7 +4,7 @@ import utils from '../index';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const CATALOG_PATH = path.join(__dirname, 'catalog');
+const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 
 const { writeService, getService, versionService, rmService, rmServiceById, addFileToService } = utils(CATALOG_PATH);
 
