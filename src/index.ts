@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import { rmEvent, rmEventById, writeEvent, versionEvent, getEvent, addFileToEvent, addSchemaToEvent } from './events';
+import { writeService, getService, versionService, rmService, rmServiceById, addFileToService } from './services';
 
 /**
  * Init the SDK for EventCatalog
@@ -59,5 +60,54 @@ export default (path: string) => {
      * @returns
      */
     addSchemaToEvent: addSchemaToEvent(join(path, 'events')),
+
+    /**
+     * ================================
+     *            SERVICES
+     * ================================
+     */
+
+    /**
+     * Adds a service to EventCatalog
+     *
+     * @param service - The service to write
+     * @param options - Optional options to write the event
+     *
+     */
+    writeService: writeService(join(path, 'services')),
+    /**
+     * Returns a service from EventCatalog
+     * @param id - The id of the service to retrieve
+     * @param version - Optional id of the version to get
+     * @returns
+     */
+    getService: getService(join(path, 'services')),
+    /**
+     * Moves a given service id to the version directory
+     * @param directory
+     */
+    versionService: versionService(join(path, 'services')),
+    /**
+     * Remove a service from EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your service, e.g. `/InventoryService`
+     *
+     */
+    rmService: rmService(join(path, 'services')),
+     /**
+     * Remove an service by an service id
+     *
+     * @param id - The id of the service you want to remove
+     *
+     */
+     rmServiceById: rmServiceById(join(path, 'services')),
+     /**
+     * Adds a file to the given service
+     * @param id - The id of the service to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the service to add the file to
+     * @returns
+     */
+    addFileToService: addFileToService(join(path, 'services')),
   };
 };

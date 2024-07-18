@@ -140,6 +140,7 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
  * Version an event by it's id.
  *
  * Takes the latest event and moves it to a versioned directory.
+ * All files with this event are also versioned (e.g /events/InventoryAdjusted/schema.json)
  *
  * @example
  * ```ts
@@ -149,7 +150,7 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
  *
  * // moves the latest InventoryAdjusted event to a versioned directory
  * // the version within that event is used as the version number.
- * await verionEvent('InventoryAdjusted');
+ * await versionEvent('InventoryAdjusted');
  *
  * ```
  */
