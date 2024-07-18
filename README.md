@@ -21,4 +21,3 @@ await getEvent('InventoryEvent');
 // Gets event by id and version
 await getEvent('InventoryEvent', '1.0.0');
 ```
-
