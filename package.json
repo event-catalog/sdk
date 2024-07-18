@@ -10,6 +10,9 @@
     "changeset": "changeset",
     "release": "changeset publish"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
