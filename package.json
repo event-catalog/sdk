@@ -3,7 +3,7 @@
   "version": "0.0.4",
   "description": "SDK to integrate with EventCatalog",
   "scripts": {
-    "build": "tsup ./src",
+    "build": "tsup",
     "test": "vitest",
     "format": "prettier --write .",
     "format:diff": "prettier --list-different .",

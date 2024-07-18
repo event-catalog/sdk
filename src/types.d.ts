@@ -8,7 +8,6 @@ export interface BaseSchema {
   owners?: string[];
   schemaPath?: string;
   markdown: string;
-  __type: 'service' | 'event' | 'command';
 }
 
 export type ResourcePointer = {
@@ -24,15 +23,12 @@ enum ResourceType {
   Command = 'command',
 }
 
-export interface Event extends BaseSchema {
-  __type: 'event';
-}
+export interface Event extends BaseSchema {}
 export interface Command extends BaseSchema {}
 
 export interface Service extends BaseSchema {
   sends?: ResourcePointer[];
   receives?: ResourcePointer[];
-  __type: ResourceType.Service;
 }
 
 export interface Team {
