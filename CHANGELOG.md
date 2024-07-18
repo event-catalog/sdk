@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.6
+
+### Patch Changes
+
+- e925200: feat(sdk): added commands to sdk
+
 ## 0.0.5
 
 ### Patch Changes
