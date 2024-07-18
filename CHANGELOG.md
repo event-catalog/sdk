@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.7
+
+### Patch Changes
+
+- dd2f78e: feat(sdk): added domains to sdk
+
 ## 0.0.6
 
 ### Patch Changes
