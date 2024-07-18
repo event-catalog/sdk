@@ -10,6 +10,7 @@ import {
   addSchemaToCommand,
 } from './commands';
 import { writeService, getService, versionService, rmService, rmServiceById, addFileToService } from './services';
+import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } from './domains';
 
 /**
  * Init the SDK for EventCatalog
@@ -175,5 +176,54 @@ export default (path: string) => {
      * @returns
      */
     addFileToService: addFileToService(join(path, 'services')),
+
+    /**
+     * ================================
+     *            Domains
+     * ================================
+     */
+
+    /**
+     * Adds a domain to EventCatalog
+     *
+     * @param domain - The domain to write
+     * @param options - Optional options to write the event
+     *
+     */
+    writeDomain: writeDomain(join(path, 'domains')),
+    /**
+     * Returns a domain from EventCatalog
+     * @param id - The id of the domain to retrieve
+     * @param version - Optional id of the version to get
+     * @returns
+     */
+    getDomain: getDomain(join(path, 'domains')),
+    /**
+     * Moves a given domain id to the version directory
+     * @param directory
+     */
+    versionDomain: versionDomain(join(path, 'domains')),
+    /**
+     * Remove a domain from EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your domain, e.g. `/Payment`
+     *
+     */
+    rmDomain: rmDomain(join(path, 'domains')),
+    /**
+     * Remove an service by an domain id
+     *
+     * @param id - The id of the domain you want to remove
+     *
+     */
+    rmDomainById: rmDomainById(join(path, 'domains')),
+    /**
+     * Adds a file to the given domain
+     * @param id - The id of the domain to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the domain to add the file to
+     * @returns
+     */
+    addFileToDomain: addFileToDomain(join(path, 'domains')),
   };
 };

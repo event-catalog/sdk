@@ -31,6 +31,10 @@ export interface Service extends BaseSchema {
   receives?: ResourcePointer[];
 }
 
+export interface Domain extends BaseSchema {
+  services?: ResourcePointer[];
+}
+
 export interface Team {
   id: string;
   name: string;

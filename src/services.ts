@@ -1,8 +1,6 @@
-import matter from 'gray-matter';
-import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './internal/utils';
 import type { Service } from './types';
 import fs from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
 
 /**
