@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { dirname } from 'node:path';
 import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './internal/utils';
 import type { Event } from './types';
+import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
 
 /**
  * Returns an event from EventCatalog.
@@ -25,18 +26,8 @@ import type { Event } from './types';
  */
 export const getEvent =
   (directory: string) =>
-  async (id: string, version?: string): Promise<Event> => {
-    const file = await findFileById(directory, id, version);
-
-    if (!file) throw new Error(`No event found for the given id: ${id}` + (version ? ` and version ${version}` : ''));
-
-    const { data, content } = matter.read(file);
-
-    return {
-      ...data,
-      markdown: content.trim(),
-    } as Event;
-  };
+  async (id: string, version?: string): Promise<Event> =>
+    getResource(directory, id, version, { type: 'event' }) as Promise<Event>;
 
 /**
  * Write an event to EventCatalog.
@@ -72,20 +63,8 @@ export const getEvent =
  */
 export const writeEvent =
   (directory: string) =>
-  async (event: Event, options: { path: string } = { path: '' }) => {
-    // Get the path
-    const path = options.path || `/${event.id}`;
-    const exists = await versionExists(directory, event.id, event.version);
-
-    if (exists) {
-      throw new Error(`Failed to write event as the version ${event.version} already exists`);
-    }
-
-    const { markdown, ...frontmatter } = event;
-    const document = matter.stringify(markdown.trim(), frontmatter);
-    await fs.mkdir(join(directory, path), { recursive: true });
-    await fs.writeFile(join(directory, path, 'index.md'), document);
-  };
+  async (event: Event, options: { path: string } = { path: '' }) =>
+    writeResource(directory, { ...event }, { ...options, type: 'event' });
 
 /**
  * Delete an event at it's given path.
@@ -123,18 +102,8 @@ export const rmEvent = (directory: string) => async (path: string) => {
  * await rmEventById('InventoryAdjusted', '0.0.1');
  * ```
  */
-export const rmEventById = (directory: string) => async (id: string, version?: string) => {
-  // Find all the events in the directory
-  const files = await getFiles(`${directory}/**/index.md`);
-
-  const matchedFiles = await searchFilesForId(files, id, version);
-
-  if (matchedFiles.length === 0) {
-    throw new Error(`No event found with id: ${id}`);
-  }
-
-  await Promise.all(matchedFiles.map((file) => fs.rm(file)));
-};
+export const rmEventById = (directory: string) => async (id: string, version?: string) =>
+  rmResourceById(directory, id, version, { type: 'event' });
 
 /**
  * Version an event by it's id.
@@ -154,39 +123,7 @@ export const rmEventById = (directory: string) => async (id: string, version?: s
  *
  * ```
  */
-export const versionEvent = (directory: string) => async (id: string) => {
-  // Find all the events in the directory
-  const files = await getFiles(`${directory}/**/index.md`);
-  const matchedFiles = await searchFilesForId(files, id);
-
-  if (matchedFiles.length === 0) {
-    throw new Error(`No event found with id: ${id}`);
-  }
-
-  // Event that is in the route of the project
-  const file = matchedFiles[0];
-  const eventDirectory = dirname(file);
-  const { data: { version = '0.0.1' } = {} } = matter.read(file);
-  const targetDirectory = join(eventDirectory, 'versioned', version);
-
-  await fs.mkdir(targetDirectory, { recursive: true });
-
-  // Copy the event to the versioned directory
-  await copyDir(directory, eventDirectory, targetDirectory, (src) => {
-    return !src.includes('versioned');
-  });
-
-  // Remove all the files in the root of the resource as they have now been versioned
-  await fs.readdir(eventDirectory).then(async (resourceFiles) => {
-    await Promise.all(
-      resourceFiles.map(async (file) => {
-        if (file !== 'versioned') {
-          await fs.rm(join(eventDirectory, file), { recursive: true });
-        }
-      })
-    );
-  });
-};
+export const versionEvent = (directory: string) => async (id: string) => versionResource(directory, id);
 
 /**
  * Add a file to an event by it's id.
@@ -208,12 +145,8 @@ export const versionEvent = (directory: string) => async (id: string) => {
  * ```
  */
 export const addFileToEvent =
-  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) => {
-    const pathToEvent = await findFileById(directory, id, version);
-    if (!pathToEvent) throw new Error('Cannot find directory to write file to');
-    const contentDirectory = dirname(pathToEvent);
-    await fs.writeFile(join(contentDirectory, file.fileName), file.content);
-  };
+  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
+    addFileToResource(directory, id, file, version);
 
 /**
  * Add a schema to an event by it's id.

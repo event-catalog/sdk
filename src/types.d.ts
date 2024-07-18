@@ -17,6 +17,12 @@ export type ResourcePointer = {
 
 export type Message = Event | Command;
 
+enum ResourceType {
+  Service = 'service',
+  Event = 'event',
+  Command = 'command',
+}
+
 export interface Event extends BaseSchema {}
 export interface Command extends BaseSchema {}
 
