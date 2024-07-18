@@ -8,7 +8,7 @@ import type { Event } from './types';
 /**
  * Returns an event from EventCatalog.
  *
- * You can optionally specify a version to get a specific version of the event.
+ * You can optionally specify a version to get a specific version of the event
  *
  * @example
  * ```ts
