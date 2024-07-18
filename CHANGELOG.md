@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.5
+
+### Patch Changes
+
+- e060c21: chore(sdk): refactored code to new resource internal lib
+
 ## 0.0.4
 
 ### Patch Changes
