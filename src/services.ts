@@ -143,3 +143,44 @@ export const rmServiceById = (directory: string) => async (id: string, version?:
 export const addFileToService =
   (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
     addFileToResource(directory, id, file, version);
+
+/**
+ * Add an event to a service by it's id.
+ *
+ * Optionally specify a version to add the event to a specific version of the service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { addEventToService } = utils('/path/to/eventcatalog');
+ *
+ * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
+ * await addEventToService('InventoryService', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+ *
+ * // adds InventoryUpdatedEvent event with version '2.0.0' to a specific version of the InventoryService event
+ * await addFileToService('InventoryService', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+ *
+ * ```
+ */
+
+export const addEventToService = // TODO discuss with @boyney if we should call it addMessageToService to that we can use this for both Event and Command
+  (directory: string) => async (id: string, event: { id: string; version: string }, version?: string) => {
+
+    let service:Service = await getService(directory)(id, version);
+
+    // TODO add another parameter that defines if it should be sends/receives
+    if(service.sends === undefined) {
+        service.sends = [];
+    }
+    // We first check if the event is already in the list
+    for (let i = 0; i < service.sends.length; i++) {
+        if (service.sends[i].id === event.id && service.sends[i].version === event.version) {
+            return;
+        }
+    }
+    service.sends.push({id: event.id, version: event.version});
+
+    await rmServiceById(directory)(id, version);
+    await writeService(directory)(service);
+  }

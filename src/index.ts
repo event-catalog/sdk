@@ -9,7 +9,7 @@ import {
   addFileToCommand,
   addSchemaToCommand,
 } from './commands';
-import { writeService, getService, versionService, rmService, rmServiceById, addFileToService } from './services';
+import { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addEventToService } from './services';
 import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } from './domains';
 
 /**
@@ -225,5 +225,25 @@ export default (path: string) => {
      * @returns
      */
     addFileToDomain: addFileToDomain(join(path, 'domains')),
+    /**
+     * Add an event to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEventToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
+     * await addEventToService('InventoryService', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+     *
+     * // adds InventoryUpdatedEvent enent with version '2.0.0' to a specific version of the InventoryService event
+     * await addFileToService('InventoryService', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+     *
+     * ```
+     */
+    addEventToService: addEventToService(join(path, 'services')),
   };
 };
