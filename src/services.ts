@@ -164,22 +164,36 @@ export const addFileToService =
  * ```
  */
 
-export const addEventToService = // TODO discuss with @boyney if we should call it addMessageToService to that we can use this for both Event and Command
-  (directory: string) => async (id: string, event: { id: string; version: string }, version?: string) => {
+export const addMessageToService = // TODO discuss with @boyney if we should call it addMessageToService to that we can use this for both Event and Command
+  (directory: string) => async (id: string, direction: string, event: { id: string; version: string }, version?: string) => {
 
     let service:Service = await getService(directory)(id, version);
 
-    // TODO add another parameter that defines if it should be sends/receives
-    if(service.sends === undefined) {
-        service.sends = [];
-    }
-    // We first check if the event is already in the list
-    for (let i = 0; i < service.sends.length; i++) {
-        if (service.sends[i].id === event.id && service.sends[i].version === event.version) {
-            return;
+    if (direction === "sends") {
+        if(service.sends === undefined) {
+            service.sends = [];
         }
+        // We first check if the event is already in the list
+        for (let i = 0; i < service.sends.length; i++) {
+            if (service.sends[i].id === event.id && service.sends[i].version === event.version) {
+                return;
+            }
+        }
+        service.sends.push({id: event.id, version: event.version});
+    } else if (direction === "receives") {
+        if(service.receives === undefined) {
+            service.receives = [];
+        }
+        // We first check if the event is already in the list
+        for (let i = 0; i < service.receives.length; i++) {
+            if (service.receives[i].id === event.id && service.receives[i].version === event.version) {
+                return;
+            }
+        }
+        service.receives.push({id: event.id, version: event.version});
+    } else {
+        throw new Error(`Direction ${direction} is invalid, only 'receives' and 'sends' are supported`);
     }
-    service.sends.push({id: event.id, version: event.version});
 
     await rmServiceById(directory)(id, version);
     await writeService(directory)(service);

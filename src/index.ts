@@ -9,7 +9,7 @@ import {
   addFileToCommand,
   addSchemaToCommand,
 } from './commands';
-import { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addEventToService } from './services';
+import { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addMessageToService } from './services';
 import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } from './domains';
 
 /**
@@ -237,13 +237,33 @@ export default (path: string) => {
      * const { addEventToService } = utils('/path/to/eventcatalog');
      *
      * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
-     * await addEventToService('InventoryService', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+     * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
      *
      * // adds InventoryUpdatedEvent enent with version '2.0.0' to a specific version of the InventoryService event
-     * await addFileToService('InventoryService', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+     * await addFileToService('InventoryService', 'sends', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
      *
      * ```
      */
-    addEventToService: addEventToService(join(path, 'services')),
+    addEventToService: addMessageToService(join(path, 'services')),
+    /**
+     * Add a command to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEventToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
+     * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+     *
+     * // adds InventoryUpdatedEvent enent with version '2.0.0' to a specific version of the InventoryService event
+     * await addFileToService('InventoryService', 'sends', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+     *
+     * ```
+     */
+    addCommandToService: addMessageToService(join(path, 'services')),
   };
 };

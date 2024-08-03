@@ -322,24 +322,9 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      const serviceaa = await getService('InventoryService');
-
-      console.log("InventoryService " + serviceaa)
-
-
-      await writeEvent({
-        id: 'InventoryAdjusted',
-        name: 'Inventory Adjusted',
-        version: '2.0.0',
-        summary: 'This is a summary',
-        markdown: '# Hello world',
-      });
-
-        debugger;
-      await addEventToService('InventoryService', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
+      await addEventToService('InventoryService', 'sends', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
 
       const service = await getService('InventoryService');
-
 
       expect(service).toEqual({
         id: 'InventoryService',
@@ -359,6 +344,19 @@ describe('Services SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToService('InventoryService', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    it('throws an error when trying to add an event to a service with an unsupported direction', async () => {
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      expect(addEventToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')).rejects.toThrowError('Direction doesnotexist is invalid, only \'receives\' and \'sends\' are supported');
     });
   });
 
