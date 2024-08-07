@@ -2,6 +2,7 @@ import { glob } from 'glob';
 import fs from 'node:fs/promises';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
+import matter from 'gray-matter';
 
 /**
  * Returns true if a given version of a resource id exists in the catalog
@@ -15,14 +16,25 @@ export const versionExists = async (catalogDir: string, id: string, version: str
 export const findFileById = async (catalogDir: string, id: string, version?: string): Promise<string | undefined> => {
   const files = await getFiles(`${catalogDir}/**/index.md`);
   const matchedFiles = (await searchFilesForId(files, id)) || [];
+  const latestVersion = matchedFiles.find((path) => !path.includes('versioned'));
 
-  // Return the latest one
+  // If no version is provided, return the latest version
   if (!version) {
-    return matchedFiles.find((path) => !path.includes('versioned'));
+    return latestVersion;
   }
 
-  // Find the versioned event
-  return matchedFiles.find((path) => path.includes(`versioned/${version}`));
+  // Check if the version exists
+  const match = matchedFiles.find((path) => path.includes(`versioned/${version}`));
+
+  // Version is given but can't be found in the versioned directory, check if it's the latest version
+  if(!match && latestVersion) {
+    const { data } = matter.read(latestVersion);
+    if (data.version === version) {
+      return latestVersion
+    }
+  }
+
+  return match;
 };
 
 export const getFiles = async (pattern: string) => {

@@ -70,6 +70,26 @@ describe('Domain SDK', () => {
       });
     });
 
+    it('returns the latest version of the domain if the version matches the latest version', async () => {
+      await writeDomain({
+        id: 'Payment',
+        name: 'Payment Domain',
+        version: '0.0.1',
+        summary: 'All things to do with the payment systems',
+        markdown: '# Hello world',
+      });
+
+      const test = await getDomain('Payment', '0.0.1');
+
+      expect(test).toEqual({
+        id: 'Payment',
+        name: 'Payment Domain',
+        version: '0.0.1',
+        summary: 'All things to do with the payment systems',
+        markdown: '# Hello world',
+      });
+    });
+
     it('throws an error if the domain is not found', async () => {
       await expect(getDomain('Payment')).rejects.toThrowError('No domain found for the given id: Payment');
     });
