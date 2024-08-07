@@ -27,10 +27,10 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
   const match = matchedFiles.find((path) => path.includes(`versioned/${version}`));
 
   // Version is given but can't be found in the versioned directory, check if it's the latest version
-  if(!match && latestVersion) {
+  if (!match && latestVersion) {
     const { data } = matter.read(latestVersion);
     if (data.version === version) {
-      return latestVersion
+      return latestVersion;
     }
   }
 
