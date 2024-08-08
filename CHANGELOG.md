@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.8
+
+### Patch Changes
+
+- 615d665: fix(sdk): fixed issue when getting resources by id and version
+
 ## 0.0.7
 
 ### Patch Changes
