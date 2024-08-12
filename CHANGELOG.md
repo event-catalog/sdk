@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.9
+
+### Patch Changes
+
+- 104ca2a: feat(sdk): added specific function to register an event or command to a service
+
 ## 0.0.8
 
 ### Patch Changes
