@@ -43,4 +43,5 @@ await versionEvent('InventoryEvent');
 // Returns the service /services/PaymentService
 const service await getService('PaymentService');
 ```
+
 See the [SDK docs](https://www.eventcatalog.dev/docs/sdk) for more information and examples.

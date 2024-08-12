@@ -9,7 +9,15 @@ import {
   addFileToCommand,
   addSchemaToCommand,
 } from './commands';
-import { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addMessageToService } from './services';
+import {
+  writeService,
+  getService,
+  versionService,
+  rmService,
+  rmServiceById,
+  addFileToService,
+  addMessageToService,
+} from './services';
 import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } from './domains';
 
 /**
@@ -236,11 +244,11 @@ export default (path: string) => {
      *
      * const { addEventToService } = utils('/path/to/eventcatalog');
      *
-     * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
+     * // adds a new event (InventoryUpdatedEvent) that the InventoryService will send
      * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
-     *
-     * // adds InventoryUpdatedEvent enent with version '2.0.0' to a specific version of the InventoryService event
-     * await addFileToService('InventoryService', 'sends', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+     * 
+     * // adds a new event (OrderComplete) that the InventoryService will receive
+     * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '2.0.0' });
      *
      * ```
      */
@@ -254,13 +262,13 @@ export default (path: string) => {
      * ```ts
      * import utils from '@eventcatalog/utils';
      *
-     * const { addEventToService } = utils('/path/to/eventcatalog');
+     * const { addCommandToService } = utils('/path/to/eventcatalog');
      *
-     * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
-     * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
-     *
-     * // adds InventoryUpdatedEvent enent with version '2.0.0' to a specific version of the InventoryService event
-     * await addFileToService('InventoryService', 'sends', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+     * // adds a new command (UpdateInventoryCommand) that the InventoryService will send
+     * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
+     * 
+     * // adds a new command (VerifyInventory) that the InventoryService will receive
+     * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '2.0.0' });
      *
      * ```
      */

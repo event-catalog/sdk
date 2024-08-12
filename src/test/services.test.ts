@@ -6,7 +6,8 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 
-const { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addEventToService, writeEvent } = utils(CATALOG_PATH);
+const { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addEventToService, writeEvent } =
+  utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -309,11 +310,8 @@ describe('Services SDK', () => {
     });
   });
 
-
   describe('addEventToService', () => {
-
     it('takes an existing event and adds it to the sends of an existing service', async () => {
-
       await writeService({
         id: 'InventoryService',
         name: 'Inventory Service',
@@ -331,17 +329,17 @@ describe('Services SDK', () => {
         name: 'Inventory Service',
         version: '0.0.1',
         summary: 'Service that handles the inventory',
-        sends: [{
-                id: 'InventoryUpdatedEvent',
-                version: '2.0.0'
-            }],
+        sends: [
+          {
+            id: 'InventoryUpdatedEvent',
+            version: '2.0.0',
+          },
+        ],
         markdown: '# Hello world',
       });
-
     });
 
     it('takes an existing event and adds it to the receives of an existing service', async () => {
-
       await writeService({
         id: 'InventoryService',
         name: 'Inventory Service',
@@ -359,13 +357,14 @@ describe('Services SDK', () => {
         name: 'Inventory Service',
         version: '0.0.1',
         summary: 'Service that handles the inventory',
-        receives: [{
-                id: 'InventoryUpdatedEvent',
-                version: '2.0.0'
-            }],
+        receives: [
+          {
+            id: 'InventoryUpdatedEvent',
+            version: '2.0.0',
+          },
+        ],
         markdown: '# Hello world',
       });
-
     });
 
     it('throws an error when trying to add an event to a service that does not exist', () => {
@@ -375,7 +374,6 @@ describe('Services SDK', () => {
     });
 
     it('throws an error when trying to add an event to a service with an unsupported direction', async () => {
-
       await writeService({
         id: 'InventoryService',
         name: 'Inventory Service',
@@ -384,8 +382,9 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(addEventToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')).rejects.toThrowError('Direction doesnotexist is invalid, only \'receives\' and \'sends\' are supported');
+      expect(
+        addEventToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')
+      ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
     });
   });
-
 });
