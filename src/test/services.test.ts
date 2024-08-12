@@ -6,8 +6,16 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 
-const { writeService, getService, versionService, rmService, rmServiceById, addFileToService, addEventToService, addCommandToService } =
-  utils(CATALOG_PATH);
+const {
+  writeService,
+  getService,
+  versionService,
+  rmService,
+  rmServiceById,
+  addFileToService,
+  addEventToService,
+  addCommandToService,
+} = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
