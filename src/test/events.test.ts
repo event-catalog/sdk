@@ -70,6 +70,26 @@ describe('Events SDK', () => {
       });
     });
 
+    it('returns the latest version of the event if the version matches the latest version', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const test = await getEvent('InventoryAdjusted', '0.0.1');
+
+      expect(test).toEqual({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+    });
+
     it('throws an error if the event is not found', async () => {
       await expect(getEvent('InventoryAdjusted')).rejects.toThrowError('No event found for the given id: InventoryAdjusted');
     });

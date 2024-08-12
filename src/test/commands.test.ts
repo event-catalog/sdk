@@ -71,6 +71,26 @@ describe('Commands SDK', () => {
       });
     });
 
+    it('returns the latest version of the command if the version matches the latest version', async () => {
+      await writeCommand({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const test = await getCommand('UpdateInventory', '0.0.1');
+
+      expect(test).toEqual({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+    });
+
     it('throws an error if the command is not found', async () => {
       await expect(getCommand('UpdateInventory')).rejects.toThrowError('No command found for the given id: UpdateInventory');
     });
