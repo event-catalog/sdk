@@ -9,7 +9,15 @@ import {
   addFileToCommand,
   addSchemaToCommand,
 } from './commands';
-import { writeService, getService, versionService, rmService, rmServiceById, addFileToService } from './services';
+import {
+  writeService,
+  getService,
+  versionService,
+  rmService,
+  rmServiceById,
+  addFileToService,
+  addMessageToService,
+} from './services';
 import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } from './domains';
 
 /**
@@ -225,5 +233,45 @@ export default (path: string) => {
      * @returns
      */
     addFileToDomain: addFileToDomain(join(path, 'domains')),
+    /**
+     * Add an event to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEventToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new event (InventoryUpdatedEvent) that the InventoryService will send
+     * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+     *
+     * // adds a new event (OrderComplete) that the InventoryService will receive
+     * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '2.0.0' });
+     *
+     * ```
+     */
+    addEventToService: addMessageToService(join(path, 'services')),
+    /**
+     * Add a command to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addCommandToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new command (UpdateInventoryCommand) that the InventoryService will send
+     * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
+     *
+     * // adds a new command (VerifyInventory) that the InventoryService will receive
+     * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '2.0.0' });
+     *
+     * ```
+     */
+    addCommandToService: addMessageToService(join(path, 'services')),
   };
 };

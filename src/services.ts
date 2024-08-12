@@ -143,3 +143,62 @@ export const rmServiceById = (directory: string) => async (id: string, version?:
 export const addFileToService =
   (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
     addFileToResource(directory, id, file, version);
+
+/**
+ * Add an event/command to a service by it's id.
+ *
+ * Optionally specify a version to add the event to a specific version of the service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds an event to the service or command to the service
+ * const { addEventToService, addCommandToService } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a new event (InventoryUpdatedEvent) that the InventoryService will send
+ * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+ * * // Adds a new event (OrderComplete) that the InventoryService will receive
+ * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '1.0.0' });
+ *
+ * // Adds a new command (UpdateInventoryCommand) that the InventoryService will send
+ * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
+ * // Adds a new command (VerifyInventory) that the InventoryService will receive
+ * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '1.0.0' });
+ *
+ * ```
+ */
+
+export const addMessageToService =
+  (directory: string) => async (id: string, direction: string, event: { id: string; version: string }, version?: string) => {
+    let service: Service = await getService(directory)(id, version);
+
+    if (direction === 'sends') {
+      if (service.sends === undefined) {
+        service.sends = [];
+      }
+      // We first check if the event is already in the list
+      for (let i = 0; i < service.sends.length; i++) {
+        if (service.sends[i].id === event.id && service.sends[i].version === event.version) {
+          return;
+        }
+      }
+      service.sends.push({ id: event.id, version: event.version });
+    } else if (direction === 'receives') {
+      if (service.receives === undefined) {
+        service.receives = [];
+      }
+      // We first check if the event is already in the list
+      for (let i = 0; i < service.receives.length; i++) {
+        if (service.receives[i].id === event.id && service.receives[i].version === event.version) {
+          return;
+        }
+      }
+      service.receives.push({ id: event.id, version: event.version });
+    } else {
+      throw new Error(`Direction ${direction} is invalid, only 'receives' and 'sends' are supported`);
+    }
+
+    await rmServiceById(directory)(id, version);
+    await writeService(directory)(service);
+  };

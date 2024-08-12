@@ -6,7 +6,16 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 
-const { writeService, getService, versionService, rmService, rmServiceById, addFileToService } = utils(CATALOG_PATH);
+const {
+  writeService,
+  getService,
+  versionService,
+  rmService,
+  rmServiceById,
+  addFileToService,
+  addEventToService,
+  addCommandToService,
+} = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -326,6 +335,149 @@ describe('Services SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToService('InventoryService', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+  });
+
+  describe('addEventToService', () => {
+    it('takes an existing event and adds it to the sends of an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addEventToService('InventoryService', 'sends', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        sends: [
+          {
+            id: 'InventoryUpdatedEvent',
+            version: '2.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    it('takes an existing event and adds it to the receives of an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addEventToService('InventoryService', 'receives', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        receives: [
+          {
+            id: 'InventoryUpdatedEvent',
+            version: '2.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    it('throws an error when trying to add an event to a service with an unsupported direction', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      expect(
+        addEventToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')
+      ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
+    });
+  });
+  describe('addCommandToService', () => {
+    it('takes an existing command and adds it to the sends of an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addCommandToService('InventoryService', 'sends', { id: 'UpdateInventory', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        sends: [
+          {
+            id: 'UpdateInventory',
+            version: '2.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    it('takes an existing command and adds it to the receives of an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addCommandToService('InventoryService', 'receives', { id: 'UpdateInventory', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        receives: [
+          {
+            id: 'UpdateInventory',
+            version: '2.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    it('throws an error when trying to add an event to a service with an unsupported direction', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      expect(
+        addCommandToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')
+      ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
     });
   });
 });
