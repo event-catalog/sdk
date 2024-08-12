@@ -246,7 +246,7 @@ export default (path: string) => {
      *
      * // adds a new event (InventoryUpdatedEvent) that the InventoryService will send
      * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
-     * 
+     *
      * // adds a new event (OrderComplete) that the InventoryService will receive
      * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '2.0.0' });
      *
@@ -266,7 +266,7 @@ export default (path: string) => {
      *
      * // adds a new command (UpdateInventoryCommand) that the InventoryService will send
      * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
-     * 
+     *
      * // adds a new command (VerifyInventory) that the InventoryService will receive
      * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '2.0.0' });
      *
