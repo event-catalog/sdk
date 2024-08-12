@@ -153,13 +153,18 @@ export const addFileToService =
  * ```ts
  * import utils from '@eventcatalog/utils';
  *
- * const { addEventToService } = utils('/path/to/eventcatalog');
+ * // Adds an event to the service or command to the service
+ * const { addEventToService, addCommandToService } = utils('/path/to/eventcatalog');
  *
- * // adds InventoryUpdatedEvent event with version '2.0.0' to the latest InventoryService event
- * await addEventToService('InventoryService', 'receives', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+ * // Adds a new event (InventoryUpdatedEvent) that the InventoryService will send
+ * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+ * * // Adds a new event (OrderComplete) that the InventoryService will receive
+ * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '1.0.0' });
  *
- * // adds InventoryUpdatedEvent event with version '2.0.0' to a specific version of the InventoryService event
- * await addFileToService('InventoryService', 'receives', { content: 'InventoryUpdatedEvent', version: 'version' }, '0.0.1');
+ * // Adds a new command (UpdateInventoryCommand) that the InventoryService will send
+ * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
+ * // Adds a new command (VerifyInventory) that the InventoryService will receive
+ * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '1.0.0' });
  *
  * ```
  */
