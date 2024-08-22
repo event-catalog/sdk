@@ -99,6 +99,36 @@ describe('Services SDK', () => {
       });
     });
 
+    it('returns the latest version of the service when `latest` is passed as the version', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await versionService('InventoryService');
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      const test = await getService('InventoryService', 'latest');
+
+      expect(test).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+    });
+
     it('throws an error if the service is not found', async () => {
       await expect(getService('PaymentService')).rejects.toThrowError('No service found for the given id: PaymentService');
     });

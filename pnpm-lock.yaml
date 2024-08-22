@@ -20,6 +20,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      semver:
+        specifier: 7.6.3
+        version: 7.6.3
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -27,6 +30,9 @@ importers:
       '@types/node':
         specifier: ^20.14.10
         version: 20.14.10
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
