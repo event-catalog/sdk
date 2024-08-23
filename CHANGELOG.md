@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.11
+
+### Patch Changes
+
+- 177093c: feat(sdk): added methods to check if versions exist or not
+
 ## 0.0.10
 
 ### Patch Changes
