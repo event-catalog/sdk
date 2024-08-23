@@ -6,7 +6,8 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-events');
 
-const { writeEvent, getEvent, rmEvent, rmEventById, versionEvent, addFileToEvent, addSchemaToEvent } = utils(CATALOG_PATH);
+const { writeEvent, getEvent, rmEvent, rmEventById, versionEvent, addFileToEvent, addSchemaToEvent, eventHasVersion } =
+  utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -90,8 +91,9 @@ describe('Events SDK', () => {
       });
     });
 
-    it('throws an error if the event is not found', async () => {
-      await expect(getEvent('InventoryAdjusted')).rejects.toThrowError('No event found for the given id: InventoryAdjusted');
+    it('returns undefined when a given resource is not found', async () => {
+      const event = await getEvent('InventoryAdjusted');
+      await expect(event).toEqual(undefined);
     });
 
     it('throws an error if the event is  found but not the version', async () => {
@@ -103,9 +105,7 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      await expect(getEvent('InventoryAdjusted', '1.0.0')).rejects.toThrowError(
-        'No event found for the given id: InventoryAdjusted and version 1.0.0'
-      );
+      await expect(await getEvent('InventoryAdjusted', '1.0.0')).toEqual(undefined);
     });
   });
 
@@ -402,6 +402,56 @@ describe('Events SDK', () => {
       const file = { schema: 'hello', fileName: 'test.txt' };
 
       expect(addSchemaToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+  });
+
+  describe('eventHasVersion', () => {
+    it('returns true when a given event and version exists in the catalog', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await eventHasVersion('InventoryAdjusted', '0.0.1')).toEqual(true);
+    });
+
+    it('returns true when a semver version is given and the version exists in the catalog', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await eventHasVersion('InventoryAdjusted', '0.0.x')).toEqual(true);
+    });
+
+    it('returns true when a `latest` version is given and the version exists in the catalog', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await eventHasVersion('InventoryAdjusted', 'latest')).toEqual(true);
+    });
+
+    it('returns false when event does not exist in the catalog', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await eventHasVersion('InventoryAdjusted', '5.0.0')).toEqual(false);
     });
   });
 });

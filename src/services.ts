@@ -2,6 +2,7 @@ import type { Service } from './types';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import { findFileById } from './internal/utils';
 
 /**
  * Returns a service from EventCatalog.
@@ -202,3 +203,24 @@ export const addMessageToService =
     await rmServiceById(directory)(id, version);
     await writeService(directory)(service);
   };
+
+/**
+ * Check to see if the catalog has a version for the given service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { serviceHasVersion } = utils('/path/to/eventcatalog');
+ *
+ * // returns true if version is found for the given event and version (supports semver)
+ * await serviceHasVersion('InventoryService', '0.0.1');
+ * await serviceHasVersion('InventoryService', 'latest');
+ * await serviceHasVersion('InventoryService', '0.0.x');*
+ *
+ * ```
+ */
+export const serviceHasVersion = (directory: string) => async (id: string, version: string) => {
+  const file = await findFileById(directory, id, version);
+  return !!file;
+};

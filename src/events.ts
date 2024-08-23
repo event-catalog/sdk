@@ -186,3 +186,24 @@ export const addSchemaToEvent =
   (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
     await addFileToEvent(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
   };
+
+/**
+ * Check to see if the catalog has a version for the given event.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { eventHasVersion } = utils('/path/to/eventcatalog');
+ *
+ * // returns true if version is found for the given event and version (supports semver)
+ * await eventHasVersion('InventoryAdjusted', '0.0.1');
+ * await eventHasVersion('InventoryAdjusted', 'latest');
+ * await eventHasVersion('InventoryAdjusted', '0.0.x');*
+ *
+ * ```
+ */
+export const eventHasVersion = (directory: string) => async (id: string, version: string) => {
+  const file = await findFileById(directory, id, version);
+  return !!file;
+};

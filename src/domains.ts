@@ -2,6 +2,7 @@ import type { Domain } from './types';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import { findFileById } from './internal/utils';
 
 /**
  * Returns a domain from EventCatalog.
@@ -143,3 +144,24 @@ export const rmDomainById = (directory: string) => async (id: string, version?: 
 export const addFileToDomain =
   (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
     addFileToResource(directory, id, file, version);
+
+/**
+ * Check to see if the catalog has a version for the given domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { domainHasVersion } = utils('/path/to/eventcatalog');
+ *
+ * // returns true if version is found for the given event and version (supports semver)
+ * await domainHasVersion('Orders', '0.0.1');
+ * await domainHasVersion('Orders', 'latest');
+ * await domainHasVersion('Orders', '0.0.x');*
+ *
+ * ```
+ */
+export const domainHasVersion = (directory: string) => async (id: string, version: string) => {
+  const file = await findFileById(directory, id, version);
+  return !!file;
+};

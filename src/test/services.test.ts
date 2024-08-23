@@ -15,6 +15,7 @@ const {
   addFileToService,
   addEventToService,
   addCommandToService,
+  serviceHasVersion,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -129,11 +130,11 @@ describe('Services SDK', () => {
       });
     });
 
-    it('throws an error if the service is not found', async () => {
-      await expect(getService('PaymentService')).rejects.toThrowError('No service found for the given id: PaymentService');
+    it('returns undefined when a service cannot be found', async () => {
+      await expect(await getService('PaymentService')).toEqual(undefined);
     });
 
-    it('throws an error if the service is found but not the version', async () => {
+    it('returns undefined if the service is found but not the version', async () => {
       await writeService({
         id: 'InventoryService',
         name: 'Inventory Service',
@@ -142,9 +143,7 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      await expect(getService('InventoryService', '1.0.0')).rejects.toThrowError(
-        'No service found for the given id: InventoryService and version 1.0.0'
-      );
+      await expect(await getService('InventoryService', '1.0.0')).toEqual(undefined);
     });
   });
 
@@ -508,6 +507,56 @@ describe('Services SDK', () => {
       expect(
         addCommandToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')
       ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
+    });
+  });
+
+  describe('serviceHasVersion', () => {
+    it('returns true when a given service and version exists in the catalog', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await serviceHasVersion('AccountService', '0.0.1')).toEqual(true);
+    });
+
+    it('returns true when a semver version is given and the version exists in the catalog', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await serviceHasVersion('AccountService', '0.0.x')).toEqual(true);
+    });
+
+    it('returns true when a `latest` version is given and the version exists in the catalog', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await serviceHasVersion('AccountService', 'latest')).toEqual(true);
+    });
+
+    it('returns false when event does not exist in the catalog', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await serviceHasVersion('AccountService', '5.0.0')).toEqual(false);
     });
   });
 });

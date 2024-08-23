@@ -64,13 +64,9 @@ export const getResource = async (
   id: string,
   version?: string,
   options?: { type: string }
-): Promise<Resource> => {
+): Promise<Resource | undefined> => {
   const file = await findFileById(catalogDir, id, version);
-
-  if (!file)
-    throw new Error(
-      `No ${options?.type || 'resource'} found for the given id: ${id}` + (version ? ` and version ${version}` : '')
-    );
+  if (!file) return;
 
   const { data, content } = matter.read(file);
 
