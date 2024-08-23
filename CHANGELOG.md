@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.12
+
+### Patch Changes
+
+- 24ac499: feat(sdk): added ability to add services to domains
+
 ## 0.0.11
 
 ### Patch Changes
