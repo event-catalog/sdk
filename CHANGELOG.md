@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.0.10
+
+### Patch Changes
+
+- 9129a08: feat(sdk): added support for semver matching when getting resources f…
+
 ## 0.0.9
 
 ### Patch Changes
