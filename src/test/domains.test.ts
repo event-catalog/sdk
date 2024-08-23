@@ -6,7 +6,7 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-domains');
 
-const { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } = utils(CATALOG_PATH);
+const { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain, domainHasVersion } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -90,11 +90,11 @@ describe('Domain SDK', () => {
       });
     });
 
-    it('throws an error if the domain is not found', async () => {
-      await expect(getDomain('Payment')).rejects.toThrowError('No domain found for the given id: Payment');
+    it('returns undefined when the domain is not found', async () => {
+      await expect(await getDomain('Payment')).toEqual(undefined);
     });
 
-    it('throws an error if the domain is found but not the version', async () => {
+    it('returns undefined if the domain is found but not the version', async () => {
       await writeDomain({
         id: 'Payment',
         name: 'Payment Domain',
@@ -103,9 +103,7 @@ describe('Domain SDK', () => {
         markdown: '# Hello world',
       });
 
-      await expect(getDomain('Payment', '1.0.0')).rejects.toThrowError(
-        'No domain found for the given id: Payment and version 1.0.0'
-      );
+      await expect(await getDomain('Payment', '1.0.0')).toEqual(undefined);
     });
   });
 
@@ -326,6 +324,55 @@ describe('Domain SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToDomain('Payment', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+  });
+  describe('domainHasVersion', () => {
+    it('returns true when a given service and version exists in the catalog', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await domainHasVersion('Orders', '0.0.1')).toEqual(true);
+    });
+
+    it('returns true when a semver version is given and the version exists in the catalog', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await domainHasVersion('Orders', '0.0.x')).toEqual(true);
+    });
+
+    it('returns true when a `latest` version is given and the version exists in the catalog', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await domainHasVersion('Orders', 'latest')).toEqual(true);
+    });
+
+    it('returns false when event does not exist in the catalog', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await domainHasVersion('Orders', '5.0.0')).toEqual(false);
     });
   });
 });

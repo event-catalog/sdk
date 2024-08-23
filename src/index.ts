@@ -1,5 +1,14 @@
 import { join } from 'node:path';
-import { rmEvent, rmEventById, writeEvent, versionEvent, getEvent, addFileToEvent, addSchemaToEvent } from './events';
+import {
+  rmEvent,
+  rmEventById,
+  writeEvent,
+  versionEvent,
+  getEvent,
+  addFileToEvent,
+  addSchemaToEvent,
+  eventHasVersion,
+} from './events';
 import {
   rmCommand,
   rmCommandById,
@@ -8,6 +17,7 @@ import {
   getCommand,
   addFileToCommand,
   addSchemaToCommand,
+  commandHasVersion,
 } from './commands';
 import {
   writeService,
@@ -17,8 +27,9 @@ import {
   rmServiceById,
   addFileToService,
   addMessageToService,
+  serviceHasVersion,
 } from './services';
-import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain } from './domains';
+import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain, domainHasVersion } from './domains';
 
 /**
  * Init the SDK for EventCatalog
@@ -32,7 +43,7 @@ export default (path: string) => {
      * Returns an events from EventCatalog
      * @param id - The id of the event to retrieve
      * @param version - Optional id of the version to get (supports semver)
-     * @returns
+     * @returns Event|Undefined
      */
     getEvent: getEvent(join(path, 'events')),
     /**
@@ -78,6 +89,13 @@ export default (path: string) => {
      * @returns
      */
     addSchemaToEvent: addSchemaToEvent(join(path, 'events')),
+    /**
+     * Check to see if an event version exists
+     * @param id - The id of the event
+     * @param version - The version of the event (supports semver)
+     * @returns
+     */
+    eventHasVersion: eventHasVersion(join(path, 'events')),
 
     /**
      * ================================
@@ -89,7 +107,7 @@ export default (path: string) => {
      * Returns a command from EventCatalog
      * @param id - The id of the command to retrieve
      * @param version - Optional id of the version to get (supports semver)
-     * @returns
+     * @returns Command|Undefined
      */
     getCommand: getCommand(join(path, 'commands')),
     /**
@@ -137,6 +155,14 @@ export default (path: string) => {
     addSchemaToCommand: addSchemaToCommand(join(path, 'commands')),
 
     /**
+     * Check to see if a command version exists
+     * @param id - The id of the command
+     * @param version - The version of the command (supports semver)
+     * @returns
+     */
+    commandHasVersion: commandHasVersion(join(path, 'commands')),
+
+    /**
      * ================================
      *            SERVICES
      * ================================
@@ -154,7 +180,7 @@ export default (path: string) => {
      * Returns a service from EventCatalog
      * @param id - The id of the service to retrieve
      * @param version - Optional id of the version to get (supports semver)
-     * @returns
+     * @returns Service|Undefined
      */
     getService: getService(join(path, 'services')),
     /**
@@ -186,6 +212,14 @@ export default (path: string) => {
     addFileToService: addFileToService(join(path, 'services')),
 
     /**
+     * Check to see if a service version exists
+     * @param id - The id of the service
+     * @param version - The version of the service (supports semver)
+     * @returns
+     */
+    serviceHasVersion: serviceHasVersion(join(path, 'services')),
+
+    /**
      * ================================
      *            Domains
      * ================================
@@ -203,7 +237,7 @@ export default (path: string) => {
      * Returns a domain from EventCatalog
      * @param id - The id of the domain to retrieve
      * @param version - Optional id of the version to get (supports semver)
-     * @returns
+     * @returns Domain|Undefined
      */
     getDomain: getDomain(join(path, 'domains')),
     /**
@@ -273,5 +307,13 @@ export default (path: string) => {
      * ```
      */
     addCommandToService: addMessageToService(join(path, 'services')),
+
+    /**
+     * Check to see if a domain version exists
+     * @param id - The id of the domain
+     * @param version - The version of the domain (supports semver)
+     * @returns
+     */
+    domainHasVersion: domainHasVersion(join(path, 'domains')),
   };
 };

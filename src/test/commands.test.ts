@@ -6,8 +6,16 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-commands');
 
-const { writeCommand, getCommand, rmCommand, rmCommandById, versionCommand, addFileToCommand, addSchemaToCommand } =
-  utils(CATALOG_PATH);
+const {
+  writeCommand,
+  getCommand,
+  rmCommand,
+  rmCommandById,
+  versionCommand,
+  addFileToCommand,
+  addSchemaToCommand,
+  commandHasVersion,
+} = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -91,11 +99,11 @@ describe('Commands SDK', () => {
       });
     });
 
-    it('throws an error if the command is not found', async () => {
-      await expect(getCommand('UpdateInventory')).rejects.toThrowError('No command found for the given id: UpdateInventory');
+    it('returns undefined if the command is not found', async () => {
+      await expect(await getCommand('UpdateInventory')).toBe(undefined);
     });
 
-    it('throws an error if the command is  found but not the version', async () => {
+    it('returns undefined if the command is  found but not the version', async () => {
       await writeCommand({
         id: 'UpdateInventory',
         name: 'Update Inventory',
@@ -104,9 +112,7 @@ describe('Commands SDK', () => {
         markdown: '# Hello world',
       });
 
-      await expect(getCommand('UpdateInventory', '1.0.0')).rejects.toThrowError(
-        'No command found for the given id: UpdateInventory and version 1.0.0'
-      );
+      await expect(await getCommand('UpdateInventory', '1.0.0')).toBe(undefined);
     });
   });
 
@@ -402,6 +408,56 @@ describe('Commands SDK', () => {
       const file = { schema: 'hello', fileName: 'test.txt' };
 
       expect(addSchemaToCommand('UpdateInventory', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+  });
+
+  describe('commandHasVersion', () => {
+    it('returns true when a given service and version exists in the catalog', async () => {
+      await writeCommand({
+        id: 'AdjustInventory',
+        name: 'Adjust Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await commandHasVersion('AdjustInventory', '0.0.1')).toEqual(true);
+    });
+
+    it('returns true when a semver version is given and the version exists in the catalog', async () => {
+      await writeCommand({
+        id: 'AdjustInventory',
+        name: 'Adjust Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await commandHasVersion('AdjustInventory', '0.0.x')).toEqual(true);
+    });
+
+    it('returns true when a `latest` version is given and the version exists in the catalog', async () => {
+      await writeCommand({
+        id: 'AdjustInventory',
+        name: 'Adjust Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await commandHasVersion('AdjustInventory', 'latest')).toEqual(true);
+    });
+
+    it('returns false when event does not exist in the catalog', async () => {
+      await writeCommand({
+        id: 'AdjustInventory',
+        name: 'Adjust Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      expect(await commandHasVersion('AdjustInventory', '5.0.0')).toEqual(false);
     });
   });
 });

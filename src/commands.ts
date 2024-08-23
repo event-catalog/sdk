@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Command } from './types';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import { findFileById } from './internal/utils';
 
 /**
  * Returns a command from EventCatalog.
@@ -183,3 +184,24 @@ export const addSchemaToCommand =
   (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
     await addFileToCommand(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
   };
+
+/**
+ * Check to see if the catalog has a version for the given command.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { commandHasVersion } = utils('/path/to/eventcatalog');
+ *
+ * // returns true if version is found for the given event and version (supports semver)
+ * await commandHasVersion('InventoryAdjusted', '0.0.1');
+ * await commandHasVersion('InventoryAdjusted', 'latest');
+ * await commandHasVersion('InventoryAdjusted', '0.0.x');*
+ *
+ * ```
+ */
+export const commandHasVersion = (directory: string) => async (id: string, version: string) => {
+  const file = await findFileById(directory, id, version);
+  return !!file;
+};
