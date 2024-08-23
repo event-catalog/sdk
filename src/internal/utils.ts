@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
 import matter from 'gray-matter';
+import { satisfies, validRange } from 'semver';
 
 /**
  * Returns true if a given version of a resource id exists in the catalog
@@ -23,18 +24,30 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
     return latestVersion;
   }
 
-  // Check if the version exists
-  const match = matchedFiles.find((path) => path.includes(`versioned/${version}`));
+  // map files into gray matter to get versions
+  const parsedFiles = matchedFiles.map((path) => {
+    const { data } = matter.read(path);
+    return { ...data, path };
+  }) as any[];
 
-  // Version is given but can't be found in the versioned directory, check if it's the latest version
-  if (!match && latestVersion) {
-    const { data } = matter.read(latestVersion);
-    if (data.version === version) {
-      return latestVersion;
-    }
+  const semverRange = validRange(version);
+
+  if (semverRange) {
+    const match = parsedFiles.filter((c) => satisfies(c.version, semverRange));
+    return match.length > 0 ? match[0].path : undefined;
   }
 
-  return match;
+  // Order by version
+  const sorted = parsedFiles.sort((a, b) => {
+    return a.version.localeCompare(b.version);
+  });
+
+  // latest version
+  const match = sorted.length > 0 ? [sorted[sorted.length - 1]] : [];
+
+  if (match.length > 0) {
+    return match[0].path;
+  }
 };
 
 export const getFiles = async (pattern: string) => {

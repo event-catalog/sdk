@@ -31,7 +31,7 @@ export default (path: string) => {
     /**
      * Returns an events from EventCatalog
      * @param id - The id of the event to retrieve
-     * @param version - Optional id of the version to get
+     * @param version - Optional id of the version to get (supports semver)
      * @returns
      */
     getEvent: getEvent(join(path, 'events')),
@@ -88,7 +88,7 @@ export default (path: string) => {
     /**
      * Returns a command from EventCatalog
      * @param id - The id of the command to retrieve
-     * @param version - Optional id of the version to get
+     * @param version - Optional id of the version to get (supports semver)
      * @returns
      */
     getCommand: getCommand(join(path, 'commands')),
@@ -153,7 +153,7 @@ export default (path: string) => {
     /**
      * Returns a service from EventCatalog
      * @param id - The id of the service to retrieve
-     * @param version - Optional id of the version to get
+     * @param version - Optional id of the version to get (supports semver)
      * @returns
      */
     getService: getService(join(path, 'services')),
@@ -202,7 +202,7 @@ export default (path: string) => {
     /**
      * Returns a domain from EventCatalog
      * @param id - The id of the domain to retrieve
-     * @param version - Optional id of the version to get
+     * @param version - Optional id of the version to get (supports semver)
      * @returns
      */
     getDomain: getDomain(join(path, 'domains')),
