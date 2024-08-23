@@ -6,7 +6,8 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-domains');
 
-const { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain, domainHasVersion } = utils(CATALOG_PATH);
+const { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain, domainHasVersion, addServiceToDomain } =
+  utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -373,6 +374,41 @@ describe('Domain SDK', () => {
       });
 
       expect(await domainHasVersion('Orders', '5.0.0')).toEqual(false);
+    });
+  });
+
+  describe('addServiceToDomain', () => {
+    it('adds a service to the domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addServiceToDomain('Orders', { id: 'Order Service', version: '2.0.0' });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.services).toEqual([{ id: 'Order Service', version: '2.0.0' }]);
+    });
+
+    it('does not add a service to the domain if the service is already on the list', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        services: [{ id: 'Order Service', version: '2.0.0' }],
+      });
+
+      await addServiceToDomain('Orders', { id: 'Order Service', version: '2.0.0' });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.services).toEqual([{ id: 'Order Service', version: '2.0.0' }]);
     });
   });
 });
