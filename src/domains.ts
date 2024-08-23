@@ -165,3 +165,43 @@ export const domainHasVersion = (directory: string) => async (id: string, versio
   const file = await findFileById(directory, id, version);
   return !!file;
 };
+
+/**
+ * Add an event/command to a service by it's id.
+ *
+ * Optionally specify a version to add the event to a specific version of the service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds a service to the domain
+ * const { addServiceToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a service (Orders Service) to the domain (Orders)
+ * await addServiceToDomain('Orders', { service: 'Order Service', version: '2.0.0' });
+ * // Adds a service (Orders Service) to the domain (Orders) with a specific version
+ * await addServiceToDomain('Orders', { service: 'Order Service', version: '2.0.0' }, '1.0.0');
+ * ```
+ */
+
+export const addServiceToDomain =
+  (directory: string) => async (id: string, service: { id: string; version: string }, version?: string) => {
+    let domain: Domain = await getDomain(directory)(id, version);
+
+    if (domain.services === undefined) {
+      domain.services = [];
+    }
+
+    const eventExistsInList = domain.services.some((s) => s.id === service.id && s.version === service.version);
+
+    if (eventExistsInList) {
+      return;
+    }
+
+    // Add service to the list
+    domain.services.push(service);
+
+    await rmDomainById(directory)(id, version);
+    await writeDomain(directory)(domain);
+  };

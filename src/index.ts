@@ -29,7 +29,16 @@ import {
   addMessageToService,
   serviceHasVersion,
 } from './services';
-import { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain, domainHasVersion } from './domains';
+import {
+  writeDomain,
+  getDomain,
+  versionDomain,
+  rmDomain,
+  rmDomainById,
+  addFileToDomain,
+  domainHasVersion,
+  addServiceToDomain,
+} from './domains';
 
 /**
  * Init the SDK for EventCatalog
@@ -315,5 +324,14 @@ export default (path: string) => {
      * @returns
      */
     domainHasVersion: domainHasVersion(join(path, 'domains')),
+
+    /**
+     * Adds a given service to a domain
+     * @param id - The id of the domain
+     * @param service - The id and version of the service to add
+     * @param version - (Optional) The version of the domain to add the service to
+     * @returns
+     */
+    addServiceToDomain: addServiceToDomain(join(path, 'domains')),
   };
 };
