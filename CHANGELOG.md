@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.1.1
+
+### Patch Changes
+
+- c8b9d31: fix(sdk): fixed types for specifications on the service type
+
 ## 0.1.0
 
 ### Minor Changes
