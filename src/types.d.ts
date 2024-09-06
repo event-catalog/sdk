@@ -27,8 +27,8 @@ export interface Event extends BaseSchema {}
 export interface Command extends BaseSchema {}
 
 export interface Specifications {
-  asyncapiPath?: string
-  openapiPath?: string
+  asyncapiPath?: string;
+  openapiPath?: string;
 }
 
 export interface Service extends BaseSchema {
