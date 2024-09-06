@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.1.0
+
+### Minor Changes
+
+- 7291e10: Adding the specification attribute to the service type letting to integrate asyncapi, openapi and other specifications in the future
+
 ## 0.0.12
 
 ### Patch Changes
