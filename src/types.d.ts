@@ -26,9 +26,14 @@ enum ResourceType {
 export interface Event extends BaseSchema {}
 export interface Command extends BaseSchema {}
 
+export interface Specifications {
+  [key: 'asyncapiPath' | 'openapiPath']: string;
+}
+
 export interface Service extends BaseSchema {
   sends?: ResourcePointer[];
   receives?: ResourcePointer[];
+  specifications?: Specifications
 }
 
 export interface Domain extends BaseSchema {

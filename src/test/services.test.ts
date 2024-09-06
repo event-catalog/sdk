@@ -3,6 +3,7 @@ import { expect, it, describe, beforeEach, afterEach } from 'vitest';
 import utils from '../index';
 import path from 'node:path';
 import fs from 'node:fs';
+import { Specifications } from '../types';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 
@@ -139,11 +140,36 @@ describe('Services SDK', () => {
         id: 'InventoryService',
         name: 'Inventory Service',
         version: '0.0.1',
-        summary: 'Service tat handles the inventory',
+        summary: 'Service that handles the inventory',
         markdown: '# Hello world',
       });
 
       await expect(await getService('InventoryService', '1.0.0')).toEqual(undefined);
+    });
+
+    it('returns the specifications for the service if the service has specifications', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        specifications: {
+          asyncapiPath: 'spec.yaml'
+        } satisfies Specifications,
+        markdown: '# Hello world',
+      });
+
+      const test = await getService('InventoryService', 'latest');
+
+      expect(test).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+        specifications: { asyncapiPath: 'spec.yaml' }
+      });
+
     });
   });
 
