@@ -33,7 +33,7 @@ export interface Specifications {
 export interface Service extends BaseSchema {
   sends?: ResourcePointer[];
   receives?: ResourcePointer[];
-  specifications?: Specifications
+  specifications?: Specifications;
 }
 
 export interface Domain extends BaseSchema {

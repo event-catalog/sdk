@@ -154,7 +154,7 @@ describe('Services SDK', () => {
         version: '0.0.1',
         summary: 'Service that handles the inventory',
         specifications: {
-          asyncapiPath: 'spec.yaml'
+          asyncapiPath: 'spec.yaml',
         } satisfies Specifications,
         markdown: '# Hello world',
       });
@@ -167,9 +167,8 @@ describe('Services SDK', () => {
         version: '0.0.1',
         summary: 'Service that handles the inventory',
         markdown: '# Hello world',
-        specifications: { asyncapiPath: 'spec.yaml' }
+        specifications: { asyncapiPath: 'spec.yaml' },
       });
-
     });
   });
 
