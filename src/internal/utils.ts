@@ -60,7 +60,7 @@ export const getFiles = async (pattern: string) => {
 };
 
 export const searchFilesForId = async (files: string[], id: string, version?: string) => {
-  const idRegex = new RegExp(`^id:\\s*['"]?${id}['"]?\\s*$`, 'm');
+  const idRegex = new RegExp(`^id:\\s*(['"]|>-)?\\s*${id}['"]?\\s*$`, 'm');
   const versionRegex = new RegExp(`^version:\\s*['"]?${version}['"]?\\s*$`, 'm');
 
   const matches = await Promise.all(
