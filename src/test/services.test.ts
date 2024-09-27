@@ -386,6 +386,34 @@ describe('Services SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'test.txt'))).toBe(true);
     });
 
+    it('taskes a given file for the serivce with id using yaml block string ">-" and writes the file to correct location', async () => {
+      const file = { content: 'hello', fileName: 'test.txt' };
+
+      await writeService({
+        id: 'AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addFileToService(
+        'AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        file,
+        '0.0.1'
+      );
+
+      expect(
+        fs.existsSync(
+          path.join(
+            CATALOG_PATH,
+            'services/AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'test.txt'
+          )
+        )
+      ).toBe(true);
+    });
+
     it('throws an error when trying to write to a service that does not exist', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
