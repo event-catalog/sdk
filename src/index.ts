@@ -28,6 +28,7 @@ import {
   addFileToService,
   addMessageToService,
   serviceHasVersion,
+  getSpecificationFilesForService,
 } from './services';
 import {
   writeDomain,
@@ -219,6 +220,14 @@ export default (path: string) => {
      * @returns
      */
     addFileToService: addFileToService(join(path, 'services')),
+
+    /**
+     * Returns the specifications for a given service
+     * @param id - The id of the service to retrieve the specifications for
+     * @param version - Optional version of the service
+     * @returns
+     */
+    getSpecificationFilesForService: getSpecificationFilesForService(join(path, 'services')),
 
     /**
      * Check to see if a service version exists
