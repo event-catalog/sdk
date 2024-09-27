@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 0.1.3
+
+### Patch Changes
+
+- 287912f: chore(sdk): changed the return type for getting specs for a service
+
 ## 0.1.2
 
 ### Patch Changes
