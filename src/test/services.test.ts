@@ -396,10 +396,22 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      await addFileToService('AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', file, '0.0.1');
+      await addFileToService(
+        'AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        file,
+        '0.0.1'
+      );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'test.txt'))).toBe(true);  
-      });
+      expect(
+        fs.existsSync(
+          path.join(
+            CATALOG_PATH,
+            'services/AVeryLargeIdWhichForcesWriteServiceToAddABlockCharacterxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'test.txt'
+          )
+        )
+      ).toBe(true);
+    });
 
     it('throws an error when trying to write to a service that does not exist', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
