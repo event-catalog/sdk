@@ -99,3 +99,17 @@ export const addFileToResource = async (
 
   await fs.writeFile(join(dirname(pathToResource), file.fileName), file.content);
 };
+
+export const getFileFromResource = async (catalogDir: string, id: string, file: { fileName: string }, version?: string) => {
+  const pathToResource = await findFileById(catalogDir, id, version);
+
+  if (!pathToResource) throw new Error('Cannot find directory of resource');
+
+  const exists = await fs
+    .access(join(dirname(pathToResource), file.fileName))
+    .then(() => true)
+    .catch(() => false);
+  if (!exists) throw new Error(`File ${file.fileName} does not exist in resource ${id} v(${version})`);
+
+  return fs.readFile(join(dirname(pathToResource), file.fileName), 'utf-8');
+};

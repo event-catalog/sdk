@@ -1,7 +1,14 @@
-import type { Service } from './types';
+import type { Service, Specifications } from './types';
 import fs from 'node:fs/promises';
-import { join } from 'node:path';
-import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import { join, dirname } from 'node:path';
+import {
+  addFileToResource,
+  getFileFromResource,
+  getResource,
+  rmResourceById,
+  versionResource,
+  writeResource,
+} from './internal/resources';
 import { findFileById } from './internal/utils';
 
 /**
@@ -144,6 +151,50 @@ export const rmServiceById = (directory: string) => async (id: string, version?:
 export const addFileToService =
   (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
     addFileToResource(directory, id, file, version);
+
+/**
+ * Returns specification files for a service
+ *
+ * Optionally specify a version to of the service
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getSpecificationFilesForService } = utils('/path/to/eventcatalog');
+ *
+ * // returns a list of specification files for a service
+ * await getSpecificationFilesForService('InventoryService', '0.0.1');
+ *
+ * ```
+ */
+
+export const getSpecificationFilesForService = (directory: string) => async (id: string, version?: string) => {
+  let service: Service = await getService(directory)(id, version);
+  const filePathToService = await findFileById(directory, id, version);
+
+  if (!filePathToService) throw new Error('Cannot find directory of service');
+
+  let specs = [] as any;
+  if (service.specifications) {
+    const serviceSpecifications = service.specifications;
+    const specificationFiles = Object.keys(serviceSpecifications);
+
+    const getSpecs = specificationFiles.map(async (specFile) => {
+      const fileName = serviceSpecifications[specFile as keyof Specifications];
+
+      if (!fileName) {
+        throw new Error(`Specification file name for ${specFile} is undefined`);
+      }
+      const rawFile = await getFileFromResource(directory, id, { fileName }, version);
+
+      return { [specFile]: { content: rawFile, fileName: fileName, path: join(dirname(filePathToService), fileName) } };
+    });
+
+    specs = await Promise.all(getSpecs);
+  }
+  return specs;
+};
 
 /**
  * Add an event/command to a service by it's id.

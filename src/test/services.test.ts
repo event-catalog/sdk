@@ -17,6 +17,7 @@ const {
   addEventToService,
   addCommandToService,
   serviceHasVersion,
+  getSpecificationFilesForService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -582,6 +583,94 @@ describe('Services SDK', () => {
       });
 
       expect(await serviceHasVersion('AccountService', '5.0.0')).toEqual(false);
+    });
+  });
+
+  describe('getSpecificationFilesForService', () => {
+    it('returns the specification files for a service', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        specifications: {
+          asyncapiPath: 'spec.yaml',
+        },
+      });
+
+      await addFileToService('AccountService', { content: 'fake-async-api-file', fileName: 'spec.yaml' }, '0.0.1');
+
+      const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
+
+      expect(specFiles).toEqual([
+        {
+          asyncapiPath: {
+            content: 'fake-async-api-file',
+            fileName: 'spec.yaml',
+            path: expect.stringContaining('/services/AccountService/spec.yaml'),
+          },
+        },
+      ]);
+    });
+
+    it('returns the specification files for a versioned service', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        specifications: {
+          asyncapiPath: 'spec.yaml',
+        },
+      });
+
+      await addFileToService('AccountService', { content: 'fake-async-api-file', fileName: 'spec.yaml' }, '0.0.1');
+
+      await versionService('AccountService');
+
+      const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
+
+      expect(specFiles).toEqual([
+        {
+          asyncapiPath: {
+            content: 'fake-async-api-file',
+            fileName: 'spec.yaml',
+            path: expect.stringContaining('/services/AccountService/versioned/0.0.1/spec.yaml'),
+          },
+        },
+      ]);
+    });
+
+    it('throw an error if the specifications have been defined in the service but nothing can be found on disk', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        specifications: {
+          asyncapiPath: 'spec.yaml',
+        },
+      });
+
+      await expect(getSpecificationFilesForService('AccountService', '0.0.1')).rejects.toThrowError(
+        'File spec.yaml does not exist in resource AccountService v(0.0.1)'
+      );
+    });
+    it('returns an empty array of no specifications for a service have been defined', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
+
+      expect(specFiles).toEqual([]);
     });
   });
 });
