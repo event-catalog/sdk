@@ -633,11 +633,10 @@ describe('Services SDK', () => {
 
       expect(specFiles).toEqual([
         {
-          asyncapiPath: {
-            content: 'fake-async-api-file',
-            fileName: 'spec.yaml',
-            path: expect.stringContaining('/services/AccountService/spec.yaml'),
-          },
+          content: 'fake-async-api-file',
+          fileName: 'spec.yaml',
+          path: expect.stringContaining('/services/AccountService/spec.yaml'),
+          key: 'asyncapiPath',
         },
       ]);
     });
@@ -662,11 +661,10 @@ describe('Services SDK', () => {
 
       expect(specFiles).toEqual([
         {
-          asyncapiPath: {
-            content: 'fake-async-api-file',
-            fileName: 'spec.yaml',
-            path: expect.stringContaining('/services/AccountService/versioned/0.0.1/spec.yaml'),
-          },
+          content: 'fake-async-api-file',
+          fileName: 'spec.yaml',
+          path: expect.stringContaining('/services/AccountService/versioned/0.0.1/spec.yaml'),
+          key: 'asyncapiPath',
         },
       ]);
     });

@@ -188,7 +188,7 @@ export const getSpecificationFilesForService = (directory: string) => async (id:
       }
       const rawFile = await getFileFromResource(directory, id, { fileName }, version);
 
-      return { [specFile]: { content: rawFile, fileName: fileName, path: join(dirname(filePathToService), fileName) } };
+      return { key: specFile, content: rawFile, fileName: fileName, path: join(dirname(filePathToService), fileName) };
     });
 
     specs = await Promise.all(getSpecs);
