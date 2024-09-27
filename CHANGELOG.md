@@ -1,5 +1,12 @@
 # @eventcatalog/sdk
 
+## 0.1.2
+
+### Patch Changes
+
+- 6d125ca: feat(sdk) added ability to get specification files for a service by it's id
+- fe4c480: fix(sdk) fixed regex to handle large names for service ids
+
 ## 0.1.1
 
 ### Patch Changes
