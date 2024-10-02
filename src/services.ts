@@ -9,7 +9,7 @@ import {
   versionResource,
   writeResource,
 } from './internal/resources';
-import { findFileById } from './internal/utils';
+import { findFileById, uniqueMessages } from './internal/utils';
 
 /**
  * Returns a service from EventCatalog.
@@ -67,8 +67,19 @@ export const getService =
  */
 export const writeService =
   (directory: string) =>
-  async (service: Service, options: { path: string } = { path: '' }) =>
-    writeResource(directory, { ...service }, { ...options, type: 'service' });
+  async (service: Service, options: { path: string } = { path: '' }) => {
+    const resource: Service = { ...service };
+
+    if (Array.isArray(service.sends)) {
+      resource.sends = uniqueMessages(service.sends);
+    }
+
+    if (Array.isArray(service.receives)) {
+      resource.receives = uniqueMessages(service.receives);
+    }
+
+    return writeResource(directory, resource, { ...options, type: 'service' });
+  }
 
 /**
  * Version a service by it's id.
