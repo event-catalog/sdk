@@ -1,5 +1,12 @@
 # @eventcatalog/sdk
 
+## 0.1.4
+
+### Patch Changes
+
+- b9d2073: feat(sdk): writing messages to services are now unique
+- 6a76b8d: feat(sdk): writing messages to services are now unique
+
 ## 0.1.3
 
 ### Patch Changes
