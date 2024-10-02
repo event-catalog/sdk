@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
 import matter from 'gray-matter';
-import { satisfies, validRange } from 'semver';
+import { satisfies, validRange, valid } from 'semver';
 
 /**
  * Returns true if a given version of a resource id exists in the catalog
@@ -32,7 +32,7 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
 
   const semverRange = validRange(version);
 
-  if (semverRange) {
+  if (semverRange && valid(version)) {
     const match = parsedFiles.filter((c) => satisfies(c.version, semverRange));
     return match.length > 0 ? match[0].path : undefined;
   }
@@ -106,4 +106,18 @@ export const copyDir = async (catalogDir: string, source: string, target: string
 
   // Remove the tmp directory
   await fs.rm(tmpDirectory, { recursive: true });
+};
+
+// Makes sure values in sends/recieves are unique
+export const uniqueMessages = (messages: { id: string; version: string }[]): { id: string; version: string }[] => {
+  const uniqueSet = new Set();
+
+  return messages.filter((message) => {
+    const key = `${message.id}-${message.version}`;
+    if (!uniqueSet.has(key)) {
+      uniqueSet.add(key);
+      return true;
+    }
+    return false;
+  });
 };

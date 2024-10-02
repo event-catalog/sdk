@@ -91,6 +91,28 @@ describe('Events SDK', () => {
       });
     });
 
+    it('returns the version of the event even if the event does not match semver matching', async () =>{
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '100',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const test = await getEvent('InventoryAdjusted', '100');
+
+      expect(test).toEqual({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '100',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+    });
+
     it('returns undefined when a given resource is not found', async () => {
       const event = await getEvent('InventoryAdjusted');
       await expect(event).toEqual(undefined);
