@@ -91,8 +91,7 @@ describe('Events SDK', () => {
       });
     });
 
-    it('returns the version of the event even if the event does not match semver matching', async () =>{
-
+    it('returns the version of the event even if the event does not match semver matching', async () => {
       await writeEvent({
         id: 'InventoryAdjusted',
         name: 'Inventory Adjusted',
@@ -110,7 +109,6 @@ describe('Events SDK', () => {
         summary: 'This is a summary',
         markdown: '# Hello world',
       });
-
     });
 
     it('returns undefined when a given resource is not found', async () => {

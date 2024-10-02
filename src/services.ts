@@ -79,7 +79,7 @@ export const writeService =
     }
 
     return writeResource(directory, resource, { ...options, type: 'service' });
-  }
+  };
 
 /**
  * Version a service by it's id.

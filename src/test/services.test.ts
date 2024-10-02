@@ -212,7 +212,6 @@ describe('Services SDK', () => {
     });
 
     it('messages written to a service are always unique', async () => {
-
       await writeService(
         {
           id: 'InventoryService',
@@ -242,26 +241,25 @@ describe('Services SDK', () => {
 
       expect(service.sends).toEqual([
         {
-          "id": "InventoryUpdatedEvent",
-          "version": "2.0.0"
+          id: 'InventoryUpdatedEvent',
+          version: '2.0.0',
         },
         {
-          "id": "InventoryRemoved",
-          "version": "1.0.0"
+          id: 'InventoryRemoved',
+          version: '1.0.0',
         },
         {
-          "id": "InventoryUpdated",
-          "version": "1.0.0"
-        }
+          id: 'InventoryUpdated',
+          version: '1.0.0',
+        },
       ]);
 
       expect(service.receives).toEqual([
         {
-          "id": "OrderComplete",
-          "version": "2.0.0"
-        }
+          id: 'OrderComplete',
+          version: '2.0.0',
+        },
       ]);
-
     });
 
     it('throws an error when trying to write an service that already exists', async () => {
