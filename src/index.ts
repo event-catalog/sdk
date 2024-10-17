@@ -3,6 +3,7 @@ import {
   rmEvent,
   rmEventById,
   writeEvent,
+  writeEventToService,
   versionEvent,
   getEvent,
   addFileToEvent,
@@ -13,6 +14,7 @@ import {
   rmCommand,
   rmCommandById,
   writeCommand,
+  writeCommandToService,
   versionCommand,
   getCommand,
   addFileToCommand,
@@ -21,6 +23,7 @@ import {
 } from './commands';
 import {
   writeService,
+  writeServiceToDomain,
   getService,
   versionService,
   rmService,
@@ -55,7 +58,7 @@ export default (path: string) => {
      * @param version - Optional id of the version to get (supports semver)
      * @returns Event|Undefined
      */
-    getEvent: getEvent(join(path, 'events')),
+    getEvent: getEvent(join(path)),
     /**
      * Adds an event to EventCatalog
      *
@@ -64,6 +67,15 @@ export default (path: string) => {
      *
      */
     writeEvent: writeEvent(join(path, 'events')),
+    /**
+     * Adds an event to a service in EventCatalog
+     *
+     * @param event - The event to write to the service
+     * @param service - The service and it's id to write to the event to
+     * @param options - Optional options to write the event
+     *
+     */
+    writeEventToService: writeEventToService(join(path, 'services')),
     /**
      * Remove an event to EventCatalog (modeled on the standard POSIX rm utility)
      *
@@ -77,12 +89,12 @@ export default (path: string) => {
      * @param id - The id of the event you want to remove
      *
      */
-    rmEventById: rmEventById(join(path, 'events')),
+    rmEventById: rmEventById(join(path)),
     /**
      * Moves a given event id to the version directory
      * @param directory
      */
-    versionEvent: versionEvent(join(path, 'events')),
+    versionEvent: versionEvent(join(path)),
     /**
      * Adds a file to the given event
      * @param id - The id of the event to add the file to
@@ -90,7 +102,7 @@ export default (path: string) => {
      * @param version - Optional version of the event to add the file to
      * @returns
      */
-    addFileToEvent: addFileToEvent(join(path, 'events')),
+    addFileToEvent: addFileToEvent(join(path)),
     /**
      * Adds a schema to the given event
      * @param id - The id of the event to add the schema to
@@ -98,14 +110,14 @@ export default (path: string) => {
      * @param version - Optional version of the event to add the schema to
      * @returns
      */
-    addSchemaToEvent: addSchemaToEvent(join(path, 'events')),
+    addSchemaToEvent: addSchemaToEvent(join(path)),
     /**
      * Check to see if an event version exists
      * @param id - The id of the event
      * @param version - The version of the event (supports semver)
      * @returns
      */
-    eventHasVersion: eventHasVersion(join(path, 'events')),
+    eventHasVersion: eventHasVersion(join(path)),
 
     /**
      * ================================
@@ -119,7 +131,7 @@ export default (path: string) => {
      * @param version - Optional id of the version to get (supports semver)
      * @returns Command|Undefined
      */
-    getCommand: getCommand(join(path, 'commands')),
+    getCommand: getCommand(join(path)),
     /**
      * Adds an command to EventCatalog
      *
@@ -128,6 +140,17 @@ export default (path: string) => {
      *
      */
     writeCommand: writeCommand(join(path, 'commands')),
+
+    /**
+     * Adds a command to a service in EventCatalog
+     *
+     * @param command - The command to write to the service
+     * @param service - The service and it's id to write to the command to
+     * @param options - Optional options to write the command
+     *
+     */
+    writeCommandToService: writeCommandToService(join(path, 'services')),
+
     /**
      * Remove an command to EventCatalog (modeled on the standard POSIX rm utility)
      *
@@ -141,12 +164,12 @@ export default (path: string) => {
      * @param id - The id of the command you want to remove
      *
      */
-    rmCommandById: rmCommandById(join(path, 'commands')),
+    rmCommandById: rmCommandById(join(path)),
     /**
      * Moves a given command id to the version directory
      * @param directory
      */
-    versionCommand: versionCommand(join(path, 'commands')),
+    versionCommand: versionCommand(join(path)),
     /**
      * Adds a file to the given command
      * @param id - The id of the command to add the file to
@@ -154,7 +177,7 @@ export default (path: string) => {
      * @param version - Optional version of the command to add the file to
      * @returns
      */
-    addFileToCommand: addFileToCommand(join(path, 'commands')),
+    addFileToCommand: addFileToCommand(join(path)),
     /**
      * Adds a schema to the given command
      * @param id - The id of the command to add the schema to
@@ -162,7 +185,7 @@ export default (path: string) => {
      * @param version - Optional version of the command to add the schema to
      * @returns
      */
-    addSchemaToCommand: addSchemaToCommand(join(path, 'commands')),
+    addSchemaToCommand: addSchemaToCommand(join(path)),
 
     /**
      * Check to see if a command version exists
@@ -170,7 +193,7 @@ export default (path: string) => {
      * @param version - The version of the command (supports semver)
      * @returns
      */
-    commandHasVersion: commandHasVersion(join(path, 'commands')),
+    commandHasVersion: commandHasVersion(join(path)),
 
     /**
      * ================================
@@ -186,18 +209,28 @@ export default (path: string) => {
      *
      */
     writeService: writeService(join(path, 'services')),
+
+    /**
+     * Adds a service to a domain in EventCatalog
+     *
+     * @param service - The service to write
+     * @param domain - The domain to add the service to
+     * @param options - Optional options to write the event
+     *
+     */
+    writeServiceToDomain: writeServiceToDomain(join(path, 'domains')),
     /**
      * Returns a service from EventCatalog
      * @param id - The id of the service to retrieve
      * @param version - Optional id of the version to get (supports semver)
      * @returns Service|Undefined
      */
-    getService: getService(join(path, 'services')),
+    getService: getService(join(path)),
     /**
      * Moves a given service id to the version directory
      * @param directory
      */
-    versionService: versionService(join(path, 'services')),
+    versionService: versionService(join(path)),
     /**
      * Remove a service from EventCatalog (modeled on the standard POSIX rm utility)
      *
@@ -211,7 +244,7 @@ export default (path: string) => {
      * @param id - The id of the service you want to remove
      *
      */
-    rmServiceById: rmServiceById(join(path, 'services')),
+    rmServiceById: rmServiceById(join(path)),
     /**
      * Adds a file to the given service
      * @param id - The id of the service to add the file to
@@ -219,7 +252,7 @@ export default (path: string) => {
      * @param version - Optional version of the service to add the file to
      * @returns
      */
-    addFileToService: addFileToService(join(path, 'services')),
+    addFileToService: addFileToService(join(path)),
 
     /**
      * Returns the specifications for a given service
@@ -227,7 +260,7 @@ export default (path: string) => {
      * @param version - Optional version of the service
      * @returns
      */
-    getSpecificationFilesForService: getSpecificationFilesForService(join(path, 'services')),
+    getSpecificationFilesForService: getSpecificationFilesForService(join(path)),
 
     /**
      * Check to see if a service version exists
@@ -235,7 +268,7 @@ export default (path: string) => {
      * @param version - The version of the service (supports semver)
      * @returns
      */
-    serviceHasVersion: serviceHasVersion(join(path, 'services')),
+    serviceHasVersion: serviceHasVersion(join(path)),
 
     /**
      * ================================
@@ -251,6 +284,7 @@ export default (path: string) => {
      *
      */
     writeDomain: writeDomain(join(path, 'domains')),
+
     /**
      * Returns a domain from EventCatalog
      * @param id - The id of the domain to retrieve
@@ -304,7 +338,7 @@ export default (path: string) => {
      *
      * ```
      */
-    addEventToService: addMessageToService(join(path, 'services')),
+    addEventToService: addMessageToService(join(path)),
     /**
      * Add a command to a service by it's id.
      *
@@ -324,7 +358,7 @@ export default (path: string) => {
      *
      * ```
      */
-    addCommandToService: addMessageToService(join(path, 'services')),
+    addCommandToService: addMessageToService(join(path)),
 
     /**
      * Check to see if a domain version exists
@@ -332,7 +366,7 @@ export default (path: string) => {
      * @param version - The version of the domain (supports semver)
      * @returns
      */
-    domainHasVersion: domainHasVersion(join(path, 'domains')),
+    domainHasVersion: domainHasVersion(join(path)),
 
     /**
      * Adds a given service to a domain

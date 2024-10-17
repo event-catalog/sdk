@@ -1,8 +1,6 @@
-import matter from 'gray-matter';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
-import { dirname } from 'node:path';
-import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './internal/utils';
+import { findFileById } from './internal/utils';
 import type { Event } from './types';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
 
@@ -65,6 +63,38 @@ export const writeEvent =
   (directory: string) =>
   async (event: Event, options: { path: string } = { path: '' }) =>
     writeResource(directory, { ...event }, { ...options, type: 'event' });
+/**
+ * Write an event to a service in EventCatalog.
+ *
+ * You can optionally override the path of the event.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { writeEventToService } = utils('/path/to/eventcatalog');
+ *
+ * // Write an event to a given service in the catalog
+ * // Event would be written to services/Inventory/events/InventoryAdjusted
+ * await writeEventToService({
+ *   id: 'InventoryAdjusted',
+ *   name: 'Inventory Adjusted',
+ *   version: '0.0.1',
+ *   summary: 'This is a summary',
+ *   markdown: '# Hello world',
+ * }, { id: 'Inventory' });
+ * ```
+ */
+export const writeEventToService =
+  (directory: string) =>
+  async (event: Event, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
+    let pathForEvent =
+      service.version && service.version !== 'latest'
+        ? `/${service.id}/versioned/${service.version}/events`
+        : `/${service.id}/events`;
+    pathForEvent = join(pathForEvent, event.id);
+    await writeResource(directory, { ...event }, { ...options, path: pathForEvent, type: 'event' });
+  };
 
 /**
  * Delete an event at it's given path.
@@ -102,8 +132,9 @@ export const rmEvent = (directory: string) => async (path: string) => {
  * await rmEventById('InventoryAdjusted', '0.0.1');
  * ```
  */
-export const rmEventById = (directory: string) => async (id: string, version?: string) =>
-  rmResourceById(directory, id, version, { type: 'event' });
+export const rmEventById = (directory: string) => async (id: string, version?: string) => {
+  await rmResourceById(directory, id, version, { type: 'event' });
+};
 
 /**
  * Version an event by it's id.

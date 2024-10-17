@@ -9,6 +9,7 @@ const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 
 const {
   writeService,
+  writeServiceToDomain,
   getService,
   versionService,
   rmService,
@@ -171,6 +172,67 @@ describe('Services SDK', () => {
         specifications: { asyncapiPath: 'spec.yaml' },
       });
     });
+
+    describe('when services are within a domain directory', () => {
+      it('returns the given service id from EventCatalog and the latest version when no version is given,', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        const test = await getService('InventoryService');
+
+        expect(test).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+      });
+
+      it('returns the given service id from EventCatalog and the requested version when a version is given,', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await versionService('InventoryService');
+
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '1.0.0',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        const test = await getService('InventoryService', '0.0.1');
+
+        expect(test).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+      });
+    });
   });
 
   describe('writeService', () => {
@@ -280,6 +342,59 @@ describe('Services SDK', () => {
           markdown: '# Hello world',
         })
       ).rejects.toThrowError('Failed to write service as the version 0.0.1 already exists');
+    });
+  });
+
+  describe('writeServiceToDomain', () => {
+    it('writes a service to the given domain. When no version if given for the domain the service is added to the latest domain', async () => {
+      await writeServiceToDomain(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'Shopping',
+        }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+    });
+    it('writes a service to the given domain. When a version is given for the domain the service is added to that domain version', async () => {
+      await writeServiceToDomain(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'Shopping',
+          version: '1.0.0',
+        }
+      );
+      expect(
+        fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/versioned/1.0.0/services/InventoryService', 'index.md'))
+      ).toBe(true);
+    });
+    it('writes a service to the given domain. When a version is the latest the service is added to the latest version of the domain', async () => {
+      await writeServiceToDomain(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'Shopping',
+          version: 'latest',
+        }
+      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/', 'index.md'))).toBe(true);
     });
   });
 
@@ -400,6 +515,46 @@ describe('Services SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(false);
     });
+
+    describe('when services are within a domain directory', () => {
+      it('removes a service from eventcatalog by id', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+
+        await rmServiceById('InventoryService');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(false);
+      });
+
+      it('removes a service from eventcatalog by id and version', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+
+        await rmServiceById('InventoryService', '0.0.1');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(false);
+      });
+    });
   });
 
   describe('addFileToService', () => {
@@ -469,6 +624,50 @@ describe('Services SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToService('InventoryService', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    describe('when services are within a domain directory', () => {
+      it('takes a given file and writes it to the location of the given service', async () => {
+        const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addFileToService('InventoryService', file);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'test.txt'))).toBe(true);
+      });
+
+      it('takes a given file and version and writes the file to the correct location', async () => {
+        const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await versionService('InventoryService');
+
+        await addFileToService('InventoryService', file, '0.0.1');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/versioned/0.0.1', 'test.txt'))
+        ).toBe(true);
+      });
     });
   });
 
@@ -542,6 +741,70 @@ describe('Services SDK', () => {
         addEventToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')
       ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
     });
+
+    describe('when services are within a domain directory', () => {
+      it('takes an existing event and adds it to the sends of an existing service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addEventToService('InventoryService', 'sends', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
+
+        const service = await getService('InventoryService');
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          sends: [
+            {
+              id: 'InventoryUpdatedEvent',
+              version: '2.0.0',
+            },
+          ],
+          markdown: '# Hello world',
+        });
+      });
+
+      it('takes an existing event and adds it to the receives of an existing service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addEventToService('InventoryService', 'receives', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
+
+        const service = await getService('InventoryService');
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          receives: [
+            {
+              id: 'InventoryUpdatedEvent',
+              version: '2.0.0',
+            },
+          ],
+          markdown: '# Hello world',
+        });
+      });
+    });
   });
   describe('addCommandToService', () => {
     it('takes an existing command and adds it to the sends of an existing service', async () => {
@@ -597,6 +860,70 @@ describe('Services SDK', () => {
           },
         ],
         markdown: '# Hello world',
+      });
+    });
+
+    describe('when services are within a domain directory', () => {
+      it('takes an existing command and adds it to the sends of an existing service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addCommandToService('InventoryService', 'sends', { id: 'UpdateInventory', version: '2.0.0' }, '0.0.1');
+
+        const service = await getService('InventoryService');
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          sends: [
+            {
+              id: 'UpdateInventory',
+              version: '2.0.0',
+            },
+          ],
+          markdown: '# Hello world',
+        });
+      });
+
+      it('takes an existing command and adds it to the receives of an existing service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addCommandToService('InventoryService', 'receives', { id: 'UpdateInventory', version: '2.0.0' }, '0.0.1');
+
+        const service = await getService('InventoryService');
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          receives: [
+            {
+              id: 'UpdateInventory',
+              version: '2.0.0',
+            },
+          ],
+          markdown: '# Hello world',
+        });
       });
     });
 
@@ -748,6 +1075,68 @@ describe('Services SDK', () => {
       const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
 
       expect(specFiles).toEqual([]);
+    });
+
+    describe('when services are within a domain directory', () => {
+      it('returns the specification files for a service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'AccountService',
+            name: 'Accounts Service',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            specifications: {
+              asyncapiPath: 'spec.yaml',
+            },
+          },
+          { id: 'Shopping' }
+        );
+
+        await addFileToService('AccountService', { content: 'fake-async-api-file', fileName: 'spec.yaml' }, '0.0.1');
+
+        const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
+
+        expect(specFiles).toEqual([
+          {
+            content: 'fake-async-api-file',
+            fileName: 'spec.yaml',
+            path: expect.stringContaining('/services/AccountService/spec.yaml'),
+            key: 'asyncapiPath',
+          },
+        ]);
+      });
+
+      it('returns the specification files for a versioned service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'AccountService',
+            name: 'Accounts Service',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            specifications: {
+              asyncapiPath: 'spec.yaml',
+            },
+          },
+          { id: 'Shopping' }
+        );
+
+        await addFileToService('AccountService', { content: 'fake-async-api-file', fileName: 'spec.yaml' }, '0.0.1');
+
+        await versionService('AccountService');
+
+        const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
+
+        expect(specFiles).toEqual([
+          {
+            content: 'fake-async-api-file',
+            fileName: 'spec.yaml',
+            path: expect.stringContaining('/services/AccountService/versioned/0.0.1/spec.yaml'),
+            key: 'asyncapiPath',
+          },
+        ]);
+      });
     });
   });
 });

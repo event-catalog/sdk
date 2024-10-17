@@ -78,6 +78,7 @@ export const getResource = async (
 
 export const rmResourceById = async (catalogDir: string, id: string, version?: string, options?: { type: string }) => {
   const files = await getFiles(`${catalogDir}/**/index.md`);
+
   const matchedFiles = await searchFilesForId(files, id, version);
 
   if (matchedFiles.length === 0) {
