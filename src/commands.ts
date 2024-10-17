@@ -87,11 +87,7 @@ export const writeCommand =
  */
 export const writeCommandToService =
   (directory: string) =>
-  async (
-    command: Command,
-    service: { id: string; version?: string},
-    options: { path: string } = { path: '' }
-  ) => {
+  async (command: Command, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
     let pathForEvent =
       service.version && service.version !== 'latest'
         ? `/${service.id}/versioned/${service.version}/commands`
