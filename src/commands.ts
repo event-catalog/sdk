@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import type { Command } from './types';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
 import { findFileById } from './internal/utils';
+import { addMessageToService } from './services';
 
 /**
  * Returns a command from EventCatalog.
@@ -63,6 +64,38 @@ export const writeCommand =
   (directory: string) =>
   async (command: Command, options: { path: string } = { path: '' }) =>
     writeResource(directory, { ...command }, { ...options, type: 'command' });
+
+/**
+ * Write an command to a service in EventCatalog.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { writeCommandToService } = utils('/path/to/eventcatalog');
+ *
+ * // Write an event to a given service in the catalog
+ * // Event would be written to services/Inventory/commands/UpdateInventory
+ * await writeCommandToService({
+ *    id: 'UpdateInventory',
+ *    name: 'Update Inventory',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { id: 'Inventory' });
+ * ```
+ */
+export const writeCommandToService =
+  (directory: string) =>
+  async (command: Command, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
+    let pathForEvent =
+      service.version && service.version !== 'latest'
+        ? `/${service.id}/versioned/${service.version}/commands`
+        : `/${service.id}/commands`;
+    pathForEvent = join(pathForEvent, command.id);
+
+    await writeResource(directory, { ...command }, { ...options, path: pathForEvent, type: 'command' });
+  };
 
 /**
  * Delete a command at it's given path.

@@ -82,6 +82,43 @@ export const writeService =
   };
 
 /**
+ * Write a service to a domain in EventCatalog.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { writeServiceToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Write a service to a domain
+ * // Service would be written to domains/Shopping/services/InventoryService
+ * await writeServiceToDomain({
+ *   id: 'InventoryService',
+ *   name: 'Inventory Service',
+ *   version: '0.0.1',
+ *   summary: 'Service that handles the inventory',
+ *   markdown: '# Hello world',
+ * }, { id: 'Shopping' });
+ * ```
+ */
+export const writeServiceToDomain =
+  (directory: string) =>
+  async (
+    service: Service,
+    domain: { id: string; version?: string; direction?: string },
+    options: { path: string } = { path: '' }
+  ) => {
+    let pathForService =
+      domain.version && domain.version !== 'latest'
+        ? `/${domain.id}/versioned/${domain.version}/services`
+        : `/${domain.id}/services`;
+    pathForService = join(pathForService, service.id);
+
+    //
+    await writeResource(directory, { ...service }, { ...options, path: pathForService, type: 'service' });
+  };
+
+/**
  * Version a service by it's id.
  *
  * Takes the latest service and moves it to a versioned directory.

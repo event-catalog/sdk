@@ -15,6 +15,7 @@ const {
   addFileToCommand,
   addSchemaToCommand,
   commandHasVersion,
+  writeCommandToService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -37,6 +38,29 @@ describe('Commands SDK', () => {
         summary: 'This is a summary',
         markdown: '# Hello world',
       });
+
+      const test = await getCommand('UpdateInventory');
+
+      expect(test).toEqual({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+    });
+
+    it('returns the given event id from EventCatalog and the latest version when no version is given and the event is inside a services folder,', async () => {
+      await writeCommandToService(
+        {
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { id: 'Inventory' }
+      );
 
       const test = await getCommand('UpdateInventory');
 
@@ -178,6 +202,59 @@ describe('Commands SDK', () => {
     });
   });
 
+  describe('writeCommandToService', () => {
+    it('writes a command to the given service. When no version if given for the command the service is added to the latest service', async () => {
+      await writeCommandToService(
+        {
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+        }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.md'))).toBe(true);
+    });
+    it('writes a command to the given service. When a version is given for the command the service is added to that service version', async () => {
+      await writeCommandToService(
+        {
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+          version: '1.0.0',
+        }
+      );
+      expect(
+        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/commands/UpdateInventory', 'index.md'))
+      ).toBe(true);
+    });
+    it('writes a command to the given service. When a version is the latest the command is added to the latest version of the service', async () => {
+      await writeCommandToService(
+        {
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+          version: 'latest',
+        }
+      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.md'))).toBe(true);
+    });
+  });
+
   describe('rmCommand', () => {
     it('removes a command from eventcatalog', async () => {
       await writeCommand({
@@ -258,6 +335,67 @@ describe('Commands SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.md'))).toBe(false);
     });
+
+    describe('when commands are within a service directory', () => {
+      it('removes an command from eventcatalog by id', async () => {
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+
+        await rmCommandById('UpdateInventory');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(false);
+      });
+
+      it('if version is given, only removes that version and not any other versions of the command', async () => {
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        await versionCommand('UpdateInventory');
+
+        // Write the versioned command
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.1', 'index.md'))
+        ).toBe(true);
+
+        await rmCommandById('UpdateInventory', '0.0.1');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.md'))
+        ).toBe(false);
+      });
+    });
   });
 
   describe('versionCommand', () => {
@@ -301,6 +439,61 @@ describe('Commands SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'))).toBe(false);
     });
+
+    describe('when commands are within a service directory', () => {
+      it('adds the given command to the versioned directory and removes itself from the root', async () => {
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        // // Add random file in there
+        // await fs.writeFileSync(path.join(CATALOG_PATH, 'commands/Inventory/UpdateInventory', 'schema.json'), 'SCHEMA!');
+
+        await versionCommand('UpdateInventory');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.md'))
+        ).toBe(true);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(false);
+      });
+      it('adds the given command to the versioned directory and all files that are associated to it', async () => {
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        // Add random file in there
+        await fs.writeFileSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'schema.json'), 'SCHEMA!');
+
+        await versionCommand('UpdateInventory');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.md'))
+        ).toBe(true);
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'schema.json'))
+        ).toBe(true);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(false);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'schema.json'))).toBe(false);
+      });
+    });
   });
 
   describe('addFileToCommand', () => {
@@ -343,6 +536,51 @@ describe('Commands SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToCommand('UpdateInventory', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    describe('when commands are within a service directory', () => {
+      it('takes a given file and writes it to the location of the given command', async () => {
+        const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        await addFileToCommand('UpdateInventory', file);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'test.txt'))).toBe(true);
+      });
+
+      it('takes a given file and version and writes the file to the correct location', async () => {
+        const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        // version the command
+        await versionCommand('UpdateInventory');
+
+        await addFileToCommand('UpdateInventory', file, '0.0.1');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.1', 'test.txt'))
+        ).toBe(true);
+      });
     });
   });
 
@@ -408,6 +646,73 @@ describe('Commands SDK', () => {
       const file = { schema: 'hello', fileName: 'test.txt' };
 
       expect(addSchemaToCommand('UpdateInventory', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    describe('when commands are within a service directory', () => {
+      it('takes a given file and writes it to the location of the given command', async () => {
+        const schema = `{
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "age": {
+              "type": "number"
+            }
+          }
+        }`;
+        const file = { schema, fileName: 'schema.json' };
+
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        await addSchemaToCommand('UpdateInventory', file);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'schema.json'))).toBe(true);
+      });
+
+      it('takes a given file and version and writes the file to the correct location', async () => {
+        const schema = `{
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "age": {
+              "type": "number"
+            }
+          }
+        }`;
+        const file = { schema, fileName: 'schema.json' };
+
+        await writeCommandToService(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'Inventory' }
+        );
+
+        // version the command
+        await versionCommand('UpdateInventory');
+
+        await addSchemaToCommand('UpdateInventory', file, '0.0.1');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.1', 'schema.json'))
+        ).toBe(true);
+      });
     });
   });
 

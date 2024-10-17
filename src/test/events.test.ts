@@ -6,8 +6,18 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-events');
 
-const { writeEvent, getEvent, rmEvent, rmEventById, versionEvent, addFileToEvent, addSchemaToEvent, eventHasVersion } =
-  utils(CATALOG_PATH);
+const {
+  writeEvent,
+  writeEventToService,
+  getEvent,
+  rmEvent,
+  rmEventById,
+  versionEvent,
+  addFileToEvent,
+  addSchemaToEvent,
+  eventHasVersion,
+  writeServiceToDomain,
+} = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -29,6 +39,29 @@ describe('Events SDK', () => {
         summary: 'This is a summary',
         markdown: '# Hello world',
       });
+
+      const test = await getEvent('InventoryAdjusted');
+
+      expect(test).toEqual({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+    });
+
+    it('returns the given event id from EventCatalog and the latest version when no version is given and the event is inside a services folder,', async () => {
+      await writeEvent(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/InventoryService/InventoryAdjusted' }
+      );
 
       const test = await getEvent('InventoryAdjusted');
 
@@ -127,6 +160,203 @@ describe('Events SDK', () => {
 
       await expect(await getEvent('InventoryAdjusted', '1.0.0')).toEqual(undefined);
     });
+
+    describe('when events are within a service that is within a domain', async () => {
+      it('returns the given event id from EventCatalog and the latest version when no version is given,', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        const test = await getEvent('InventoryAdjusted');
+
+        expect(test).toEqual({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+      });
+
+      it('returns the given event id from EventCatalog and the latest version when no version is given and the event is inside a services folder,', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        const test = await getEvent('InventoryAdjusted');
+
+        expect(test).toEqual({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+      });
+
+      it('returns the given event id from EventCatalog and the requested version when a version is given,', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        await versionEvent('InventoryAdjusted');
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        const test = await getEvent('InventoryAdjusted', '0.0.1');
+
+        expect(test).toEqual({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+      });
+
+      it('returns the latest version of the event if the version matches the latest version', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        const test = await getEvent('InventoryAdjusted', '0.0.1');
+
+        expect(test).toEqual({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+      });
+
+      it('returns the version of the event even if the event does not match semver matching', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '100',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '100',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        const test = await getEvent('InventoryAdjusted', '100');
+
+        expect(test).toEqual({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '100',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+      });
+    });
   });
 
   describe('writeEvent', () => {
@@ -188,6 +418,61 @@ describe('Events SDK', () => {
           markdown: '# Hello world',
         })
       ).rejects.toThrowError('Failed to write event as the version 0.0.1 already exists');
+    });
+  });
+
+  describe('writeEventToService', () => {
+    it('writes an event to the given service. When no version if given for the service the event is added to the latest service', async () => {
+      await writeEventToService(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+        }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(true);
+    });
+    it('writes an event to the given service. When a version is given for the service the event is added to that service version', async () => {
+      await writeEventToService(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+          version: '1.0.0',
+        }
+      );
+      expect(
+        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/events/InventoryAdjusted', 'index.md'))
+      ).toBe(true);
+    });
+    it('writes an event to the given service. When a version is the latest the event is added to the latest version of the service', async () => {
+      await writeEventToService(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+          version: 'latest',
+        }
+      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService//events/InventoryAdjusted', 'index.md'))).toBe(
+        true
+      );
     });
   });
 
@@ -272,6 +557,80 @@ describe('Events SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(false);
     });
+
+    describe('when events are within a service directory', () => {
+      it('removes an event from EventCatalog by id', async () => {
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        // expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/events/InventoryAdjusted', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+          true
+        );
+        await rmEventById('InventoryAdjusted');
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+          false
+        );
+      });
+
+      it('if version is given, only removes that version and not any other versions of the event', async () => {
+        // write the first events
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        await versionEvent('InventoryAdjusted');
+
+        // Write the versioned event
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+          true
+        );
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'index.md'))
+        ).toBe(true);
+
+        await rmEventById('InventoryAdjusted', '0.0.1');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+          true
+        );
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'index.md'))
+        ).toBe(false);
+      });
+    });
   });
 
   describe('versionEvent', () => {
@@ -315,6 +674,68 @@ describe('Events SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(false);
     });
+
+    describe('when events are within a service directory', () => {
+      it('adds the given event to the versioned directory and removes itself from the root', async () => {
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        await versionEvent('InventoryAdjusted');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.md'))
+        ).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+          false
+        );
+      });
+      it('adds the given event to the versioned directory and all files that are associated to it', async () => {
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        // Add random file in there
+        await fs.writeFileSync(
+          path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'schema.json'),
+          'SCHEMA!'
+        );
+
+        await versionEvent('InventoryAdjusted');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.md'))
+        ).toBe(true);
+
+        expect(
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'schema.json')
+          )
+        ).toBe(true);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+          false
+        );
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'schema.json'))).toBe(
+          false
+        );
+      });
+    });
   });
 
   describe('addFileToEvent', () => {
@@ -357,6 +778,53 @@ describe('Events SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    describe('when events are within a service directory', () => {
+      it('takes a given file and writes it to the location of the given event', async () => {
+        const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        await addFileToEvent('InventoryAdjusted', file);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'test.txt'))).toBe(
+          true
+        );
+      });
+
+      it('takes a given file and version and writes the file to the correct location', async () => {
+        const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        // version the event
+        await versionEvent('InventoryAdjusted');
+
+        await addFileToEvent('InventoryAdjusted', file, '0.0.1');
+
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'test.txt'))
+        ).toBe(true);
+      });
     });
   });
 
@@ -422,6 +890,77 @@ describe('Events SDK', () => {
       const file = { schema: 'hello', fileName: 'test.txt' };
 
       expect(addSchemaToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    describe('when events are within a service directory', () => {
+      it('takes a given file and writes it to the location of the given event', async () => {
+        const schema = `{
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "age": {
+              "type": "number"
+            }
+          }
+        }`;
+        const file = { schema, fileName: 'schema.json' };
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        await addSchemaToEvent('InventoryAdjusted', file);
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'schema.json'))).toBe(
+          true
+        );
+      });
+
+      it('takes a given file and version and writes the file to the correct location', async () => {
+        const schema = `{
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "age": {
+              "type": "number"
+            }
+          }
+        }`;
+        const file = { schema, fileName: 'schema.json' };
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        // version the event
+        await versionEvent('InventoryAdjusted');
+
+        await addSchemaToEvent('InventoryAdjusted', file, '0.0.1');
+
+        expect(
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'schema.json')
+          )
+        ).toBe(true);
+      });
     });
   });
 
