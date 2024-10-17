@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.0.0
+
+### Major Changes
+
+- 7abb3d8: feat(sdk): added support for folder structures
+
 ## 0.1.4
 
 ### Patch Changes
