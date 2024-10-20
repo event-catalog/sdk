@@ -10,6 +10,7 @@ const CATALOG_PATH = path.join(__dirname, 'catalog-services');
 const {
   writeService,
   writeServiceToDomain,
+  writeVersionedService,
   getService,
   versionService,
   rmService,
@@ -342,6 +343,37 @@ describe('Services SDK', () => {
           markdown: '# Hello world',
         })
       ).rejects.toThrowError('Failed to write service as the version 0.0.1 already exists');
+    });
+  });
+
+  describe('writeVersionedService', () => {
+    it('writes the given service to EventCatalog into versioned folder', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+      await writeVersionedService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      const service = await getService('InventoryService', '0.0.1');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
     });
   });
 

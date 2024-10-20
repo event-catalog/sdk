@@ -32,6 +32,7 @@ import {
   addMessageToService,
   serviceHasVersion,
   getSpecificationFilesForService,
+  writeVersionedService,
 } from './services';
 import {
   writeDomain,
@@ -209,6 +210,14 @@ export default (path: string) => {
      *
      */
     writeService: writeService(join(path, 'services')),
+
+    /**
+     * Adds a versioned service to EventCatalog
+     *
+     * @param service - The service to write
+     *
+     */
+    writeVersionedService: writeVersionedService(join(path, 'services')),
 
     /**
      * Adds a service to a domain in EventCatalog

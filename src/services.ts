@@ -8,6 +8,7 @@ import {
   rmResourceById,
   versionResource,
   writeResource,
+  getVersionedDirectory,
 } from './internal/resources';
 import { findFileById, uniqueMessages } from './internal/utils';
 
@@ -34,9 +35,9 @@ export const getService =
   async (id: string, version?: string): Promise<Service> =>
     getResource(directory, id, version, { type: 'service' }) as Promise<Service>;
 /**
- * Write an event to EventCatalog.
+ * Write a Service to EventCatalog.
  *
- * You can optionally overide the path of the event.
+ * You can optionally overide the path of the Service.
  *
  * @example
  * ```ts
@@ -44,8 +45,8 @@ export const getService =
  *
  * const { writeService } = utils('/path/to/eventcatalog');
  *
- * // Write a service
- * // Event would be written to services/InventoryService
+ * // Write a Service
+ * // Service would be written to services/InventoryService
  * await writeService({
  *   id: 'InventoryService',
  *   name: 'Inventory Service',
@@ -54,8 +55,8 @@ export const getService =
  *   markdown: '# Hello world',
  * });
  *
- * // Write an event to the catalog but override the path
- * // Event would be written to services/Inventory/InventoryService
+ * // Write a service to the catalog but override the path
+ * // Service would be written to services/Inventory/InventoryService
  * await writeService({
  *    id: 'InventoryService',
  *    name: 'Inventory Adjusted',
@@ -80,6 +81,36 @@ export const writeService =
 
     return writeResource(directory, resource, { ...options, type: 'service' });
   };
+
+/**
+ * Write a Service version to EventCatalog.
+ *
+ * You can optionally overide the path of the Service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { writeVersionedService } = utils('/path/to/eventcatalog');
+ *
+ * // Write a service
+ * // Service would be written to services/InventoryService/versioned/0.0.1
+ * await writeVersionedService({
+ *   id: 'InventoryService',
+ *   name: 'Inventory Service',
+ *   version: '0.0.1',
+ *   summary: 'Service that handles the inventory',
+ *   markdown: '# Hello world',
+ * });
+ *
+ * ```
+ */
+export const writeVersionedService = (directory: string) => async (service: Service) => {
+  const resource: Service = { ...service };
+  const path = getVersionedDirectory(service.id, service.version);
+
+  return await writeService(directory)(resource, { path: path });
+};
 
 /**
  * Write a service to a domain in EventCatalog.
