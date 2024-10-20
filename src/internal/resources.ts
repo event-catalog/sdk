@@ -19,7 +19,7 @@ export const versionResource = async (catalogDir: string, id: string) => {
   const file = matchedFiles[0];
   const sourceDirectory = dirname(file);
   const { data: { version = '0.0.1' } = {} } = matter.read(file);
-  const targetDirectory = join(sourceDirectory, 'versioned', version);
+  const targetDirectory = getVersionedDirectory(sourceDirectory, version);
 
   await fs.mkdir(targetDirectory, { recursive: true });
 
@@ -113,4 +113,7 @@ export const getFileFromResource = async (catalogDir: string, id: string, file: 
   if (!exists) throw new Error(`File ${file.fileName} does not exist in resource ${id} v(${version})`);
 
   return fs.readFile(join(dirname(pathToResource), file.fileName), 'utf-8');
+};
+export const getVersionedDirectory = (sourceDirectory: string, version: any): string => {
+  return join(sourceDirectory, 'versioned', version);
 };
