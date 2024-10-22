@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.1.2
+
+### Patch Changes
+
+- d996a58: feat(sdk): added writeVersionedService function that writes a service to the versioned directory
+
 ## 1.1.1
 
 ### Patch Changes
