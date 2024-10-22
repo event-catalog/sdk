@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.1.1
+
+### Patch Changes
+
+- ac00967: fix(sdk): added docs for query SDK
+
 ## 1.1.0
 
 ### Minor Changes
