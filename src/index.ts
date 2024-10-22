@@ -22,6 +22,17 @@ import {
   commandHasVersion,
 } from './commands';
 import {
+  rmQuery,
+  rmQueryById,
+  writeQuery,
+  writeQueryToService,
+  versionQuery,
+  getQuery,
+  addFileToQuery,
+  addSchemaToQuery,
+  queryHasVersion,
+} from './queries';
+import {
   writeService,
   writeServiceToDomain,
   getService,
@@ -194,6 +205,79 @@ export default (path: string) => {
      * @returns
      */
     commandHasVersion: commandHasVersion(join(path)),
+
+    /**
+     * ================================
+     *            Queries
+     * ================================
+     */
+
+    /**
+     * Returns a query from EventCatalog
+     * @param id - The id of the query to retrieve
+     * @param version - Optional id of the version to get (supports semver)
+     * @returns Query|Undefined
+     */
+    getQuery: getQuery(join(path)),
+    /**
+     * Adds a query to EventCatalog
+     *
+     * @param query - The query to write
+     * @param options - Optional options to write the event
+     *
+     */
+    writeQuery: writeQuery(join(path, 'queries')),
+    /**
+     * Adds a query to a service in EventCatalog
+     *
+     * @param query - The query to write to the service
+     * @param service - The service and it's id to write to the query to
+     * @param options - Optional options to write the query
+     *
+     */
+    writeQueryToService: writeQueryToService(join(path, 'services')),
+    /**
+     * Remove an query to EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your query, e.g. `/Orders/GetOrder`
+     *
+     */
+    rmQuery: rmQuery(join(path, 'queries')),
+    /**
+     * Remove a query by a Query id
+     *
+     * @param id - The id of the query you want to remove
+     *
+     */
+    rmQueryById: rmQueryById(join(path)),
+    /**
+     * Moves a given query id to the version directory
+     * @param directory
+     */
+    versionQuery: versionQuery(join(path)),
+    /**
+     * Adds a file to the given query
+     * @param id - The id of the query to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the query to add the file to
+     * @returns
+     */
+    addFileToQuery: addFileToQuery(join(path)),
+    /**
+     * Adds a schema to the given query
+     * @param id - The id of the query to add the schema to
+     * @param schema - Schema contents to add including the content and the file name
+     * @param version - Optional version of the query to add the schema to
+     * @returns
+     */
+    addSchemaToQuery: addSchemaToQuery(join(path)),
+    /**
+     * Check to see if an query version exists
+     * @param id - The id of the query
+     * @param version - The version of the query (supports semver)
+     * @returns
+     */
+    queryHasVersion: queryHasVersion(join(path)),
 
     /**
      * ================================

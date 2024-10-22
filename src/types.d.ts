@@ -25,6 +25,7 @@ enum ResourceType {
 
 export interface Event extends BaseSchema {}
 export interface Command extends BaseSchema {}
+export interface Query extends BaseSchema {}
 
 export interface Specifications {
   asyncapiPath?: string;
