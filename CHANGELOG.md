@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.1.0
+
+### Minor Changes
+
+- 95e9d70: feat(sdk): adding query sdk functions
+
 ## 1.0.0
 
 ### Major Changes
