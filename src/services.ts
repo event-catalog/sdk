@@ -83,7 +83,7 @@ export const writeService =
   };
 
 /**
- * Write a Service version to EventCatalog.
+ * Write a versioned service to EventCatalog.
  *
  * You can optionally overide the path of the Service.
  *
