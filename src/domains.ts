@@ -2,7 +2,7 @@ import type { Domain } from './types';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
-import { findFileById } from './internal/utils';
+import { findFileById, uniqueVersions } from './internal/utils';
 
 /**
  * Returns a domain from EventCatalog.
@@ -60,8 +60,15 @@ export const getDomain =
  */
 export const writeDomain =
   (directory: string) =>
-  async (domain: Domain, options: { path: string } = { path: '' }) =>
-    writeResource(directory, { ...domain }, { ...options, type: 'domain' });
+  async (domain: Domain, options: { path: string } = { path: '' }) => {
+    const resource: Domain = { ...domain };
+
+    if (Array.isArray(domain.services)) {
+      resource.services = uniqueVersions(domain.services);
+    }
+
+    return writeResource(directory, resource, { ...options, type: 'domain' });
+  };
 
 /**
  * Version a domain by it's id.

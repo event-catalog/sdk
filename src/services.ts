@@ -10,7 +10,7 @@ import {
   writeResource,
   getVersionedDirectory,
 } from './internal/resources';
-import { findFileById, uniqueMessages } from './internal/utils';
+import { findFileById, uniqueVersions } from './internal/utils';
 
 /**
  * Returns a service from EventCatalog.
@@ -72,11 +72,11 @@ export const writeService =
     const resource: Service = { ...service };
 
     if (Array.isArray(service.sends)) {
-      resource.sends = uniqueMessages(service.sends);
+      resource.sends = uniqueVersions(service.sends);
     }
 
     if (Array.isArray(service.receives)) {
-      resource.receives = uniqueMessages(service.receives);
+      resource.receives = uniqueVersions(service.receives);
     }
 
     return writeResource(directory, resource, { ...options, type: 'service' });
