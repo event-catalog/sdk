@@ -146,6 +146,44 @@ describe('Domain SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Inventory/Payment', 'index.md'))).toBe(true);
     });
 
+    it('services written to a domain are always unique', async () => {
+      await writeDomain(
+        {
+          id: 'Payment',
+          name: 'Payment Domain',
+          version: '0.0.1',
+          summary: 'All things to do with the payment systems',
+          markdown: '# Hello world',
+          services: [
+            {
+              id: 'PaymentService',
+              version: '1.0.0',
+            },
+            {
+              id: 'PaymentService',
+              version: '1.0.0',
+            },
+            {
+              id: 'PaymentService',
+              version: '1.0.0',
+            },
+          ],
+        },
+        { path: '/Inventory/InventoryService' }
+      );
+
+      const service = await getDomain('Payment');
+
+      expect(service.services).toHaveLength(1);
+
+      expect(service.services).toEqual([
+        {
+          id: 'PaymentService',
+          version: '1.0.0',
+        },
+      ]);
+    });
+
     it('throws an error when trying to write an domain that already exists', async () => {
       await writeDomain({
         id: 'Payment',

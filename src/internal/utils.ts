@@ -109,7 +109,7 @@ export const copyDir = async (catalogDir: string, source: string, target: string
 };
 
 // Makes sure values in sends/recieves are unique
-export const uniqueMessages = (messages: { id: string; version: string }[]): { id: string; version: string }[] => {
+export const uniqueVersions = (messages: { id: string; version: string }[]): { id: string; version: string }[] => {
   const uniqueSet = new Set();
 
   return messages.filter((message) => {

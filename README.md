@@ -48,7 +48,7 @@ See the [SDK docs](https://www.eventcatalog.dev/docs/sdk) for more information a
 
 # Sponsors
 
-Thank you to our project  sponsors.
+Thank you to our project sponsors.
 
 ## Gold sponsors
 
