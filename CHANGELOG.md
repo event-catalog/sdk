@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.1.3
+
+### Patch Changes
+
+- 0882286: fix(sdk): services are now unique when writing domains
+
 ## 1.1.2
 
 ### Patch Changes
