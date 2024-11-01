@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.1.4
+
+### Patch Changes
+
+- 5e6a691: chore(sdk): added better logging for write failures
+
 ## 1.1.3
 
 ### Patch Changes
