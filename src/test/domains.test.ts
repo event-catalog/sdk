@@ -201,7 +201,7 @@ describe('Domain SDK', () => {
           summary: 'All things to do with the payment systems',
           markdown: '# Hello world',
         })
-      ).rejects.toThrowError('Failed to write domain as the version 0.0.1 already exists');
+      ).rejects.toThrowError('Failed to write Payment (domain) as the version 0.0.1 already exists');
     });
   });
 

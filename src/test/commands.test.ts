@@ -198,7 +198,7 @@ describe('Commands SDK', () => {
           summary: 'This is a summary',
           markdown: '# Hello world',
         })
-      ).rejects.toThrowError('Failed to write command as the version 0.0.1 already exists');
+      ).rejects.toThrowError('Failed to write UpdateInventory (command) as the version 0.0.1 already exists');
     });
   });
 

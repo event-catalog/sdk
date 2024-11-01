@@ -417,7 +417,7 @@ describe('Queries SDK', () => {
           summary: 'This is a summary',
           markdown: '# Hello world',
         })
-      ).rejects.toThrowError('Failed to write query as the version 0.0.1 already exists');
+      ).rejects.toThrowError('Failed to write GetOrder (query) as the version 0.0.1 already exists');
     });
   });
 

@@ -50,7 +50,7 @@ export const writeResource = async (
   const exists = await versionExists(catalogDir, resource.id, resource.version);
 
   if (exists) {
-    throw new Error(`Failed to write ${options.type} as the version ${resource.version} already exists`);
+    throw new Error(`Failed to write ${resource.id} (${options.type}) as the version ${resource.version} already exists`);
   }
 
   const { markdown, ...frontmatter } = resource;

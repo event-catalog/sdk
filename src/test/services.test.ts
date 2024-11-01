@@ -342,7 +342,7 @@ describe('Services SDK', () => {
           summary: 'Service tat handles the inventory',
           markdown: '# Hello world',
         })
-      ).rejects.toThrowError('Failed to write service as the version 0.0.1 already exists');
+      ).rejects.toThrowError('Failed to write InventoryService (service) as the version 0.0.1 already exists');
     });
   });
 
