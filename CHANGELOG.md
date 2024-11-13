@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.2.1
+
+### Patch Changes
+
+- 71d200d: chore(docs): add channel sdk to docs
+
 ## 1.2.0
 
 ### Minor Changes
