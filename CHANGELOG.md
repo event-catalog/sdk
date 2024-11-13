@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.2.0
+
+### Minor Changes
+
+- a3cb474: feat(sdk): added channel support to sdk
+
 ## 1.1.4
 
 ### Patch Changes
