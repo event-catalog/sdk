@@ -18,6 +18,7 @@ const {
   addFileToService,
   addEventToService,
   addCommandToService,
+  addQueryToService,
   serviceHasVersion,
   getSpecificationFilesForService,
 } = utils(CATALOG_PATH);
@@ -970,6 +971,141 @@ describe('Services SDK', () => {
 
       expect(
         addCommandToService('InventoryService', 'doesnotexist', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1')
+      ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
+    });
+  });
+  describe('addQueryToService', () => {
+    it('takes an existing query and adds it to the sends of an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addQueryToService('InventoryService', 'sends', { id: 'GetInventory', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        sends: [
+          {
+            id: 'GetInventory',
+            version: '2.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    it('takes an existing query and adds it to the receives of an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addQueryToService('InventoryService', 'receives', { id: 'GetInventory', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        receives: [
+          {
+            id: 'GetInventory',
+            version: '2.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    describe('when services are within a domain directory', () => {
+      it('takes an existing query and adds it to the sends of an existing service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addQueryToService('InventoryService', 'sends', { id: 'GetInventory', version: '2.0.0' }, '0.0.1');
+
+        const service = await getService('InventoryService');
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          sends: [
+            {
+              id: 'GetInventory',
+              version: '2.0.0',
+            },
+          ],
+          markdown: '# Hello world',
+        });
+      });
+
+      it('takes an existing query and adds it to the receives of an existing service', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addQueryToService('InventoryService', 'receives', { id: 'GetInventory', version: '2.0.0' }, '0.0.1');
+
+        const service = await getService('InventoryService');
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          receives: [
+            {
+              id: 'GetInventory',
+              version: '2.0.0',
+            },
+          ],
+          markdown: '# Hello world',
+        });
+      });
+    });
+
+    it('throws an error when trying to add an event to a service with an unsupported direction', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      expect(
+        addQueryToService('InventoryService', 'doesnotexist', { id: 'GetInventory', version: '2.0.0' }, '0.0.1')
       ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
     });
   });

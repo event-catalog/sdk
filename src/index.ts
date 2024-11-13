@@ -56,6 +56,16 @@ import {
   addServiceToDomain,
 } from './domains';
 
+import {
+  rmChannel,
+  rmChannelById,
+  writeChannel,
+  versionChannel,
+  getChannel,
+  channelHasVersion,
+  addMessageToChannel,
+} from './channels';
+
 /**
  * Init the SDK for EventCatalog
  *
@@ -282,6 +292,109 @@ export default (path: string) => {
 
     /**
      * ================================
+     *            Channels
+     * ================================
+     */
+
+    /**
+     * Returns a channel from EventCatalog
+     * @param id - The id of the channel to retrieve
+     * @param version - Optional id of the version to get (supports semver)
+     * @returns Channel|Undefined
+     */
+    getChannel: getChannel(join(path)),
+    /**
+     * Adds an channel to EventCatalog
+     *
+     * @param command - The channel to write
+     * @param options - Optional options to write the channel
+     *
+     */
+    writeChannel: writeChannel(join(path, 'channels')),
+
+    /**
+     * Remove an channel to EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your channel, e.g. `/Inventory/InventoryAdjusted`
+     *
+     */
+    rmChannel: rmChannel(join(path, 'channels')),
+    /**
+     * Remove an channel by an Event id
+     *
+     * @param id - The id of the channel you want to remove
+     *
+     */
+    rmChannelById: rmChannelById(join(path)),
+    /**
+     * Moves a given channel id to the version directory
+     * @param directory
+     */
+    versionChannel: versionChannel(join(path)),
+
+    /**
+     * Check to see if a channel version exists
+     * @param id - The id of the channel
+     * @param version - The version of the channel (supports semver)
+     * @returns
+     */
+    channelHasVersion: channelHasVersion(join(path)),
+
+    /**
+     * Add a channel to an event
+     *
+     * Optionally specify a version to add the channel to a specific version of the event.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEventToChannel } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new event (InventoryUpdatedEvent) to the inventory.{env}.events channel
+     * await addEventToChannel('inventory.{env}.events channel', { id: 'InventoryUpdatedEvent', version: '2.0.0', parameters: { env: 'dev' } });
+     *
+     * ```
+     */
+    addEventToChannel: addMessageToChannel(join(path), 'events'),
+    /**
+     * Add a channel to an command
+     *
+     * Optionally specify a version to add the channel to a specific version of the command.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addCommandToChannel } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new command (UpdateInventory) to the inventory.{env}.events channel
+     * await addCommandToChannel('inventory.{env}.events channel', { id: 'UpdateInventory', version: '2.0.0', parameters: { env: 'dev' } });
+     *
+     * ```
+     */
+    addCommandToChannel: addMessageToChannel(join(path), 'commands'),
+
+    /**
+     * Add a channel to an query
+     *
+     * Optionally specify a version to add the channel to a specific version of the query.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addQueryToChannel } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new query (GetInventory) to the inventory.{env}.events channel
+     * await addQueryToChannel('inventory.{env}.events channel', { id: 'GetInventory', version: '2.0.0', parameters: { env: 'dev' } });
+     *
+     * ```
+     */
+    addQueryToChannel: addMessageToChannel(join(path), 'queries'),
+
+    /**
+     * ================================
      *            SERVICES
      * ================================
      */
@@ -364,6 +477,67 @@ export default (path: string) => {
     serviceHasVersion: serviceHasVersion(join(path)),
 
     /**
+     * Add an event to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEventToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new event (InventoryUpdatedEvent) that the InventoryService will send
+     * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
+     *
+     * // adds a new event (OrderComplete) that the InventoryService will receive
+     * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '2.0.0' });
+     *
+     * ```
+     */
+    addEventToService: addMessageToService(join(path)),
+    /**
+     * Add a command to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addCommandToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new command (UpdateInventoryCommand) that the InventoryService will send
+     * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
+     *
+     * // adds a new command (VerifyInventory) that the InventoryService will receive
+     * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '2.0.0' });
+     *
+     * ```
+     */
+    addCommandToService: addMessageToService(join(path)),
+    /**
+     * Add a query to a service by it's id.
+     *
+     * Optionally specify a version to add the event to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addQueryToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new query (UpdateInventory) that the InventoryService will send
+     * await addQueryToService('InventoryService', 'sends', { command: 'UpdateInventory', version: '2.0.0' });
+     *
+     * // adds a new command (VerifyInventory) that the InventoryService will receive
+     * await addQueryToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '2.0.0' });
+     *
+     * ```
+     */
+    addQueryToService: addMessageToService(join(path)),
+
+    /**
      * ================================
      *            Domains
      * ================================
@@ -412,46 +586,6 @@ export default (path: string) => {
      * @returns
      */
     addFileToDomain: addFileToDomain(join(path, 'domains')),
-    /**
-     * Add an event to a service by it's id.
-     *
-     * Optionally specify a version to add the event to a specific version of the service.
-     *
-     * @example
-     * ```ts
-     * import utils from '@eventcatalog/utils';
-     *
-     * const { addEventToService } = utils('/path/to/eventcatalog');
-     *
-     * // adds a new event (InventoryUpdatedEvent) that the InventoryService will send
-     * await addEventToService('InventoryService', 'sends', { event: 'InventoryUpdatedEvent', version: '2.0.0' });
-     *
-     * // adds a new event (OrderComplete) that the InventoryService will receive
-     * await addEventToService('InventoryService', 'receives', { event: 'OrderComplete', version: '2.0.0' });
-     *
-     * ```
-     */
-    addEventToService: addMessageToService(join(path)),
-    /**
-     * Add a command to a service by it's id.
-     *
-     * Optionally specify a version to add the event to a specific version of the service.
-     *
-     * @example
-     * ```ts
-     * import utils from '@eventcatalog/utils';
-     *
-     * const { addCommandToService } = utils('/path/to/eventcatalog');
-     *
-     * // adds a new command (UpdateInventoryCommand) that the InventoryService will send
-     * await addCommandToService('InventoryService', 'sends', { command: 'UpdateInventoryCommand', version: '2.0.0' });
-     *
-     * // adds a new command (VerifyInventory) that the InventoryService will receive
-     * await addCommandToService('InventoryService', 'receives', { command: 'VerifyInventory', version: '2.0.0' });
-     *
-     * ```
-     */
-    addCommandToService: addMessageToService(join(path)),
 
     /**
      * Check to see if a domain version exists

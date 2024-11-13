@@ -76,7 +76,6 @@ Thank you to our project sponsors.
 
 <hr />
 
-
 _Sponsors help make EventCatalog sustainable, want to help the project? Get in touch! Or [visit our sponsor page](https://www.eventcatalog.dev/support)._
 
 # Enterprise support

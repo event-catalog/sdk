@@ -15,6 +15,10 @@ export type ResourcePointer = {
   version: string;
 };
 
+export interface ChannelPointer extends ResourcePointer {
+  parameters?: Record<string, string>;
+}
+
 export type Message = Event | Command;
 
 enum ResourceType {
@@ -23,9 +27,28 @@ enum ResourceType {
   Command = 'command',
 }
 
-export interface Event extends BaseSchema {}
-export interface Command extends BaseSchema {}
-export interface Query extends BaseSchema {}
+export interface Event extends BaseSchema {
+  channels?: ChannelPointer[];
+}
+export interface Command extends BaseSchema {
+  channels?: ChannelPointer[];
+}
+export interface Query extends BaseSchema {
+  channels?: ChannelPointer[];
+}
+export interface Channel extends BaseSchema {
+  address?: string;
+  protocols?: string[];
+  // parameters?: Record<string, Parameter>;
+  parameters?: {
+    [key: string]: {
+      enum?: string[];
+      default?: string;
+      examples?: string[];
+      description?: string;
+    };
+  };
+}
 
 export interface Specifications {
   asyncapiPath?: string;
