@@ -1,7 +1,14 @@
 import type { Domain } from './types';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
-import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import {
+  addFileToResource,
+  getResource,
+  getResources,
+  rmResourceById,
+  versionResource,
+  writeResource,
+} from './internal/resources';
 import { findFileById, uniqueVersions } from './internal/utils';
 
 /**
@@ -26,6 +33,30 @@ export const getDomain =
   (directory: string) =>
   async (id: string, version?: string): Promise<Domain> =>
     getResource(directory, id, version, { type: 'domain' }) as Promise<Domain>;
+
+/**
+ * Returns all domains from EventCatalog.
+ *
+ * You can optionally specify if you want to get the latest version of the domains.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getDomains } = utils('/path/to/eventcatalog');
+ *
+ * // Gets all domains (and versions) from the catalog
+ * const domains = await getDomains();
+ *
+ * // Gets all domains (only latest version) from the catalog
+ * const domains = await getDomains({ latestOnly: true });
+ * ```
+ */
+export const getDomains =
+  (directory: string) =>
+  async (options?: { latestOnly?: boolean }): Promise<Domain[]> =>
+    getResources(directory, { type: 'domains', ...options }) as Promise<Domain[]>;
+
 /**
  * Write a domain to EventCatalog.
  *

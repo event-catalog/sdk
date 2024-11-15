@@ -50,9 +50,9 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
   }
 };
 
-export const getFiles = async (pattern: string) => {
+export const getFiles = async (pattern: string, ignore: string = '') => {
   try {
-    const files = await glob(pattern, { ignore: 'node_modules/**' });
+    const files = await glob(pattern, { ignore: ['node_modules/**', ignore] });
     return files;
   } catch (error) {
     throw new Error(`Error finding files: ${error}`);

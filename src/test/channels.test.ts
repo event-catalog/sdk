@@ -8,6 +8,7 @@ const CATALOG_PATH = path.join(__dirname, 'catalog-channels');
 const {
   writeChannel,
   getChannel,
+  getChannels,
   rmChannel,
   rmChannelById,
   versionChannel,
@@ -142,6 +143,243 @@ describe('Channels SDK', () => {
       });
 
       await expect(await getChannel('inventory.{env}.events', '1.0.0')).toBe(undefined);
+    });
+  });
+
+  describe('getChannels', () => {
+    it('returns all the channels in the catalog,', async () => {
+      // versioned channel
+      await writeChannel({
+        id: 'inventory.{env}.events',
+        name: 'Inventory Channel',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        address: 'inventory.{env}.events',
+        protocols: ['kafka'],
+        parameters: {
+          env: {
+            enum: ['dev', 'staging', 'prod'],
+            default: 'dev',
+            description: 'The environment to deploy to',
+          },
+        },
+      });
+
+      // latest channel
+      await writeChannel(
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'inventory.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        { versionExistingContent: true }
+      );
+
+      // channel in the services folder
+      await writeChannel(
+        {
+          id: 'order.{env}.events',
+          name: 'Order Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'order.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        { path: '/services/OrderService' }
+      );
+
+      const channels = await getChannels();
+
+      expect(channels).toEqual([
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'inventory.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        {
+          id: 'order.{env}.events',
+          name: 'Order Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'order.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'inventory.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+      ]);
+    });
+
+    it('returns only the latest channels when `latestOnly` is set to true,', async () => {
+      // versioned channel
+      await writeChannel({
+        id: 'inventory.{env}.events',
+        name: 'Inventory Channel',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        address: 'inventory.{env}.events',
+        protocols: ['kafka'],
+        parameters: {
+          env: {
+            enum: ['dev', 'staging', 'prod'],
+            default: 'dev',
+            description: 'The environment to deploy to',
+          },
+        },
+      });
+
+      // latest channel
+      await writeChannel(
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'inventory.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        { versionExistingContent: true }
+      );
+
+      // channel in the services folder
+      await writeChannel(
+        {
+          id: 'order.{env}.events',
+          name: 'Order Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'order.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        { path: '/services/OrderService' }
+      );
+
+      // channel in the services folder
+      await writeChannel(
+        {
+          id: 'order.{env}.events',
+          name: 'Order Channel',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'order.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        { path: '/services/OrderService', versionExistingContent: true }
+      );
+
+      const channels = await getChannels({ latestOnly: true });
+
+      expect(channels).toEqual([
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'inventory.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        {
+          id: 'order.{env}.events',
+          name: 'Order Channel',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'order.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+      ]);
     });
   });
 

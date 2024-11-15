@@ -1,7 +1,14 @@
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Command } from './types';
-import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import {
+  addFileToResource,
+  getResource,
+  getResources,
+  rmResourceById,
+  versionResource,
+  writeResource,
+} from './internal/resources';
 import { findFileById } from './internal/utils';
 import { addMessageToService } from './services';
 
@@ -27,6 +34,29 @@ export const getCommand =
   (directory: string) =>
   async (id: string, version?: string): Promise<Command> =>
     getResource(directory, id, version, { type: 'command' }) as Promise<Command>;
+
+/**
+ * Returns all commands from EventCatalog.
+ *
+ * You can optionally specify if you want to get the latest version of the events.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getCommands } = utils('/path/to/eventcatalog');
+ *
+ * // Gets all commands (and versions) from the catalog
+ * const commands = await getCommands();
+ *
+ * // Gets all commands (only latest version) from the catalog
+ * const commands = await getCommands({ latestOnly: true });
+ * ```
+ */
+export const getCommands =
+  (directory: string) =>
+  async (options: { latestOnly?: boolean }): Promise<Command[]> =>
+    getResources(directory, { type: 'commands', ...options }) as Promise<Command[]>;
 
 /**
  * Write a command to EventCatalog.

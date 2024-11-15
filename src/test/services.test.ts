@@ -12,6 +12,7 @@ const {
   writeServiceToDomain,
   writeVersionedService,
   getService,
+  getServices,
   versionService,
   rmService,
   rmServiceById,
@@ -234,6 +235,134 @@ describe('Services SDK', () => {
           markdown: '# Hello world',
         });
       });
+    });
+  });
+
+  describe('getServices', () => {
+    it('returns all the services in the catalog,', async () => {
+      // versioned service
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest service
+      await writeService(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // service in the services folder
+      await writeService(
+        {
+          id: 'OrderService',
+          name: 'Order Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      const services = await getServices();
+
+      expect(services).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderService',
+          name: 'Order Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+    it('returns only the latest services when `latestOnly` is set to true,', async () => {
+      // versioned service
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest service
+      await writeService(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // service in the services folder
+      await writeService(
+        {
+          id: 'OrderService',
+          name: 'Order Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      // service in the services folder
+      await writeService(
+        {
+          id: 'OrderService',
+          name: 'Order Service',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService', versionExistingContent: true }
+      );
+
+      const services = await getServices({ latestOnly: true });
+
+      expect(services).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderService',
+          name: 'Order Service',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
     });
   });
 
