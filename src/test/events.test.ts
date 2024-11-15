@@ -447,6 +447,63 @@ describe('Events SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
       expect(event.markdown).toBe('Overridden content');
     });
+
+    describe('versionExistingContent', () => {
+      it('versions the previous event when trying to write an event that already exists and versionExistingEvent is true and the new version number is greater than the previous one', async () => {
+        await writeEvent({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: 'Hello world',
+        });
+
+        await writeEvent(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New Content!',
+          },
+          {
+            versionExistingContent: true,
+          }
+        );
+
+        const event = await getEvent('InventoryAdjusted', '1.0.0');
+        expect(event.markdown).toBe('New Content!');
+        expect(event.version).toBe('1.0.0');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      });
+
+      it('throws an error when trying to write an event and versionExistingEvent is true and the new version number is not greater than the previous one', async () => {
+        await writeEvent({
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: 'Hello world',
+        });
+
+        await expect(
+          writeEvent(
+            {
+              id: 'InventoryAdjusted',
+              name: 'Inventory Adjusted',
+              version: '0.0.1',
+              summary: 'This is a summary',
+              markdown: 'New Content!',
+            },
+            {
+              versionExistingContent: true,
+            }
+          )
+        ).rejects.toThrowError('New version 0.0.1 is not greater than current version 1.0.0');
+      });
+    });
   });
 
   describe('writeEventToService', () => {

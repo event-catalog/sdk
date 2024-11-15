@@ -447,6 +447,62 @@ describe('Queries SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
       expect(query.markdown).toBe('Overridden content');
     });
+
+    describe('versionExistingContent', () => {
+      it('versions the previous query when trying to write a query that already exists and versionExistingContent is true and the new version number is greater than the previous one', async () => {
+        await writeQuery({
+          id: 'GetOrder',
+          name: 'Get Order',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await writeQuery(
+          {
+            id: 'GetOrder',
+            name: 'Get Order',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        const query = await getQuery('GetOrder');
+        expect(query.version).toBe('1.0.0');
+        expect(query.markdown).toBe('New');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.1', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      });
+
+      it('throws an error when trying to write a query and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
+        await writeQuery(
+          {
+            id: 'GetOrder',
+            name: 'Get Order',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        await expect(
+          writeQuery(
+            {
+              id: 'GetOrder',
+              name: 'Get Order',
+              version: '0.0.0',
+              summary: 'This is a summary',
+              markdown: 'New',
+            },
+            { versionExistingContent: true }
+          )
+        ).rejects.toThrowError('New version 0.0.0 is not greater than current version 1.0.0');
+      });
+    });
   });
 
   describe('writeQueryToService', () => {
