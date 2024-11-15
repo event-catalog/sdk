@@ -43,13 +43,13 @@ export const versionResource = async (catalogDir: string, id: string) => {
 export const writeResource = async (
   catalogDir: string,
   resource: Resource,
-  options: { path: string; type: string } = { path: '', type: '' }
+  options: { path?: string; type: string; override?: boolean } = { path: '', type: '', override: false }
 ) => {
   // Get the path
   const path = options.path || `/${resource.id}`;
   const exists = await versionExists(catalogDir, resource.id, resource.version);
 
-  if (exists) {
+  if (exists && !options.override) {
     throw new Error(`Failed to write ${resource.id} (${options.type}) as the version ${resource.version} already exists`);
   }
 

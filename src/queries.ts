@@ -57,11 +57,21 @@ export const getQuery =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { path: "/Orders/GetOrder"});
+ *
+ * // Write a query to the catalog and override the existing content (if there is any)
+ * await writeQuery({
+ *    id: 'GetOrder',
+ *    name: 'Get Order',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { override: true });
+ *
  * ```
  */
 export const writeQuery =
   (directory: string) =>
-  async (query: Query, options: { path: string } = { path: '' }) =>
+  async (query: Query, options: { path?: string; override?: boolean } = { path: '' }) =>
     writeResource(directory, { ...query }, { ...options, type: 'query' });
 /**
  * Write a query to a service in EventCatalog.

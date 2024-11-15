@@ -50,7 +50,7 @@ describe('Commands SDK', () => {
       });
     });
 
-    it('returns the given event id from EventCatalog and the latest version when no version is given and the event is inside a services folder,', async () => {
+    it('returns the given command id from EventCatalog and the latest version when no version is given and the command is inside a services folder,', async () => {
       await writeCommandToService(
         {
           id: 'UpdateInventory',
@@ -536,6 +536,34 @@ describe('Commands SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToCommand('UpdateInventory', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    it('overrides the event when trying to write an event that already exists and override is true', async () => {
+      await writeCommand({
+        id: 'AdjustInventory',
+        name: 'Adjust Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeCommand(
+        {
+          id: 'AdjustInventory',
+          name: 'Adjust Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: 'Overridden content',
+        },
+        {
+          override: true,
+        }
+      );
+
+      const command = await getCommand('AdjustInventory');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/AdjustInventory', 'index.md'))).toBe(true);
+      expect(command.markdown).toBe('Overridden content');
     });
 
     describe('when commands are within a service directory', () => {

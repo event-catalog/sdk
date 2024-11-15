@@ -193,13 +193,24 @@ describe('Channels SDK', () => {
     });
 
     it('throws an error when trying to write an channel that already exists', async () => {
-      const createChannel = async () => writeChannel(mockChannel);
+      const createChannel = async (props?: any) => writeChannel({ ...mockChannel, ...props });
 
       await createChannel();
 
       await expect(writeChannel(mockChannel)).rejects.toThrowError(
         'Failed to write inventory.{env}.events (channel) as the version 0.0.1 already exists'
       );
+    });
+
+    it('overrides the channel when trying to write an channel that already exists and override is true', async () => {
+      await writeChannel({ ...mockChannel });
+
+      await writeChannel({ ...mockChannel, markdown: 'Overridden content' }, { override: true });
+
+      const channel = await getChannel('inventory.{env}.events');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(channel.markdown).toBe('Overridden content');
     });
   });
 

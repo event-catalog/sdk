@@ -203,6 +203,32 @@ describe('Domain SDK', () => {
         })
       ).rejects.toThrowError('Failed to write Payment (domain) as the version 0.0.1 already exists');
     });
+
+    it('overrides the domain when trying to write an domain that already exists and override is true', async () => {
+      await writeDomain({
+        id: 'Payment',
+        name: 'Payment Domain',
+        version: '0.0.1',
+        summary: 'All things to do with the payment systems',
+        markdown: '# Hello world',
+      });
+
+      await writeDomain(
+        {
+          id: 'Payment',
+          name: 'Payment Domain',
+          version: '0.0.1',
+          summary: 'All things to do with the payment systems',
+          markdown: 'Overridden content',
+        },
+        { override: true }
+      );
+
+      const service = await getDomain('Payment');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(service.markdown).toBe('Overridden content');
+    });
   });
 
   describe('versionDomain', () => {
@@ -402,7 +428,7 @@ describe('Domain SDK', () => {
       expect(await domainHasVersion('Orders', 'latest')).toEqual(true);
     });
 
-    it('returns false when event does not exist in the catalog', async () => {
+    it('returns false when domain does not exist in the catalog', async () => {
       await writeDomain({
         id: 'Orders',
         name: 'Orders Domain',

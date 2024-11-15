@@ -397,7 +397,7 @@ describe('Events SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory/InventoryAdjusted', 'index.md'))).toBe(true);
     });
 
-    it('throws an error when trying to write an event that already exists', async () => {
+    it('throws an error when trying to write an event that already exists (and override is false, default)', async () => {
       const createEvent = async () =>
         writeEvent({
           id: 'InventoryAdjusted',
@@ -418,6 +418,34 @@ describe('Events SDK', () => {
           markdown: '# Hello world',
         })
       ).rejects.toThrowError('Failed to write InventoryAdjusted (event) as the version 0.0.1 already exists');
+    });
+
+    it('overrides the event when trying to write an event that already exists and override is true', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeEvent(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: 'Overridden content',
+        },
+        {
+          override: true,
+        }
+      );
+
+      const event = await getEvent('InventoryAdjusted');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(event.markdown).toBe('Overridden content');
     });
   });
 

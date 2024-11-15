@@ -64,11 +64,22 @@ export const getChannel =
  *    address: inventory.{env}.events,
  *    protocols: ['http'],
  * }, { path: "/channels/Inventory/InventoryChannel"});
+ *
+ * // Write a channel to the catalog and override the existing content (if there is any)
+ * await writeChannel({
+ *    id: 'InventoryChannel',
+ *    name: 'Update Inventory',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ *    address: inventory.{env}.events,
+ *    protocols: ['http'],
+ * }, { override: true });
  * ```
  */
 export const writeChannel =
   (directory: string) =>
-  async (channel: Channel, options: { path: string } = { path: '' }) =>
+  async (channel: Channel, options: { path?: string; override?: boolean } = { path: '' }) =>
     writeResource(directory, { ...channel }, { ...options, type: 'channel' });
 
 /**

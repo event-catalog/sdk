@@ -419,6 +419,34 @@ describe('Queries SDK', () => {
         })
       ).rejects.toThrowError('Failed to write GetOrder (query) as the version 0.0.1 already exists');
     });
+
+    it('overrides the query when trying to write an query that already exists and override is true', async () => {
+      await writeQuery({
+        id: 'GetOrder',
+        name: 'Get Order',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeQuery(
+        {
+          id: 'GetOrder',
+          name: 'Get Order',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: 'Overridden content',
+        },
+        {
+          override: true,
+        }
+      );
+
+      const query = await getQuery('GetOrder');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(query.markdown).toBe('Overridden content');
+    });
   });
 
   describe('writeQueryToService', () => {
