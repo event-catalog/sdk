@@ -9,6 +9,7 @@ import {
   addFileToEvent,
   addSchemaToEvent,
   eventHasVersion,
+  getEvents,
 } from './events';
 import {
   rmCommand,
@@ -17,6 +18,7 @@ import {
   writeCommandToService,
   versionCommand,
   getCommand,
+  getCommands,
   addFileToCommand,
   addSchemaToCommand,
   commandHasVersion,
@@ -28,6 +30,7 @@ import {
   writeQueryToService,
   versionQuery,
   getQuery,
+  getQueries,
   addFileToQuery,
   addSchemaToQuery,
   queryHasVersion,
@@ -44,10 +47,12 @@ import {
   serviceHasVersion,
   getSpecificationFilesForService,
   writeVersionedService,
+  getServices,
 } from './services';
 import {
   writeDomain,
   getDomain,
+  getDomains,
   versionDomain,
   rmDomain,
   rmDomainById,
@@ -62,6 +67,7 @@ import {
   writeChannel,
   versionChannel,
   getChannel,
+  getChannels,
   channelHasVersion,
   addMessageToChannel,
 } from './channels';
@@ -81,6 +87,12 @@ export default (path: string) => {
      * @returns Event|Undefined
      */
     getEvent: getEvent(join(path)),
+    /**
+     * Returns all events from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Event[]|Undefined
+     */
+    getEvents: getEvents(join(path)),
     /**
      * Adds an event to EventCatalog
      *
@@ -154,6 +166,12 @@ export default (path: string) => {
      * @returns Command|Undefined
      */
     getCommand: getCommand(join(path)),
+    /**
+     * Returns all commands from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Command[]|Undefined
+     */
+    getCommands: getCommands(join(path)),
     /**
      * Adds an command to EventCatalog
      *
@@ -231,6 +249,12 @@ export default (path: string) => {
      */
     getQuery: getQuery(join(path)),
     /**
+     * Returns all queries from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Query[]|Undefined
+     */
+    getQueries: getQueries(join(path)),
+    /**
      * Adds a query to EventCatalog
      *
      * @param query - The query to write
@@ -303,6 +327,12 @@ export default (path: string) => {
      * @returns Channel|Undefined
      */
     getChannel: getChannel(join(path)),
+    /**
+     * Returns all channels from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Channel[]|Undefined
+     */
+    getChannels: getChannels(join(path)),
     /**
      * Adds an channel to EventCatalog
      *
@@ -433,6 +463,12 @@ export default (path: string) => {
      */
     getService: getService(join(path)),
     /**
+     * Returns all services from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Service[]|Undefined
+     */
+    getServices: getServices(join(path)),
+    /**
      * Moves a given service id to the version directory
      * @param directory
      */
@@ -559,6 +595,12 @@ export default (path: string) => {
      * @returns Domain|Undefined
      */
     getDomain: getDomain(join(path, 'domains')),
+    /**
+     * Returns all domains from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Domain[]|Undefined
+     */
+    getDomains: getDomains(join(path)),
     /**
      * Moves a given domain id to the version directory
      * @param directory

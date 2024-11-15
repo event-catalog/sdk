@@ -9,6 +9,7 @@ const CATALOG_PATH = path.join(__dirname, 'catalog-commands');
 const {
   writeCommand,
   getCommand,
+  getCommands,
   rmCommand,
   rmCommandById,
   versionCommand,
@@ -137,6 +138,134 @@ describe('Commands SDK', () => {
       });
 
       await expect(await getCommand('UpdateInventory', '1.0.0')).toBe(undefined);
+    });
+  });
+
+  describe('getCommands', () => {
+    it('returns all the commands in the catalog,', async () => {
+      // versioned command
+      await writeCommand({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest command
+      await writeCommand(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // command in the services folder
+      await writeCommand(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      const commands = await getCommands();
+
+      expect(commands).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+    it('returns only the latest commands when `latestOnly` is set to true,', async () => {
+      // versioned command
+      await writeCommand({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest command
+      await writeCommand(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // command in the services folder
+      await writeCommand(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      // command in the services folder
+      await writeCommand(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService', versionExistingContent: true }
+      );
+
+      const commands = await getCommands({ latestOnly: true });
+
+      expect(commands).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
     });
   });
 

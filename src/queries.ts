@@ -2,7 +2,14 @@ import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { findFileById } from './internal/utils';
 import type { Query } from './types';
-import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import {
+  addFileToResource,
+  getResource,
+  getResources,
+  rmResourceById,
+  versionResource,
+  writeResource,
+} from './internal/resources';
 
 /**
  * Returns a query from EventCatalog.
@@ -83,6 +90,30 @@ export const writeQuery =
   (directory: string) =>
   async (query: Query, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) =>
     writeResource(directory, { ...query }, { ...options, type: 'query' });
+
+/**
+ * Returns all queries from EventCatalog.
+ *
+ * You can optionally specify if you want to get the latest version of the queries.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getQueries } = utils('/path/to/eventcatalog');
+ *
+ * // Gets all queries (and versions) from the catalog
+ * const queries = await getQueries();
+ *
+ * // Gets all queries (only latest version) from the catalog
+ * const queries = await getQueries({ latestOnly: true });
+ * ```
+ */
+export const getQueries =
+  (directory: string) =>
+  async (options: { latestOnly?: boolean }): Promise<Query[]> =>
+    getResources(directory, { type: 'queries', ...options }) as Promise<Query[]>;
+
 /**
  * Write a query to a service in EventCatalog.
  *

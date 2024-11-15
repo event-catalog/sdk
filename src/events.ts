@@ -2,7 +2,14 @@ import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { findFileById } from './internal/utils';
 import type { Event } from './types';
-import { addFileToResource, getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import {
+  addFileToResource,
+  getResource,
+  getResources,
+  rmResourceById,
+  versionResource,
+  writeResource,
+} from './internal/resources';
 
 /**
  * Returns an event from EventCatalog.
@@ -26,6 +33,29 @@ export const getEvent =
   (directory: string) =>
   async (id: string, version?: string): Promise<Event> =>
     getResource(directory, id, version, { type: 'event' }) as Promise<Event>;
+
+/**
+ * Returns all events from EventCatalog.
+ *
+ * You can optionally specify if you want to get the latest version of the events.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getEvents } = utils('/path/to/eventcatalog');
+ *
+ * // Gets all events (and versions) from the catalog
+ * const events = await getEvents();
+ *
+ * // Gets all events (only latest version) from the catalog
+ * const events = await getEvents({ latestOnly: true });
+ * ```
+ */
+export const getEvents =
+  (directory: string) =>
+  async (options?: { latestOnly?: boolean }): Promise<Event[]> =>
+    getResources(directory, { type: 'events', ...options }) as Promise<Event[]>;
 
 /**
  * Write an event to EventCatalog.

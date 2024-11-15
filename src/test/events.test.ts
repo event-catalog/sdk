@@ -10,6 +10,7 @@ const {
   writeEvent,
   writeEventToService,
   getEvent,
+  getEvents,
   rmEvent,
   rmEventById,
   versionEvent,
@@ -26,7 +27,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
+  // fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
 });
 
 describe('Events SDK', () => {
@@ -356,6 +357,134 @@ describe('Events SDK', () => {
           markdown: '# Hello world',
         });
       });
+    });
+  });
+
+  describe('getEvents', () => {
+    it('returns all the events in the catalog,', async () => {
+      // versioned event
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest event
+      await writeEvent(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // event in the services folder
+      await writeEvent(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      const events = await getEvents();
+
+      expect(events).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+    it('returns only the latest events when `latestOnly` is set to true,', async () => {
+      // versioned event
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest event
+      await writeEvent(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // event in the services folder
+      await writeEvent(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      // event in the services folder
+      await writeEvent(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService', versionExistingContent: true }
+      );
+
+      const events = await getEvents({ latestOnly: true });
+
+      expect(events).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
     });
   });
 

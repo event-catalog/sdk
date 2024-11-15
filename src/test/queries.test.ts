@@ -10,6 +10,7 @@ const {
   writeQuery,
   writeQueryToService,
   getQuery,
+  getQueries,
   rmQuery,
   rmQueryById,
   versionQuery,
@@ -356,6 +357,134 @@ describe('Queries SDK', () => {
           markdown: '# Hello world',
         });
       });
+    });
+  });
+
+  describe('getQueries', () => {
+    it('returns all the queries in the catalog,', async () => {
+      // versioned query
+      await writeQuery({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest query
+      await writeQuery(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // query in the services folder
+      await writeQuery(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      const queries = await getQueries();
+
+      expect(queries).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+    it('returns only the latest queries when `latestOnly` is set to true,', async () => {
+      // versioned query
+      await writeQuery({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest query
+      await writeQuery(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // query in the services folder
+      await writeQuery(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      // query in the services folder
+      await writeQuery(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService', versionExistingContent: true }
+      );
+
+      const queries = await getQueries({ latestOnly: true });
+
+      expect(queries).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
     });
   });
 

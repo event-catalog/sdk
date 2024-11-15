@@ -6,8 +6,17 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-domains');
 
-const { writeDomain, getDomain, versionDomain, rmDomain, rmDomainById, addFileToDomain, domainHasVersion, addServiceToDomain } =
-  utils(CATALOG_PATH);
+const {
+  writeDomain,
+  getDomain,
+  getDomains,
+  versionDomain,
+  rmDomain,
+  rmDomainById,
+  addFileToDomain,
+  domainHasVersion,
+  addServiceToDomain,
+} = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -105,6 +114,134 @@ describe('Domain SDK', () => {
       });
 
       await expect(await getDomain('Payment', '1.0.0')).toEqual(undefined);
+    });
+  });
+
+  describe('getDomains', () => {
+    it('returns all the domains in the catalog,', async () => {
+      // versioned domain
+      await writeDomain({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest domain
+      await writeDomain(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // domain in the services folder
+      await writeDomain(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      const domains = await getDomains();
+
+      expect(domains).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+    it('returns only the latest domains when `latestOnly` is set to true,', async () => {
+      // versioned domain
+      await writeDomain({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // latest domain
+      await writeDomain(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { versionExistingContent: true }
+      );
+
+      // domain in the services folder
+      await writeDomain(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService' }
+      );
+
+      // domain in the services folder
+      await writeDomain(
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/services/OrderService', versionExistingContent: true }
+      );
+
+      const domains = await getDomains({ latestOnly: true });
+
+      expect(domains).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'OrderComplete',
+          name: 'Order Complete',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
     });
   });
 

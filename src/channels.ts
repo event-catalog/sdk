@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Channel } from './types';
-import { getResource, rmResourceById, versionResource, writeResource } from './internal/resources';
+import { getResource, getResources, rmResourceById, versionResource, writeResource } from './internal/resources';
 import { findFileById } from './internal/utils';
 import { getEvent, rmEventById, writeEvent } from './events';
 import { getCommand, rmCommandById, writeCommand } from './commands';
@@ -29,6 +29,29 @@ export const getChannel =
   (directory: string) =>
   async (id: string, version?: string): Promise<Channel> =>
     getResource(directory, id, version, { type: 'channel' }) as Promise<Channel>;
+
+/**
+ * Returns all channels from EventCatalog.
+ *
+ * You can optionally specify if you want to get the latest version of the channels.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getChannels } = utils('/path/to/eventcatalog');
+ *
+ * // Gets all channels (and versions) from the catalog
+ * const channels = await getChannels();
+ *
+ * // Gets all channels (only latest version) from the catalog
+ * const channels = await getChannels({ latestOnly: true });
+ * ```
+ */
+export const getChannels =
+  (directory: string) =>
+  async (options?: { latestOnly?: boolean }): Promise<Channel[]> =>
+    getResources(directory, { type: 'channels', ...options }) as Promise<Channel[]>;
 
 /**
  * Write a channel to EventCatalog.

@@ -9,6 +9,7 @@ import {
   versionResource,
   writeResource,
   getVersionedDirectory,
+  getResources,
 } from './internal/resources';
 import { findFileById, uniqueVersions } from './internal/utils';
 
@@ -34,6 +35,30 @@ export const getService =
   (directory: string) =>
   async (id: string, version?: string): Promise<Service> =>
     getResource(directory, id, version, { type: 'service' }) as Promise<Service>;
+
+/**
+ * Returns all services from EventCatalog.
+ *
+ * You can optionally specify if you want to get the latest version of the services.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getServices } = utils('/path/to/eventcatalog');
+ *
+ * // Gets all services (and versions) from the catalog
+ * const services = await getServices();
+ *
+ * // Gets all services (only latest version) from the catalog
+ * const services = await getServices({ latestOnly: true });
+ * ```
+ */
+export const getServices =
+  (directory: string) =>
+  async (options?: { latestOnly?: boolean }): Promise<Service[]> =>
+    getResources(directory, { type: 'services', ...options }) as Promise<Service[]>;
+
 /**
  * Write a Service to EventCatalog.
  *

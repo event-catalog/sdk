@@ -1,5 +1,5 @@
 import { dirname, join } from 'path';
-import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './utils';
+import { copyDir, findFileById, getFiles, getFilesByType, searchFilesForId, versionExists } from './utils';
 import matter from 'gray-matter';
 import fs from 'node:fs/promises';
 import { Message, Service } from '../types';
@@ -94,6 +94,23 @@ export const getResource = async (
     ...data,
     markdown: content.trim(),
   } as Resource;
+};
+
+export const getResources = async (
+  catalogDir: string,
+  { type, latestOnly = false }: { type: string; latestOnly?: boolean }
+): Promise<Resource[] | undefined> => {
+  const ignore = latestOnly ? `**/versioned/**` : '';
+  const files = await getFiles(`${catalogDir}/**/${type}/**/index.md`, ignore);
+  if (files.length === 0) return;
+
+  return files.map((file) => {
+    const { data, content } = matter.read(file);
+    return {
+      ...data,
+      markdown: content.trim(),
+    } as Resource;
+  });
 };
 
 export const rmResourceById = async (catalogDir: string, id: string, version?: string, options?: { type: string }) => {
