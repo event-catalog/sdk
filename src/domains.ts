@@ -38,7 +38,7 @@ export const getDomain =
  * const { writeDomain } = utils('/path/to/eventcatalog');
  *
  * // Write a domain
- * // Event would be written to domains/Payment
+ * // Domain would be written to domains/Payment
  * await writeDomain({
  *   id: 'Payment',
  *   name: 'Payment domain',
@@ -48,7 +48,7 @@ export const getDomain =
  * });
  *
  * // Write a domain to the catalog but override the path
- * // Event would be written to domains/Inventory/Payment
+ * // Domain would be written to domains/Inventory/Payment
  * await writeDomain({
  *    id: 'Payment',
  *    name: 'Inventory Adjusted',
@@ -56,11 +56,20 @@ export const getDomain =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { path: "/Inventory/Payment"});
+ *
+ * // Write a domain to the catalog and override the existing content (if there is any)
+ * await writeDomain({
+ *    id: 'Payment',
+ *    name: 'Inventory Adjusted',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { override: true });
  * ```
  */
 export const writeDomain =
   (directory: string) =>
-  async (domain: Domain, options: { path: string } = { path: '' }) => {
+  async (domain: Domain, options: { path?: string; override?: boolean } = { path: '' }) => {
     const resource: Domain = { ...domain };
 
     if (Array.isArray(domain.services)) {

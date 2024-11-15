@@ -57,11 +57,20 @@ export const getEvent =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { path: "/Inventory/InventoryAdjusted"});
+ *
+ * // Write a event to the catalog and override the existing content (if there is any)
+ * await writeEvent({
+ *    id: 'InventoryAdjusted',
+ *    name: 'Inventory Adjusted',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { override: true });
  * ```
  */
 export const writeEvent =
   (directory: string) =>
-  async (event: Event, options: { path: string } = { path: '' }) =>
+  async (event: Event, options: { path?: string; override?: boolean } = { path: '', override: false }) =>
     writeResource(directory, { ...event }, { ...options, type: 'event' });
 /**
  * Write an event to a service in EventCatalog.

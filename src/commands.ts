@@ -58,11 +58,20 @@ export const getCommand =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { path: "/Inventory/UpdateInventory"});
+ *
+ * // Write a command to the catalog and override the existing content (if there is any)
+ * await writeCommand({
+ *    id: 'UpdateInventory',
+ *    name: 'Update Inventory',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { override: true });
  * ```
  */
 export const writeCommand =
   (directory: string) =>
-  async (command: Command, options: { path: string } = { path: '' }) =>
+  async (command: Command, options: { path?: string; override?: boolean } = { path: '' }) =>
     writeResource(directory, { ...command }, { ...options, type: 'command' });
 
 /**

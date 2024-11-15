@@ -64,11 +64,20 @@ export const getService =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { path: "/Inventory/InventoryService"});
+ *
+ * // Write a service to the catalog and override the existing content (if there is any)
+ * await writeService({
+ *    id: 'InventoryService',
+ *    name: 'Inventory Adjusted',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { override: true });
  * ```
  */
 export const writeService =
   (directory: string) =>
-  async (service: Service, options: { path: string } = { path: '' }) => {
+  async (service: Service, options: { path?: string; override?: boolean } = { path: '' }) => {
     const resource: Service = { ...service };
 
     if (Array.isArray(service.sends)) {

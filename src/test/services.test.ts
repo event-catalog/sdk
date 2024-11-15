@@ -345,6 +345,32 @@ describe('Services SDK', () => {
         })
       ).rejects.toThrowError('Failed to write InventoryService (service) as the version 0.0.1 already exists');
     });
+
+    it('overrides the service when trying to write an service that already exists and override is true', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeService(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: 'Overridden content',
+        },
+        { override: true }
+      );
+
+      const service = await getService('InventoryService');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(service.markdown).toBe('Overridden content');
+    });
   });
 
   describe('writeVersionedService', () => {
@@ -1147,7 +1173,7 @@ describe('Services SDK', () => {
       expect(await serviceHasVersion('AccountService', 'latest')).toEqual(true);
     });
 
-    it('returns false when event does not exist in the catalog', async () => {
+    it('returns false when service does not exist in the catalog', async () => {
       await writeService({
         id: 'AccountService',
         name: 'Accounts Service',
