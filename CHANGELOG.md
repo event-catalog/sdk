@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.3.0
+
+### Minor Changes
+
+- 82e0b55: feat(sdk): added functions to get all resources in the catalog
+
 ## 1.2.3
 
 ### Patch Changes
