@@ -1,9 +1,9 @@
 import { dirname, join } from 'path';
-import { copyDir, findFileById, getFiles, getFilesByType, searchFilesForId, versionExists } from './utils';
+import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './utils';
 import matter from 'gray-matter';
 import fs from 'node:fs/promises';
 import { Message, Service } from '../types';
-import { satisfies, validRange, valid } from 'semver';
+import { satisfies } from 'semver';
 
 type Resource = Service | Message;
 

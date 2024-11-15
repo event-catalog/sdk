@@ -615,6 +615,9 @@ describe('Channels SDK', () => {
 
         const event = await getEvent('InventoryCreated');
 
+        // expect the path
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryCreated', 'index.md'))).toBe(true);
+
         expect(event.channels).toEqual([
           {
             id: 'inventory.{env}.events',

@@ -262,6 +262,16 @@ export const addMessageToChannel =
     const channelInfo = { id, version: channel.version, ...(_message.parameters && { parameters: _message.parameters }) };
     message.channels.push(channelInfo);
 
+    // Add the message where it was to start..
+    const existingResource = await findFileById(directory, _message.id, _message.version);
+
+    if (!existingResource) {
+      throw new Error(`Cannot find message ${id} in the catalog`);
+    }
+
+    const path = existingResource.split(`/${collection}`)[0];
+    const pathToResource = join(path, collection);
+
     await rmMessageById(directory)(_message.id, _message.version);
-    await writeMessage(directory)(message);
+    await writeMessage(pathToResource)(message);
   };
