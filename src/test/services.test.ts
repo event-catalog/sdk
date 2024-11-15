@@ -1016,6 +1016,9 @@ describe('Services SDK', () => {
           ],
           markdown: '# Hello world',
         });
+
+        //expect file where is was
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
       });
 
       it('takes an existing event and adds it to the receives of an existing service', async () => {

@@ -375,8 +375,18 @@ export const addMessageToService =
       throw new Error(`Direction ${direction} is invalid, only 'receives' and 'sends' are supported`);
     }
 
+    const existingResource = await findFileById(directory, id, version);
+
+    if (!existingResource) {
+      throw new Error(`Cannot find service ${id} in the catalog`);
+    }
+
+    // Get where the service was located, make sure it goes back there.
+    const path = existingResource.split('/services')[0];
+    const pathToResource = join(path, 'services');
+
     await rmServiceById(directory)(id, version);
-    await writeService(directory)(service);
+    await writeService(pathToResource)(service);
   };
 
 /**
