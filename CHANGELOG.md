@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.2.3
+
+### Patch Changes
+
+- 3cfb549: feat(sdk): added ability to version existing content when writing resources
+
 ## 1.2.2
 
 ### Patch Changes
