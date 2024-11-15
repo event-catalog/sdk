@@ -371,6 +371,62 @@ describe('Services SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
       expect(service.markdown).toBe('Overridden content');
     });
+
+    describe('versionExistingContent', () => {
+      it('versions the previous service when trying to write a service that already exists and versionExistingContent is true and the new version number is greater than the previous one', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+
+        await writeService(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '1.0.0',
+            summary: 'Service tat handles the inventory',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        const service = await getService('InventoryService');
+        expect(service.version).toBe('1.0.0');
+        expect(service.markdown).toBe('New');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      });
+
+      it('throws an error when trying to write a service and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
+        await writeService(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '1.0.0',
+            summary: 'Service tat handles the inventory',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        await expect(
+          writeService(
+            {
+              id: 'InventoryService',
+              name: 'Inventory Service',
+              version: '0.0.0',
+              summary: 'Service tat handles the inventory',
+              markdown: 'New',
+            },
+            { versionExistingContent: true }
+          )
+        ).rejects.toThrowError('New version 0.0.0 is not greater than current version 1.0.0');
+      });
+    });
   });
 
   describe('writeVersionedService', () => {

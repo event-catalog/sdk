@@ -67,11 +67,22 @@ export const getCommand =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { override: true });
+ *
+ * // Write a command to the catalog and version the previous version
+ * // only works if the new version is greater than the previous version
+ * await writeCommand({
+ *    id: 'UpdateInventory',
+ *    name: 'Update Inventory',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { versionExistingContent: true });
+ *
  * ```
  */
 export const writeCommand =
   (directory: string) =>
-  async (command: Command, options: { path?: string; override?: boolean } = { path: '' }) =>
+  async (command: Command, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) =>
     writeResource(directory, { ...command }, { ...options, type: 'command' });
 
 /**

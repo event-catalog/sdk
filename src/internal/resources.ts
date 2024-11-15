@@ -3,6 +3,7 @@ import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from
 import matter from 'gray-matter';
 import fs from 'node:fs/promises';
 import { Message, Service } from '../types';
+import { satisfies, validRange, valid } from 'semver';
 
 type Resource = Service | Message;
 
@@ -43,7 +44,12 @@ export const versionResource = async (catalogDir: string, id: string) => {
 export const writeResource = async (
   catalogDir: string,
   resource: Resource,
-  options: { path?: string; type: string; override?: boolean } = { path: '', type: '', override: false }
+  options: { path?: string; type: string; override?: boolean; versionExistingContent?: boolean } = {
+    path: '',
+    type: '',
+    override: false,
+    versionExistingContent: false,
+  }
 ) => {
   // Get the path
   const path = options.path || `/${resource.id}`;
@@ -54,6 +60,20 @@ export const writeResource = async (
   }
 
   const { markdown, ...frontmatter } = resource;
+
+  // Should we version the existing content?
+  if (options.versionExistingContent) {
+    const currentResource = await getResource(catalogDir, resource.id);
+
+    if (currentResource) {
+      if (satisfies(resource.version, `>${currentResource.version}`)) {
+        await versionResource(catalogDir, resource.id);
+      } else {
+        throw new Error(`New version ${resource.version} is not greater than current version ${currentResource.version}`);
+      }
+    }
+  }
+
   const document = matter.stringify(markdown.trim(), frontmatter);
   await fs.mkdir(join(catalogDir, path), { recursive: true });
   await fs.writeFile(join(catalogDir, path, 'index.md'), document);

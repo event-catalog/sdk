@@ -212,6 +212,36 @@ describe('Channels SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
       expect(channel.markdown).toBe('Overridden content');
     });
+
+    describe('versionExistingContent', () => {
+      it('versions the previous channel when trying to write an channel that already exists and versionExistingContent is true and the new version number is greater than the previous one', async () => {
+        await writeChannel(mockChannel);
+
+        await writeChannel(
+          {
+            ...mockChannel,
+            version: '1.0.0',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        const channel = await getChannel('inventory.{env}.events');
+        expect(channel.version).toBe('1.0.0');
+        expect(channel.markdown).toBe('New');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      });
+
+      it('throws an error when trying to write an channel and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
+        await writeChannel(mockChannel);
+
+        await expect(writeChannel({ ...mockChannel, version: '0.0.0' }, { versionExistingContent: true })).rejects.toThrowError(
+          'New version 0.0.0 is not greater than current version 0.0.1'
+        );
+      });
+    });
   });
 
   describe('rmChannel', () => {

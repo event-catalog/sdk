@@ -66,11 +66,25 @@ export const getEvent =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { override: true });
+ *
+ * // Write a event to the catalog and version the previous version
+ * // only works if the new version is greater than the previous version
+ * await writeEvent({
+ *    id: 'InventoryAdjusted',
+ *    name: 'Inventory Adjusted',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { versionExistingContent: true });
+ *
  * ```
  */
 export const writeEvent =
   (directory: string) =>
-  async (event: Event, options: { path?: string; override?: boolean } = { path: '', override: false }) =>
+  async (
+    event: Event,
+    options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '', override: false }
+  ) =>
     writeResource(directory, { ...event }, { ...options, type: 'event' });
 /**
  * Write an event to a service in EventCatalog.

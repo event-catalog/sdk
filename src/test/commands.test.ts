@@ -200,6 +200,62 @@ describe('Commands SDK', () => {
         })
       ).rejects.toThrowError('Failed to write UpdateInventory (command) as the version 0.0.1 already exists');
     });
+
+    describe('versionExistingContent', () => {
+      it('versions the previous command when trying to write an command that already exists and versionExistingContent is true and the new version number is greater than the previous one', async () => {
+        await writeCommand({
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await writeCommand(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        const channel = await getCommand('UpdateInventory');
+        expect(channel.version).toBe('1.0.0');
+        expect(channel.markdown).toBe('New');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.1', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      });
+
+      it('throws an error when trying to write an channel and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
+        await writeCommand(
+          {
+            id: 'UpdateInventory',
+            name: 'Update Inventory',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        await expect(
+          writeCommand(
+            {
+              id: 'UpdateInventory',
+              name: 'Update Inventory',
+              version: '0.0.0',
+              summary: 'This is a summary',
+              markdown: 'New',
+            },
+            { versionExistingContent: true }
+          )
+        ).rejects.toThrowError('New version 0.0.0 is not greater than current version 1.0.0');
+      });
+    });
   });
 
   describe('writeCommandToService', () => {

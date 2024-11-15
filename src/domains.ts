@@ -65,11 +65,22 @@ export const getDomain =
  *    summary: 'This is a summary',
  *    markdown: '# Hello world',
  * }, { override: true });
+ *
+ * // Write a domain to the catalog and version the previous version
+ * // only works if the new version is greater than the previous version
+ * await writeDomain({
+ *    id: 'Payment',
+ *    name: 'Inventory Adjusted',
+ *    version: '0.0.1',
+ *    summary: 'This is a summary',
+ *    markdown: '# Hello world',
+ * }, { versionExistingContent: true });
+ *
  * ```
  */
 export const writeDomain =
   (directory: string) =>
-  async (domain: Domain, options: { path?: string; override?: boolean } = { path: '' }) => {
+  async (domain: Domain, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) => {
     const resource: Domain = { ...domain };
 
     if (Array.isArray(domain.services)) {

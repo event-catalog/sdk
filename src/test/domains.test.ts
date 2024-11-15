@@ -229,6 +229,62 @@ describe('Domain SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
       expect(service.markdown).toBe('Overridden content');
     });
+
+    describe('versionExistingContent', () => {
+      it('versions the previous domain when trying to write a domain that already exists and versionExistingContent is true and the new version number is greater than the previous one', async () => {
+        await writeDomain({
+          id: 'Payment',
+          name: 'Payment Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await writeDomain(
+          {
+            id: 'Payment',
+            name: 'Payment Domain',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        const domain = await getDomain('Payment');
+        expect(domain.version).toBe('1.0.0');
+        expect(domain.markdown).toBe('New');
+
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      });
+
+      it('throws an error when trying to write a domain and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
+        await writeDomain(
+          {
+            id: 'Payment',
+            name: 'Payment Domain',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: 'New',
+          },
+          { versionExistingContent: true }
+        );
+
+        await expect(
+          writeDomain(
+            {
+              id: 'Payment',
+              name: 'Payment Domain',
+              version: '0.0.0',
+              summary: 'This is a summary',
+              markdown: 'New',
+            },
+            { versionExistingContent: true }
+          )
+        ).rejects.toThrowError('New version 0.0.0 is not greater than current version 1.0.0');
+      });
+    });
   });
 
   describe('versionDomain', () => {
