@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.2.2
+
+### Patch Changes
+
+- 8dbc1ff: feat(sdk): added ability to override content when writing to catalog
+
 ## 1.2.1
 
 ### Patch Changes
