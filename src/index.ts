@@ -72,19 +72,9 @@ import {
   addMessageToChannel,
 } from './channels';
 
-import {
-  writeTeam,
-  getTeam,
-  getTeams,
-  rmTeamById,
-} from './teams';
+import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
 
-import {
-  writeUser,
-  getUser,
-  getUsers,
-  rmUserById,
-} from './users';
+import { writeUser, getUser, getUsers, rmUserById } from './users';
 
 /**
  * Init the SDK for EventCatalog
@@ -692,7 +682,6 @@ export default (path: string) => {
      */
     rmTeamById: rmTeamById(join(path, 'teams')),
 
-
     /**
      * ================================
      *            Users
@@ -724,6 +713,5 @@ export default (path: string) => {
      *
      */
     rmUserById: rmUserById(join(path, 'users')),
-
   };
 };

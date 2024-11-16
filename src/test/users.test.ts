@@ -6,12 +6,7 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-users');
 
-const {
-  writeUser,
-  getUser,
-  getUsers,
-  rmUserById,
-} = utils(CATALOG_PATH);
+const { writeUser, getUser, getUsers, rmUserById } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -44,7 +39,6 @@ describe('Users SDK', () => {
     it('returns undefined when the user is not found', async () => {
       await expect(await getUser('unknown-user')).toEqual(undefined);
     });
-
   });
 
   describe('getUsers', () => {
@@ -76,10 +70,8 @@ describe('Users SDK', () => {
         },
       ]);
     });
-
   });
 
-  
   describe('writeUser', () => {
     it('writes the given user to EventCatalog and assumes the path if one if not given', async () => {
       await writeUser({
@@ -136,7 +128,6 @@ describe('Users SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.md'))).toBe(true);
       expect(user.name).toBe('Eventcatalog Core User Overridden');
     });
-
   });
 
   describe('rmUserById', () => {

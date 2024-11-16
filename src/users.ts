@@ -34,8 +34,7 @@ export const getUser =
       name: data.name,
       markdown: content.trim(),
     } as User;
-
-  }
+  };
 
 /**
  * Returns all users from EventCatalog.
@@ -53,7 +52,7 @@ export const getUser =
  */
 export const getUsers =
   (catalogDir: string) =>
-  async (options?: { }): Promise<User[]> => {
+  async (options?: {}): Promise<User[]> => {
     const files = await getFiles(`${catalogDir}/users/*.md`);
     if (files.length === 0) return [];
 
@@ -66,7 +65,7 @@ export const getUsers =
         markdown: content.trim(),
       } as User;
     });
-  }
+  };
 
 /**
  * Write a user to EventCatalog.
@@ -98,7 +97,7 @@ export const getUsers =
  */
 export const writeUser =
   (catalogDir: string) =>
-  async (user: User, options: { override?: boolean} = { }) => {
+  async (user: User, options: { override?: boolean } = {}) => {
     const resource: User = { ...user };
 
     // Get the path
@@ -114,7 +113,6 @@ export const writeUser =
     const document = matter.stringify(markdown, frontmatter);
     await fs.mkdir(join(catalogDir, ''), { recursive: true });
     await fs.writeFile(join(catalogDir, '', `${resource.id}.md`), document);
-
   };
 
 /**

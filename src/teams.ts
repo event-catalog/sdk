@@ -34,8 +34,7 @@ export const getTeam =
       name: data.name,
       markdown: content.trim(),
     } as Team;
-
-  }
+  };
 
 /**
  * Returns all teams from EventCatalog.
@@ -53,7 +52,7 @@ export const getTeam =
  */
 export const getTeams =
   (catalogDir: string) =>
-  async (options?: { }): Promise<Team[]> => {
+  async (options?: {}): Promise<Team[]> => {
     const files = await getFiles(`${catalogDir}/teams/*.md`);
     if (files.length === 0) return [];
 
@@ -66,7 +65,7 @@ export const getTeams =
         markdown: content.trim(),
       } as Team;
     });
-  }
+  };
 
 /**
  * Write a team to EventCatalog.
@@ -100,7 +99,7 @@ export const getTeams =
  */
 export const writeTeam =
   (catalogDir: string) =>
-  async (team: Team, options: { override?: boolean} = { }) => {
+  async (team: Team, options: { override?: boolean } = {}) => {
     const resource: Team = { ...team };
 
     // Get the path
@@ -116,9 +115,7 @@ export const writeTeam =
     const document = matter.stringify(markdown, frontmatter);
     await fs.mkdir(join(catalogDir, ''), { recursive: true });
     await fs.writeFile(join(catalogDir, '', `${resource.id}.md`), document);
-
   };
-
 
 /**
  * Delete a team by it's id.

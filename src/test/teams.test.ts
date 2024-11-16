@@ -6,12 +6,7 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-teams');
 
-const {
-  writeTeam,
-  getTeam,
-  getTeams,
-  rmTeamById,
-} = utils(CATALOG_PATH);
+const { writeTeam, getTeam, getTeams, rmTeamById } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -44,7 +39,6 @@ describe('Teams SDK', () => {
     it('returns undefined when the team is not found', async () => {
       await expect(await getTeam('unknown-team')).toEqual(undefined);
     });
-
   });
 
   describe('getTeams', () => {
@@ -76,10 +70,8 @@ describe('Teams SDK', () => {
         },
       ]);
     });
-
   });
 
-  
   describe('writeTeam', () => {
     it('writes the given team to EventCatalog and assumes the path if one if not given', async () => {
       await writeTeam({
@@ -136,7 +128,6 @@ describe('Teams SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.md'))).toBe(true);
       expect(team.name).toBe('Eventcatalog Core Team Overridden');
     });
-
   });
 
   describe('rmTeamById', () => {
