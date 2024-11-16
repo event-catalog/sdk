@@ -72,6 +72,20 @@ import {
   addMessageToChannel,
 } from './channels';
 
+import {
+  writeTeam,
+  getTeam,
+  getTeams,
+  rmTeamById,
+} from './teams';
+
+import {
+  writeUser,
+  getUser,
+  getUsers,
+  rmUserById,
+} from './users';
+
 /**
  * Init the SDK for EventCatalog
  *
@@ -645,5 +659,71 @@ export default (path: string) => {
      * @returns
      */
     addServiceToDomain: addServiceToDomain(join(path, 'domains')),
+
+    /**
+     * ================================
+     *            Teams
+     * ================================
+     */
+    /**
+     * Adds a team to EventCatalog
+     *
+     * @param team - The team to write
+     * @param options - Optional options to write the team
+     *
+     */
+    writeTeam: writeTeam(join(path, 'teams')),
+    /**
+     * Returns a team from EventCatalog
+     * @param id - The id of the team to retrieve
+     * @returns Team|Undefined
+     */
+    getTeam: getTeam(join(path, 'teams')),
+    /**
+     * Returns all teams from EventCatalog
+     * @returns Team[]|Undefined
+     */
+    getTeams: getTeams(join(path)),
+    /**
+     * Remove a team by the team id
+     *
+     * @param id - The id of the team you want to remove
+     *
+     */
+    rmTeamById: rmTeamById(join(path, 'teams')),
+
+
+    /**
+     * ================================
+     *            Users
+     * ================================
+     */
+    /**
+     * Adds a user to EventCatalog
+     *
+     * @param user - The user to write
+     * @param options - Optional options to write the user
+     *
+     */
+    writeUser: writeUser(join(path, 'users')),
+    /**
+     * Returns a user from EventCatalog
+     * @param id - The id of the user to retrieve
+     * @returns Domain|Undefined
+     */
+    getUser: getUser(join(path, 'users')),
+    /**
+     * Returns all user from EventCatalog
+     * @returns User[]|Undefined
+     */
+    getUsers: getUsers(join(path)),
+    /**
+     * Remove a user by the user id
+     *
+     * @param id - The id of the user you want to remove
+     *
+     */
+    rmUserById: rmUserById(join(path, 'users')),
+
   };
 };

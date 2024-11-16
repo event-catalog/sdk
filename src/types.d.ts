@@ -76,6 +76,7 @@ export interface Team {
   ownedCommands?: Command[];
   ownedServices?: Service[];
   ownedEvents?: Event[];
+  markdown: string;
 }
 
 export interface User {
@@ -90,6 +91,7 @@ export interface User {
   ownedEvents?: Event[];
   ownedCommands?: Command[];
   associatedTeams?: Team[];
+  markdown: string;
 }
 
 export interface Badge {

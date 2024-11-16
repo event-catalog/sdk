@@ -31,3 +31,5 @@ export * from './events';
 export * from './commands';
 export * from './queries';
 export * from './channels';
+export * from './teams';
+export * from './users';
