@@ -62,7 +62,7 @@ export const writeResource = async (
   const { markdown, ...frontmatter } = resource;
 
   // Should we version the existing content?
-  if (options.versionExistingContent) {
+  if (options.versionExistingContent && !exists) {
     const currentResource = await getResource(catalogDir, resource.id);
 
     if (currentResource) {
