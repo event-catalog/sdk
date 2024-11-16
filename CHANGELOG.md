@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.3.2
+
+### Patch Changes
+
+- 8f30457: feat(sdk): added ability to override resources whilst trying to versi…
+
 ## 1.3.1
 
 ### Patch Changes
