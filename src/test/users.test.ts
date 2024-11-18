@@ -107,7 +107,7 @@ describe('Users SDK', () => {
       ).rejects.toThrowError('Failed to write eventcatalog-core-user (user) as it already exists');
     });
 
-    it('overrides the domain when trying to write an domain that already exists and override is true', async () => {
+    it('overrides the user when trying to write an user that already exists and override is true', async () => {
       await writeUser({
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
