@@ -119,7 +119,7 @@ describe('Domain SDK', () => {
   });
 
   describe('getDomains', () => {
-    it.only('returns all the domains in the catalog,', async () => {
+    it('returns all the domains in the catalog,', async () => {
       // versioned domain
       await writeDomain({
         id: 'InventoryAdjusted',
