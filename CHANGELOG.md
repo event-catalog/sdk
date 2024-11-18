@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.1
+
+### Patch Changes
+
+- 7ce9ae2: fix(sdk): issue getting resources in nested folder structures
+
 ## 1.4.0
 
 ### Minor Changes
