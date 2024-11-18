@@ -32,6 +32,7 @@ export const getUser =
       ...data,
       id: data.id,
       name: data.name,
+      avatarUrl: data.avatarUrl,
       markdown: content.trim(),
     } as User;
   };
@@ -62,6 +63,7 @@ export const getUsers =
         ...data,
         id: data.id,
         name: data.name,
+        avatarUrl: data.avatarUrl,
         markdown: content.trim(),
       } as User;
     });
@@ -82,6 +84,7 @@ export const getUsers =
  *   id: 'eventcatalog-tech-lead',
  *   name: 'EventCatalog Tech Lead',
  *   email: 'test@test.com',
+ *   avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
  *   slackDirectMessageUrl: https://yourteam.slack.com/channels/boyney123
  * });
  *
@@ -90,6 +93,7 @@ export const getUsers =
  *   id: 'eventcatalog-tech-lead',
  *   name: 'EventCatalog Tech Lead',
  *   email: 'test@test.com',
+ *   avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
  *   slackDirectMessageUrl: https://yourteam.slack.com/channels/boyney123
  * }, { override: true });
  *
