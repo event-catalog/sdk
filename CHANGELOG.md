@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.0
+
+### Minor Changes
+
+- 30822e8: feat(sdk): adding team and user sdk functions
+
 ## 1.3.2
 
 ### Patch Changes
