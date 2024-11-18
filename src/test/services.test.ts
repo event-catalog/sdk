@@ -11,6 +11,7 @@ const {
   writeService,
   writeServiceToDomain,
   writeVersionedService,
+  writeEvent,
   getService,
   getServices,
   versionService,
@@ -299,6 +300,40 @@ describe('Services SDK', () => {
         },
       ]);
     });
+
+    it('when messages are nested into the service folder it only returns the services', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeEvent(
+        {
+          id: 'InventoryUpdatedEvent',
+          version: '2.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          name: 'Inventory Updated Event',
+        },
+        { path: '/services/InventoryService' }
+      );
+
+      const services = await getServices();
+
+      expect(services).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+
     it('returns only the latest services when `latestOnly` is set to true,', async () => {
       // versioned service
       await writeService({

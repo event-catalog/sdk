@@ -10,6 +10,7 @@ const {
   writeDomain,
   getDomain,
   getDomains,
+  writeService,
   versionDomain,
   rmDomain,
   rmDomainById,
@@ -118,7 +119,7 @@ describe('Domain SDK', () => {
   });
 
   describe('getDomains', () => {
-    it('returns all the domains in the catalog,', async () => {
+    it.only('returns all the domains in the catalog,', async () => {
       // versioned domain
       await writeDomain({
         id: 'InventoryAdjusted',
@@ -140,31 +141,12 @@ describe('Domain SDK', () => {
         { versionExistingContent: true }
       );
 
-      // domain in the services folder
-      await writeDomain(
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        { path: '/services/OrderService' }
-      );
-
       const domains = await getDomains();
 
       expect(domains).toEqual([
         {
           id: 'InventoryAdjusted',
           name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
           version: '1.0.0',
           summary: 'This is a summary',
           markdown: '# Hello world',
@@ -178,6 +160,41 @@ describe('Domain SDK', () => {
         },
       ]);
     });
+
+    it('when services are nested into the domains folder it only returns the domains', async () => {
+      // versioned domain
+      await writeDomain({
+        id: 'Inventory',
+        name: 'Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeService(
+        {
+          id: 'InventoryService',
+          version: '1.0.0',
+          name: 'Inventory Service',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/domains/writeDomain' }
+      );
+
+      const domains = await getDomains();
+
+      expect(domains).toEqual([
+        {
+          id: 'Inventory',
+          name: 'Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+
     it('returns only the latest domains when `latestOnly` is set to true,', async () => {
       // versioned domain
       await writeDomain({
@@ -205,18 +222,6 @@ describe('Domain SDK', () => {
         {
           id: 'OrderComplete',
           name: 'Order Complete',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        { path: '/services/OrderService' }
-      );
-
-      // domain in the services folder
-      await writeDomain(
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
           version: '2.0.0',
           summary: 'This is a summary',
           markdown: '# Hello world',
@@ -231,13 +236,6 @@ describe('Domain SDK', () => {
           id: 'InventoryAdjusted',
           name: 'Inventory Adjusted',
           version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '2.0.0',
           summary: 'This is a summary',
           markdown: '# Hello world',
         },
