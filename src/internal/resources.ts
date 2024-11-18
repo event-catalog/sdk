@@ -98,10 +98,10 @@ export const getResource = async (
 
 export const getResources = async (
   catalogDir: string,
-  { type, latestOnly = false }: { type: string; latestOnly?: boolean }
+  { type, latestOnly = false, ignore = [] }: { type: string; latestOnly?: boolean; ignore?: string[] }
 ): Promise<Resource[] | undefined> => {
-  const ignore = latestOnly ? `**/versioned/**` : '';
-  const files = await getFiles(`${catalogDir}/**/${type}/**/index.md`, ignore);
+  const ignoreList = latestOnly ? `**/versioned/**` : '';
+  const files = await getFiles(`${catalogDir}/**/${type}/**/index.md`, [ignoreList, ...ignore]);
   if (files.length === 0) return;
 
   return files.map((file) => {

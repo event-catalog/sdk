@@ -55,7 +55,11 @@ export const getDomain =
 export const getDomains =
   (directory: string) =>
   async (options?: { latestOnly?: boolean }): Promise<Domain[]> =>
-    getResources(directory, { type: 'domains', ...options }) as Promise<Domain[]>;
+    getResources(directory, {
+      type: 'domains',
+      ignore: ['**/services/**', '**/events/**', '**/commands/**', '**/queries/**'],
+      ...options,
+    }) as Promise<Domain[]>;
 
 /**
  * Write a domain to EventCatalog.

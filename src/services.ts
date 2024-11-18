@@ -57,7 +57,11 @@ export const getService =
 export const getServices =
   (directory: string) =>
   async (options?: { latestOnly?: boolean }): Promise<Service[]> =>
-    getResources(directory, { type: 'services', ...options }) as Promise<Service[]>;
+    getResources(directory, {
+      type: 'services',
+      ignore: ['**/events/**', '**/commands/**', '**/queries/**'],
+      ...options,
+    }) as Promise<Service[]>;
 
 /**
  * Write a Service to EventCatalog.
