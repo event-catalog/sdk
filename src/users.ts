@@ -88,7 +88,7 @@ export const getUsers =
  *   slackDirectMessageUrl: https://yourteam.slack.com/channels/boyney123
  * });
  *
- * // Write a channel to the catalog and override the existing content (if there is any)
+ * // Write a team to the catalog and override the existing content (if there is any)
  * await writeUser({
  *   id: 'eventcatalog-tech-lead',
  *   name: 'EventCatalog Tech Lead',
