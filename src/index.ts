@@ -698,7 +698,7 @@ export default (path: string) => {
     /**
      * Returns a user from EventCatalog
      * @param id - The id of the user to retrieve
-     * @returns Domain|Undefined
+     * @returns User|Undefined
      */
     getUser: getUser(join(path, 'users')),
     /**
