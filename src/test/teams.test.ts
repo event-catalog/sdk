@@ -107,7 +107,7 @@ describe('Teams SDK', () => {
       ).rejects.toThrowError('Failed to write eventcatalog-core-team (team) as it already exists');
     });
 
-    it('overrides the domain when trying to write an domain that already exists and override is true', async () => {
+    it('overrides the team when trying to write an team that already exists and override is true', async () => {
       await writeTeam({
         id: 'eventcatalog-core-team',
         name: 'Eventcatalog Core Team',
