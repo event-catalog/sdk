@@ -722,6 +722,44 @@ describe('Queries SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
     });
 
+    it('removes a query and all files in that query', async () => {
+      await writeQuery({
+        id: 'GetOrder',
+        name: 'Get Order',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      fs.writeFileSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'), 'SCHEMA!');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+
+      await rmQueryById('GetOrder');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'))).toBe(false);
+    });
+
+    it('removes a query but keeps its files when persistFiles is set to true', async () => {
+      await writeQuery({
+        id: 'GetOrder',
+        name: 'Get Order',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      fs.writeFileSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'), 'SCHEMA!');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+
+      await rmQueryById('GetOrder', '0.0.1', true);
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'))).toBe(true);
+    });
+
     it('removes an query from eventcatalog by id and version', async () => {
       await writeQuery({
         id: 'GetOrder',

@@ -729,6 +729,26 @@ describe('Services SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
     });
+
+    it('removes all files with that service directory when the service is deleted', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      // add random file
+      fs.writeFileSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'), 'dummy-data');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+
+      await rmService('/InventoryService');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'))).toBe(false);
+    });
   });
 
   describe('rmServiceById', () => {
@@ -746,6 +766,26 @@ describe('Services SDK', () => {
       await rmServiceById('InventoryService');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+    });
+
+    it('removes all files with that service directory when the service is deleted by id', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      // add random file
+      fs.writeFileSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'), 'dummy-data');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+
+      await rmServiceById('InventoryService');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'))).toBe(false);
     });
 
     it('removes a service from eventcatalog by id and version', async () => {

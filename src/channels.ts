@@ -272,6 +272,6 @@ export const addMessageToChannel =
     const path = existingResource.split(`/${collection}`)[0];
     const pathToResource = join(path, collection);
 
-    await rmMessageById(directory)(_message.id, _message.version);
+    await rmMessageById(directory)(_message.id, _message.version, true);
     await writeMessage(pathToResource)(message);
   };

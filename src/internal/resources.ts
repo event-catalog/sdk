@@ -113,7 +113,12 @@ export const getResources = async (
   });
 };
 
-export const rmResourceById = async (catalogDir: string, id: string, version?: string, options?: { type: string }) => {
+export const rmResourceById = async (
+  catalogDir: string,
+  id: string,
+  version?: string,
+  options?: { type: string; persistFiles?: boolean }
+) => {
   const files = await getFiles(`${catalogDir}/**/index.md`);
 
   const matchedFiles = await searchFilesForId(files, id, version);
@@ -122,7 +127,20 @@ export const rmResourceById = async (catalogDir: string, id: string, version?: s
     throw new Error(`No ${options?.type || 'resource'} found with id: ${id}`);
   }
 
-  await Promise.all(matchedFiles.map((file) => fs.rm(file)));
+  if (options?.persistFiles) {
+    await Promise.all(
+      matchedFiles.map(async (file) => {
+        await fs.rm(file, { recursive: true });
+      })
+    );
+  } else {
+    await Promise.all(
+      matchedFiles.map(async (file) => {
+        const directory = dirname(file);
+        await fs.rm(directory, { recursive: true, force: true });
+      })
+    );
+  }
 };
 
 export const addFileToResource = async (
