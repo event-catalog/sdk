@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.2
+
+### Patch Changes
+
+- e125e38: fix(sdk): removing resources now deletes file within that resource
+
 ## 1.4.1
 
 ### Patch Changes
