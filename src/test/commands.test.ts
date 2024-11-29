@@ -475,6 +475,44 @@ describe('Commands SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
     });
 
+    it('removes a command and all files in that command', async () => {
+      await writeCommand({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      fs.writeFileSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'), 'SCHEMA!');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+
+      await rmCommandById('UpdateInventory');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'))).toBe(false);
+    });
+
+    it('removes a command but keeps its files when persistFiles is set to true', async () => {
+      await writeCommand({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      fs.writeFileSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'), 'SCHEMA!');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+
+      await rmCommandById('UpdateInventory', '0.0.1', true);
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'))).toBe(true);
+    });
+
     it('removes an command from eventcatalog by id and version', async () => {
       await writeCommand({
         id: 'UpdateInventory',

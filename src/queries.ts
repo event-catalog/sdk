@@ -183,8 +183,8 @@ export const rmQuery = (directory: string) => async (path: string) => {
  * await rmQueryById('GetOrder', '0.0.1');
  * ```
  */
-export const rmQueryById = (directory: string) => async (id: string, version?: string) => {
-  await rmResourceById(directory, id, version, { type: 'query' });
+export const rmQueryById = (directory: string) => async (id: string, version?: string, persistFiles?: boolean) => {
+  await rmResourceById(directory, id, version, { type: 'query', persistFiles });
 };
 
 /**

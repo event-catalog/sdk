@@ -183,8 +183,8 @@ export const rmCommand = (directory: string) => async (path: string) => {
  * await rmCommandById('UpdateInventory', '0.0.1');
  * ```
  */
-export const rmCommandById = (directory: string) => async (id: string, version?: string) =>
-  rmResourceById(directory, id, version, { type: 'command' });
+export const rmCommandById = (directory: string) => async (id: string, version?: string, persistFiles?: boolean) =>
+  rmResourceById(directory, id, version, { type: 'command', persistFiles });
 
 /**
  * Version a command by it's id.

@@ -185,8 +185,8 @@ export const rmEvent = (directory: string) => async (path: string) => {
  * await rmEventById('InventoryAdjusted', '0.0.1');
  * ```
  */
-export const rmEventById = (directory: string) => async (id: string, version?: string) => {
-  await rmResourceById(directory, id, version, { type: 'event' });
+export const rmEventById = (directory: string) => async (id: string, version?: string, persistFiles?: boolean) => {
+  await rmResourceById(directory, id, version, { type: 'event', persistFiles });
 };
 
 /**

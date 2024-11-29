@@ -756,6 +756,44 @@ describe('Events SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
     });
 
+    it('removes and event and all files in that event', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      fs.writeFileSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'), 'SCHEMA!');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+
+      await rmEventById('InventoryAdjusted');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(false);
+    });
+
+    it('removes and event but keeps its files when persistFiles is set to true', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      fs.writeFileSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'), 'SCHEMA!');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+
+      await rmEventById('InventoryAdjusted', '0.0.1', true);
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(true);
+    });
+
     it('removes an event from eventcatalog by id and version', async () => {
       await writeEvent({
         id: 'InventoryAdjusted',
