@@ -8,6 +8,10 @@ export interface BaseSchema {
   owners?: string[];
   schemaPath?: string;
   markdown: string;
+  repository?: {
+    language?: string;
+    url?: string;
+  };
 }
 
 export type ResourcePointer = {
