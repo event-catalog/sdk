@@ -153,8 +153,8 @@ export const rmChannel = (directory: string) => async (path: string) => {
  * await rmChannelById('inventory.{env}.events', '0.0.1');
  * ```
  */
-export const rmChannelById = (directory: string) => async (id: string, version?: string) =>
-  rmResourceById(directory, id, version, { type: 'channel' });
+export const rmChannelById = (directory: string) => async (id: string, version?: string, persistFiles?: boolean) =>
+  rmResourceById(directory, id, version, { type: 'channel', persistFiles });
 
 /**
  * Version a channel by it's id.
