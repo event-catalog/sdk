@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.3
+
+### Patch Changes
+
+- d9b7d03: chore(sdk): added repoistory on base schema for resources
+
 ## 1.4.2
 
 ### Patch Changes
