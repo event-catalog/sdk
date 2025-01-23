@@ -44,6 +44,10 @@ describe('Services SDK', () => {
         version: '0.0.1',
         summary: 'Service tat handles the inventory',
         markdown: '# Hello world',
+        repository: {
+          language: 'TypeScript',
+          url: 'https://github.com/eventcatalog/eventcatalog',
+        },
       });
 
       const test = await getService('InventoryService');
@@ -54,6 +58,10 @@ describe('Services SDK', () => {
         version: '0.0.1',
         summary: 'Service tat handles the inventory',
         markdown: '# Hello world',
+        repository: {
+          language: 'TypeScript',
+          url: 'https://github.com/eventcatalog/eventcatalog',
+        },
       });
     });
 
