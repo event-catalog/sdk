@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.4
+
+### Patch Changes
+
+- 212023e: fix(sdk): fixed issue with persisting files between versioning for do…
+
 ## 1.4.3
 
 ### Patch Changes
