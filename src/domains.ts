@@ -180,8 +180,8 @@ export const rmDomain = (directory: string) => async (path: string) => {
  * await rmDomainById('Payment', '0.0.1');
  * ```
  */
-export const rmDomainById = (directory: string) => async (id: string, version?: string) =>
-  rmResourceById(directory, id, version, { type: 'domain' });
+export const rmDomainById = (directory: string) => async (id: string, version?: string, persistFiles?: boolean) =>
+  rmResourceById(directory, id, version, { type: 'domain', persistFiles });
 
 /**
  * Add a file to a domain by it's id.
@@ -229,9 +229,9 @@ export const domainHasVersion = (directory: string) => async (id: string, versio
 };
 
 /**
- * Add an event/command to a service by it's id.
+ * Add a service to a domain by it's id.
  *
- * Optionally specify a version to add the event to a specific version of the service.
+ * Optionally specify a version to add the service to a specific version of the domain.
  *
  * @example
  * ```ts
@@ -255,15 +255,15 @@ export const addServiceToDomain =
       domain.services = [];
     }
 
-    const eventExistsInList = domain.services.some((s) => s.id === service.id && s.version === service.version);
+    const serviceExistsInList = domain.services.some((s) => s.id === service.id && s.version === service.version);
 
-    if (eventExistsInList) {
+    if (serviceExistsInList) {
       return;
     }
 
     // Add service to the list
     domain.services.push(service);
 
-    await rmDomainById(directory)(id, version);
+    await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain);
   };

@@ -253,8 +253,8 @@ export const rmService = (directory: string) => async (path: string) => {
  * await rmServiceById('InventoryService', '0.0.1');
  * ```
  */
-export const rmServiceById = (directory: string) => async (id: string, version?: string) =>
-  rmResourceById(directory, id, version, { type: 'service' });
+export const rmServiceById = (directory: string) => async (id: string, version?: string, persistFiles?: boolean) =>
+  rmResourceById(directory, id, version, { type: 'service', persistFiles });
 
 /**
  * Add a file to a service by it's id.
