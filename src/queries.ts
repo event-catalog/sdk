@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
-import { findFileById } from './internal/utils';
-import type { Query } from './types';
+import { findFileById, getUniqueResourcesById } from './internal/utils';
+import type { Domain, Query } from './types';
 import {
   addFileToResource,
   getResource,
@@ -10,6 +10,8 @@ import {
   versionResource,
   writeResource,
 } from './internal/resources';
+import { getDomainFromPathToFile } from './domains';
+import { getServices, getDomainFromService } from './services';
 
 /**
  * Returns a query from EventCatalog.
@@ -289,3 +291,33 @@ export const queryHasVersion = (directory: string) => async (id: string, version
   const file = await findFileById(directory, id, version);
   return !!file;
 };
+
+/**
+ * Retrieves the domain associated with a given query ID and version.
+ *
+ * This function first attempts to find the file path of the query within the specified directory.
+ * If the query is found within a nested domain structure, it retrieves the domain information.
+ * If not, it looks up the receivers of the query and retrieves the domain information from the receiver services.
+ */
+export const getDomainFromQuery =
+  (directory: string) =>
+  async (id: string, version: string): Promise<Domain[] | undefined> => {
+    const pathToFile = await findFileById(directory, id, version);
+    if (!pathToFile) return undefined;
+
+    const domain = getDomainFromPathToFile(directory)(pathToFile);
+    if (domain) return Array.isArray(domain) ? domain : [domain];
+
+    // Look up contract owner (receiver)
+    const services = await getServices(directory)();
+    const receivers = services.filter((s) => s.receives?.some((m) => m.id === id && m.version === version));
+    if (receivers.length === 0) return undefined;
+
+    // Get domain for each receiver
+    const getDomainFromReceiver = getDomainFromService(directory);
+    const domains = await Promise.all(receivers.map((p) => getDomainFromReceiver(p.id, p.version)));
+    const sanitizedDomains = domains.flat().filter((d) => d !== undefined);
+    if (sanitizedDomains.length === 0) return undefined;
+
+    return getUniqueResourcesById(sanitizedDomains);
+  };
