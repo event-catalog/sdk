@@ -9,7 +9,8 @@ import {
   versionResource,
   writeResource,
 } from './internal/resources';
-import { findFileById, uniqueVersions } from './internal/utils';
+import { findFileById, removeBase, removeLeadingForwardSlash, uniqueVersions } from './internal/utils';
+import matter from 'gray-matter';
 
 /**
  * Returns a domain from EventCatalog.
@@ -267,3 +268,27 @@ export const addServiceToDomain =
     await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain);
   };
+
+/**
+ * Retrieves the domain information from a given file path.
+ *
+ * This function removes the base directory from the file path and splits the remaining path into parts.
+ * If the path indicates a nested domain structure, it reads the domain information from the corresponding index.md file.
+ *
+ * @param {string} directory - The base directory to search for the domain.
+ * @returns {Function} - A function that takes a file path and returns the domain information.
+ */
+export const getDomainFromPathToFile = (directory: string) => (pathToFile: string) => {
+  const filePath = removeBase(pathToFile, directory);
+  const parts = removeLeadingForwardSlash(filePath).split('/');
+
+  // Is within nested structure
+  if (parts[0] === 'domains') {
+    const isDomainVersioned = parts[2] === 'versioned';
+    const domainPath = join(directory, parts.slice(0, isDomainVersioned ? 4 : 2).join('/'), 'index.md');
+    const { data, content } = matter.read(domainPath);
+    return { ...data, markdown: content } as Domain;
+  }
+
+  return undefined;
+};

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
-import { findFileById } from './internal/utils';
-import type { Event } from './types';
+import { findFileById, getUniqueResourcesById } from './internal/utils';
+import type { Domain, Event } from './types';
 import {
   addFileToResource,
   getResource,
@@ -10,6 +10,8 @@ import {
   versionResource,
   writeResource,
 } from './internal/resources';
+import { getDomainFromPathToFile } from './domains';
+import { getDomainFromService, getServices } from './services';
 
 /**
  * Returns an event from EventCatalog.
@@ -283,7 +285,7 @@ export const addSchemaToEvent =
  * // returns true if version is found for the given event and version (supports semver)
  * await eventHasVersion('InventoryAdjusted', '0.0.1');
  * await eventHasVersion('InventoryAdjusted', 'latest');
- * await eventHasVersion('InventoryAdjusted', '0.0.x');*
+ * await eventHasVersion('InventoryAdjusted', '0.0.x');
  *
  * ```
  */
@@ -291,3 +293,33 @@ export const eventHasVersion = (directory: string) => async (id: string, version
   const file = await findFileById(directory, id, version);
   return !!file;
 };
+
+/**
+ * Retrieves the domain associated with a given event ID and version.
+ *
+ * This function first attempts to find the file path of the event within the specified directory.
+ * If the event is found within a nested domain structure, it retrieves the domain information.
+ * If not, it looks up the producers of the event and retrieves the domain information from the producer services.
+ */
+export const getDomainFromEvent =
+  (directory: string) =>
+  async (id: string, version: string): Promise<Domain[] | undefined> => {
+    const pathToFile = await findFileById(directory, id, version);
+    if (!pathToFile) return undefined;
+
+    const domain = getDomainFromPathToFile(directory)(pathToFile);
+    if (domain) return Array.isArray(domain) ? domain : [domain];
+
+    // Look up contract owner (producers)
+    const services = await getServices(directory)();
+    const producers = services.filter((s) => s.sends?.some((m) => m.id === id && m.version === version));
+    if (producers.length === 0) return undefined;
+
+    // Get domain for each producer
+    const getDomainFromProducer = getDomainFromService(directory);
+    const domains = await Promise.all(producers.map((p) => getDomainFromProducer(p.id, p.version)));
+    const sanitizedDomains = domains.flat().filter((d) => d !== undefined);
+    if (sanitizedDomains.length === 0) return undefined;
+
+    return getUniqueResourcesById(sanitizedDomains);
+  };

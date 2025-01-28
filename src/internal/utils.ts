@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
 import matter from 'gray-matter';
-import { satisfies, validRange, valid } from 'semver';
+import { satisfies, validRange, valid, coerce, compare, rcompare } from 'semver';
 
 /**
  * Returns true if a given version of a resource id exists in the catalog
@@ -121,4 +121,101 @@ export const uniqueVersions = (messages: { id: string; version: string }[]): { i
     }
     return false;
   });
+};
+
+/**
+ * Compares two version strings in ascending order.
+ *
+ * This function first attempts to coerce the version strings to semver. If successful, it uses semver comparison.
+ * If not, it falls back to localeCompare.
+ *
+ * @param {string} v1 - The first version string to compare.
+ * @param {string} v2 - The second version string to compare.
+ * @returns {number} - A negative number if v1 < v2, zero if v1 = v2, or a positive number if v1 > v2.
+ */
+export const compareVersions = (v1: string, v2: string): number => {
+  // Try coerce to semver
+  const semverV1 = coerce(v1);
+  const semverV2 = coerce(v2);
+
+  if (semverV1 !== null && semverV2 !== null) {
+    return compare(semverV1, semverV2);
+  }
+
+  // Fallback
+  return v1.localeCompare(v2);
+};
+
+/**
+ * Compares two version strings in descending order.
+ *
+ * This function first attempts to coerce the version strings to semver. If successful, it uses semver comparison.
+ * If not, it falls back to localeCompare.
+ *
+ * @param {string} v1 - The first version string to compare.
+ * @param {string} v2 - The second version string to compare.
+ * @returns {number} - A negative number if v1 > v2, zero if v1 = v2, or a positive number if v1 < v2.
+ */
+export const rCompareVersions = (v1: string, v2: string): number => {
+  // Try coerce to semver
+  const semverV1 = coerce(v1);
+  const semverV2 = coerce(v2);
+
+  if (semverV1 !== null && semverV2 !== null) {
+    return rcompare(semverV1, semverV2);
+  }
+
+  // Fallback
+  return v2.localeCompare(v1);
+};
+
+/**
+ * Groups resources by ID and returns a list of unique resources with the latest version for each ID.
+ *
+ * @param {Array} resources - The array of resources to group and filter.
+ * @returns {Array} - An array of unique resources with the latest version for each ID.
+ *
+ * @example
+ * const resources = [
+ *   { id: 'resource1', version: '1.0.0' },
+ *   { id: 'resource1', version: '1.1.0' },
+ *   { id: 'resource2', version: '2.0.0' },
+ *   { id: 'resource2', version: '2.1.0' }
+ * ];
+ *
+ * const uniqueResources = getUniqueResourcesById(resources);
+ * console.log(uniqueResources); // Output: [{ id: 'resource1', version: '1.1.0' }, { id: 'resource2', version: '2.1.0' }]
+ */
+export const getUniqueResourcesById = <T extends { id: string; version: string }>(resources: T[]): T[] => {
+  // Group by ID
+  const resourcesMap = new Map<string, T[]>();
+  resources.forEach((resource) => resourcesMap.set(resource.id, (resourcesMap.get(resource.id) ?? []).concat(resource)));
+
+  // Get latest resource for each ID
+  const uniqueResources = new Set<T>();
+  resourcesMap.forEach((resources) => {
+    const sortedResources = resources.sort((a, b) => rCompareVersions(a.version, b.version));
+    uniqueResources.add(sortedResources[0] /** latestResource */);
+  });
+
+  return Array.from(uniqueResources.values());
+};
+
+export const removeLeadingForwardSlash = (filePath: string) => {
+  return filePath.startsWith('/') ? filePath.substring(1) : filePath;
+};
+
+export const removeTrailingForwardSlash = (filePath: string) => {
+  return filePath.endsWith('/') ? filePath.slice(0, -1) : filePath;
+};
+
+export const removeBase = (filePath: string, base: string) => {
+  if (filePath.startsWith(base)) {
+    return filePath.slice(removeTrailingForwardSlash(base).length);
+  }
+  return filePath;
+};
+
+export const appendForwardSlash = (filePath: string) => {
+  return filePath.endsWith('/') ? filePath : filePath + '/';
 };
