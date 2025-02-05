@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.5
+
+### Patch Changes
+
+- ae82880: chore(fix): fixed async issues when writing services
+
 ## 1.4.4
 
 ### Patch Changes
