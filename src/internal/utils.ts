@@ -1,7 +1,7 @@
-import { glob } from 'glob';
+import { glob, globSync } from 'glob';
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
-import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
+import { copy, copySync, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
 import matter from 'gray-matter';
 import { satisfies, validRange, valid } from 'semver';
@@ -54,7 +54,7 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
 export const getFiles = async (pattern: string, ignore: string | string[] = '') => {
   try {
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
-    const files = await glob(pattern, { ignore: ['node_modules/**', ...ignoreList] });
+    const files = globSync(pattern, { ignore: ['node_modules/**', ...ignoreList] });
     return files;
   } catch (error) {
     throw new Error(`Error finding files: ${error}`);
@@ -65,21 +65,19 @@ export const searchFilesForId = async (files: string[], id: string, version?: st
   const idRegex = new RegExp(`^id:\\s*(['"]|>-)?\\s*${id}['"]?\\s*$`, 'm');
   const versionRegex = new RegExp(`^version:\\s*['"]?${version}['"]?\\s*$`, 'm');
 
-  const matches = await Promise.all(
-    files.map(async (file) => {
-      const content = await fs.readFile(file, 'utf-8');
-      const hasIdMatch = content.match(idRegex);
+  const matches = files.map((file) => {
+    const content = fsSync.readFileSync(file, 'utf-8');
+    const hasIdMatch = content.match(idRegex);
 
-      // Check version if provided
-      if (version && !content.match(versionRegex)) {
-        return undefined;
-      }
+    // Check version if provided
+    if (version && !content.match(versionRegex)) {
+      return undefined;
+    }
 
-      if (hasIdMatch) {
-        return file;
-      }
-    })
-  );
+    if (hasIdMatch) {
+      return file;
+    }
+  });
 
   return matches.filter(Boolean).filter((file) => file !== undefined);
 };

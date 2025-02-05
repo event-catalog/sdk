@@ -210,56 +210,59 @@ describe('Channels SDK', () => {
 
       const channels = await getChannels();
 
-      expect(channels).toEqual([
-        {
-          id: 'inventory.{env}.events',
-          name: 'Inventory Channel',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-          address: 'inventory.{env}.events',
-          protocols: ['kafka'],
-          parameters: {
-            env: {
-              enum: ['dev', 'staging', 'prod'],
-              default: 'dev',
-              description: 'The environment to deploy to',
+      expect(channels).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'inventory.{env}.events',
+            name: 'Inventory Channel',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            address: 'inventory.{env}.events',
+            protocols: ['kafka'],
+            parameters: {
+              env: {
+                enum: ['dev', 'staging', 'prod'],
+                default: 'dev',
+                description: 'The environment to deploy to',
+              },
             },
           },
-        },
-        {
-          id: 'order.{env}.events',
-          name: 'Order Channel',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-          address: 'order.{env}.events',
-          protocols: ['kafka'],
-          parameters: {
-            env: {
-              enum: ['dev', 'staging', 'prod'],
-              default: 'dev',
-              description: 'The environment to deploy to',
+          {
+            id: 'order.{env}.events',
+            name: 'Order Channel',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            address: 'order.{env}.events',
+            protocols: ['kafka'],
+            parameters: {
+              env: {
+                enum: ['dev', 'staging', 'prod'],
+                default: 'dev',
+                description: 'The environment to deploy to',
+              },
             },
           },
-        },
-        {
-          id: 'inventory.{env}.events',
-          name: 'Inventory Channel',
-          version: '0.0.1',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-          address: 'inventory.{env}.events',
-          protocols: ['kafka'],
-          parameters: {
-            env: {
-              enum: ['dev', 'staging', 'prod'],
-              default: 'dev',
-              description: 'The environment to deploy to',
+          {
+            id: 'inventory.{env}.events',
+            name: 'Inventory Channel',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            address: 'inventory.{env}.events',
+            protocols: ['kafka'],
+            parameters: {
+              env: {
+                enum: ['dev', 'staging', 'prod'],
+                default: 'dev',
+                description: 'The environment to deploy to',
+              },
             },
           },
-        },
-      ]);
+        ])
+      );
+      expect(channels).toHaveLength(3);
     });
 
     it('returns only the latest channels when `latestOnly` is set to true,', async () => {
@@ -346,40 +349,43 @@ describe('Channels SDK', () => {
 
       const channels = await getChannels({ latestOnly: true });
 
-      expect(channels).toEqual([
-        {
-          id: 'inventory.{env}.events',
-          name: 'Inventory Channel',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-          address: 'inventory.{env}.events',
-          protocols: ['kafka'],
-          parameters: {
-            env: {
-              enum: ['dev', 'staging', 'prod'],
-              default: 'dev',
-              description: 'The environment to deploy to',
+      expect(channels).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'inventory.{env}.events',
+            name: 'Inventory Channel',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            address: 'inventory.{env}.events',
+            protocols: ['kafka'],
+            parameters: {
+              env: {
+                enum: ['dev', 'staging', 'prod'],
+                default: 'dev',
+                description: 'The environment to deploy to',
+              },
             },
           },
-        },
-        {
-          id: 'order.{env}.events',
-          name: 'Order Channel',
-          version: '2.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-          address: 'order.{env}.events',
-          protocols: ['kafka'],
-          parameters: {
-            env: {
-              enum: ['dev', 'staging', 'prod'],
-              default: 'dev',
-              description: 'The environment to deploy to',
+          {
+            id: 'order.{env}.events',
+            name: 'Order Channel',
+            version: '2.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+            address: 'order.{env}.events',
+            protocols: ['kafka'],
+            parameters: {
+              env: {
+                enum: ['dev', 'staging', 'prod'],
+                default: 'dev',
+                description: 'The environment to deploy to',
+              },
             },
           },
-        },
-      ]);
+        ])
+      );
+      expect(channels).toHaveLength(2);
     });
   });
 

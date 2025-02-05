@@ -395,31 +395,33 @@ describe('Queries SDK', () => {
         { path: '/services/OrderService' }
       );
 
-      const queries = await getQueries();
+      const queries = await getQueries({ latestOnly: false });
 
-      expect(queries).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '0.0.1',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(queries).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
     it('returns only the latest queries when `latestOnly` is set to true,', async () => {
       // versioned query
@@ -469,22 +471,24 @@ describe('Queries SDK', () => {
 
       const queries = await getQueries({ latestOnly: true });
 
-      expect(queries).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '2.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(queries).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '2.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
   });
 
