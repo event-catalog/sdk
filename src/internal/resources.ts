@@ -2,6 +2,7 @@ import { dirname, join } from 'path';
 import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from './utils';
 import matter from 'gray-matter';
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import { Message, Service } from '../types';
 import { satisfies } from 'semver';
 
@@ -22,7 +23,7 @@ export const versionResource = async (catalogDir: string, id: string) => {
   const { data: { version = '0.0.1' } = {} } = matter.read(file);
   const targetDirectory = getVersionedDirectory(sourceDirectory, version);
 
-  await fs.mkdir(targetDirectory, { recursive: true });
+  fsSync.mkdirSync(targetDirectory, { recursive: true });
 
   // Copy the event to the versioned directory
   await copyDir(catalogDir, sourceDirectory, targetDirectory, (src) => {
@@ -34,7 +35,7 @@ export const versionResource = async (catalogDir: string, id: string) => {
     await Promise.all(
       resourceFiles.map(async (file) => {
         if (file !== 'versioned') {
-          await fs.rm(join(sourceDirectory, file), { recursive: true });
+          fsSync.rmSync(join(sourceDirectory, file), { recursive: true });
         }
       })
     );
@@ -75,8 +76,9 @@ export const writeResource = async (
   }
 
   const document = matter.stringify(markdown.trim(), frontmatter);
-  await fs.mkdir(join(catalogDir, path), { recursive: true });
-  return await fs.writeFile(join(catalogDir, path, 'index.md'), document);
+  fsSync.mkdirSync(join(catalogDir, path), { recursive: true });
+  // sync write the file
+  fsSync.writeFileSync(join(catalogDir, path, 'index.md'), document);
 };
 
 export const getResource = async (
@@ -153,7 +155,7 @@ export const addFileToResource = async (
 
   if (!pathToResource) throw new Error('Cannot find directory to write file to');
 
-  await fs.writeFile(join(dirname(pathToResource), file.fileName), file.content);
+  fsSync.writeFileSync(join(dirname(pathToResource), file.fileName), file.content);
 };
 
 export const getFileFromResource = async (catalogDir: string, id: string, file: { fileName: string }, version?: string) => {
@@ -167,7 +169,7 @@ export const getFileFromResource = async (catalogDir: string, id: string, file: 
     .catch(() => false);
   if (!exists) throw new Error(`File ${file.fileName} does not exist in resource ${id} v(${version})`);
 
-  return fs.readFile(join(dirname(pathToResource), file.fileName), 'utf-8');
+  return fsSync.readFileSync(join(dirname(pathToResource), file.fileName), 'utf-8');
 };
 export const getVersionedDirectory = (sourceDirectory: string, version: any): string => {
   return join(sourceDirectory, 'versioned', version);

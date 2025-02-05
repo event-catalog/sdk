@@ -1,5 +1,6 @@
 import { glob } from 'glob';
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
 import matter from 'gray-matter';
@@ -92,7 +93,7 @@ export const searchFilesForId = async (files: string[], id: string, version?: st
  */
 export const copyDir = async (catalogDir: string, source: string, target: string, filter?: CopyFilterAsync | CopyFilterSync) => {
   const tmpDirectory = join(catalogDir, 'tmp');
-  await fs.mkdir(tmpDirectory, { recursive: true });
+  fsSync.mkdirSync(tmpDirectory, { recursive: true });
 
   // Copy everything over
   await copy(source, tmpDirectory, {
@@ -106,7 +107,7 @@ export const copyDir = async (catalogDir: string, source: string, target: string
   });
 
   // Remove the tmp directory
-  await fs.rm(tmpDirectory, { recursive: true });
+  fsSync.rmSync(tmpDirectory, { recursive: true });
 };
 
 // Makes sure values in sends/recieves are unique
