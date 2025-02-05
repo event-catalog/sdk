@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.7
+
+### Patch Changes
+
+- 24f7848: chore(fix): fixed async issues when writing services (trying lock files)
+
 ## 1.4.6
 
 ### Patch Changes
