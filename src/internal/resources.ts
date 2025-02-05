@@ -76,7 +76,7 @@ export const writeResource = async (
 
   const document = matter.stringify(markdown.trim(), frontmatter);
   await fs.mkdir(join(catalogDir, path), { recursive: true });
-  await fs.writeFile(join(catalogDir, path, 'index.md'), document);
+  return await fs.writeFile(join(catalogDir, path, 'index.md'), document);
 };
 
 export const getResource = async (

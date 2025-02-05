@@ -122,7 +122,7 @@ export const writeDomain =
       resource.services = uniqueVersions(domain.services);
     }
 
-    return writeResource(directory, resource, { ...options, type: 'domain' });
+    return await writeResource(directory, resource, { ...options, type: 'domain' });
   };
 
 /**
