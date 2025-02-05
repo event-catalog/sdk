@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.6
+
+### Patch Changes
+
+- 5494a42: chore(fix): fixed async issues when writing files
+
 ## 1.4.5
 
 ### Patch Changes
