@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.8
+
+### Patch Changes
+
+- a443869: chore(fix): fixed async issues when writing services
+
 ## 1.4.7
 
 ### Patch Changes
