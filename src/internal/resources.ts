@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
 import { Message, Service } from '../types';
 import { satisfies } from 'semver';
+import { lock, unlock } from 'proper-lockfile';
 
 type Resource = Service | Message;
 
@@ -52,33 +53,53 @@ export const writeResource = async (
     versionExistingContent: false,
   }
 ) => {
-  // Get the path
   const path = options.path || `/${resource.id}`;
-  const exists = await versionExists(catalogDir, resource.id, resource.version);
+  const fullPath = join(catalogDir, path);
 
-  if (exists && !options.override) {
-    throw new Error(`Failed to write ${resource.id} (${options.type}) as the version ${resource.version} already exists`);
+  // Create directory if it doesn't exist
+  fsSync.mkdirSync(fullPath, { recursive: true });
+
+  // Create or get lock file path
+  const lockPath = join(fullPath, 'index.md');
+
+  // Ensure the file exists before attempting to lock it
+  if (!fsSync.existsSync(lockPath)) {
+    fsSync.writeFileSync(lockPath, '');
   }
 
-  const { markdown, ...frontmatter } = resource;
+  try {
+    // Acquire lock with retry
+    await lock(lockPath, {
+      retries: 5,
+      stale: 10000, // 10 seconds
+    });
 
-  // Should we version the existing content?
-  if (options.versionExistingContent && !exists) {
-    const currentResource = await getResource(catalogDir, resource.id);
+    const exists = await versionExists(catalogDir, resource.id, resource.version);
 
-    if (currentResource) {
-      if (satisfies(resource.version, `>${currentResource.version}`)) {
-        await versionResource(catalogDir, resource.id);
-      } else {
-        throw new Error(`New version ${resource.version} is not greater than current version ${currentResource.version}`);
+    if (exists && !options.override) {
+      throw new Error(`Failed to write ${resource.id} (${options.type}) as the version ${resource.version} already exists`);
+    }
+
+    const { markdown, ...frontmatter } = resource;
+
+    if (options.versionExistingContent && !exists) {
+      const currentResource = await getResource(catalogDir, resource.id);
+
+      if (currentResource) {
+        if (satisfies(resource.version, `>${currentResource.version}`)) {
+          await versionResource(catalogDir, resource.id);
+        } else {
+          throw new Error(`New version ${resource.version} is not greater than current version ${currentResource.version}`);
+        }
       }
     }
-  }
 
-  const document = matter.stringify(markdown.trim(), frontmatter);
-  fsSync.mkdirSync(join(catalogDir, path), { recursive: true });
-  // sync write the file
-  fsSync.writeFileSync(join(catalogDir, path, 'index.md'), document);
+    const document = matter.stringify(markdown.trim(), frontmatter);
+    fsSync.writeFileSync(lockPath, document);
+  } finally {
+    // Always release the lock
+    await unlock(lockPath).catch(() => {});
+  }
 };
 
 export const getResource = async (
