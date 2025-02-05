@@ -253,22 +253,26 @@ describe('Commands SDK', () => {
 
       const commands = await getCommands({ latestOnly: true });
 
-      expect(commands).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '2.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(commands).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '2.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
+
+      expect(commands.length).toBe(2);
     });
   });
 
