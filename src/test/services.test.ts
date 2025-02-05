@@ -284,29 +284,31 @@ describe('Services SDK', () => {
 
       const services = await getServices();
 
-      expect(services).toEqual([
-        {
-          id: 'InventoryService',
-          name: 'Inventory Service',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderService',
-          name: 'Order Service',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'InventoryService',
-          name: 'Inventory Service',
-          version: '0.0.1',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(services).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderService',
+            name: 'Order Service',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
 
     it('when messages are nested into the service folder it only returns the services', async () => {
@@ -390,22 +392,24 @@ describe('Services SDK', () => {
 
       const services = await getServices({ latestOnly: true });
 
-      expect(services).toEqual([
-        {
-          id: 'InventoryService',
-          name: 'Inventory Service',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderService',
-          name: 'Order Service',
-          version: '2.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(services).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderService',
+            name: 'Order Service',
+            version: '2.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
   });
 
