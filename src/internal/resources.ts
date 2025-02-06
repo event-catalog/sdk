@@ -96,6 +96,17 @@ export const writeResource = async (
 
     const document = matter.stringify(markdown.trim(), frontmatter);
     fsSync.writeFileSync(lockPath, document);
+
+    // Add empty changelog with generated date to resource
+    await addFileToResource(
+      catalogDir,
+      resource.id,
+      {
+        content: '---\ncreatedAt: ' + new Date().toISOString().split('T')[0] + '\n---',
+        fileName: 'changelog.md',
+      },
+      resource.version
+    );
   } finally {
     // Always release the lock
     await unlock(lockPath).catch(() => {});
