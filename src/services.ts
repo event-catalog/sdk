@@ -129,7 +129,7 @@ export const writeService =
       resource.receives = uniqueVersions(service.receives);
     }
 
-    return writeResource(directory, resource, { ...options, type: 'service' });
+    return await writeResource(directory, resource, { ...options, type: 'service' });
   };
 
 /**

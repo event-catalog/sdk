@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import { join } from 'node:path';
 import type { User } from './types';
 import matter from 'gray-matter';
@@ -115,8 +116,8 @@ export const writeUser =
     const { markdown, ...frontmatter } = resource;
 
     const document = matter.stringify(markdown, frontmatter);
-    await fs.mkdir(join(catalogDir, ''), { recursive: true });
-    await fs.writeFile(join(catalogDir, '', `${resource.id}.md`), document);
+    fsSync.mkdirSync(join(catalogDir, ''), { recursive: true });
+    fsSync.writeFileSync(join(catalogDir, '', `${resource.id}.md`), document);
   };
 
 /**
@@ -134,5 +135,5 @@ export const writeUser =
  * ```
  */
 export const rmUserById = (catalogDir: string) => async (id: string) => {
-  await fs.rm(join(catalogDir, `${id}.md`), { recursive: true });
+  fsSync.rmSync(join(catalogDir, `${id}.md`), { recursive: true });
 };

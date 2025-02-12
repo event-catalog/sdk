@@ -1,6 +1,6 @@
 {
   "name": "@eventcatalog/sdk",
-  "version": "1.4.4",
+  "version": "1.4.8",
   "description": "SDK to integrate with EventCatalog",
   "scripts": {
     "build": "tsup",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.14.10",
+    "@types/proper-lockfile": "^4.1.4",
     "@types/semver": "^7.5.8",
     "prettier": "^3.3.3",
     "tsup": "^8.1.0",
@@ -47,6 +48,7 @@
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
     "gray-matter": "^4.0.3",
+    "proper-lockfile": "^4.1.2",
     "semver": "7.6.3"
   }
 }

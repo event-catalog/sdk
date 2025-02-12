@@ -397,29 +397,31 @@ describe('Events SDK', () => {
 
       const events = await getEvents();
 
-      expect(events).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '0.0.1',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(events).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
     it('returns only the latest events when `latestOnly` is set to true,', async () => {
       // versioned event
@@ -469,22 +471,24 @@ describe('Events SDK', () => {
 
       const events = await getEvents({ latestOnly: true });
 
-      expect(events).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '2.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(events).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '2.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
   });
 

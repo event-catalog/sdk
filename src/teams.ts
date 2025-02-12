@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import { join } from 'node:path';
 import type { Team } from './types';
 import matter from 'gray-matter';
@@ -113,8 +114,8 @@ export const writeTeam =
     const { markdown, ...frontmatter } = resource;
 
     const document = matter.stringify(markdown, frontmatter);
-    await fs.mkdir(join(catalogDir, ''), { recursive: true });
-    await fs.writeFile(join(catalogDir, '', `${resource.id}.md`), document);
+    fsSync.mkdirSync(join(catalogDir, ''), { recursive: true });
+    fsSync.writeFileSync(join(catalogDir, '', `${resource.id}.md`), document);
   };
 
 /**

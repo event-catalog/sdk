@@ -176,31 +176,34 @@ describe('Commands SDK', () => {
         { path: '/services/OrderService' }
       );
 
-      const commands = await getCommands();
+      const commands = await getCommands({ latestOnly: false });
 
-      expect(commands).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '0.0.1',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(commands.length).toBe(3);
+      expect(commands).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
     });
     it('returns only the latest commands when `latestOnly` is set to true,', async () => {
       // versioned command
@@ -250,22 +253,26 @@ describe('Commands SDK', () => {
 
       const commands = await getCommands({ latestOnly: true });
 
-      expect(commands).toEqual([
-        {
-          id: 'InventoryAdjusted',
-          name: 'Inventory Adjusted',
-          version: '1.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-        {
-          id: 'OrderComplete',
-          name: 'Order Complete',
-          version: '2.0.0',
-          summary: 'This is a summary',
-          markdown: '# Hello world',
-        },
-      ]);
+      expect(commands).toEqual(
+        expect.arrayContaining([
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '1.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'OrderComplete',
+            name: 'Order Complete',
+            version: '2.0.0',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+        ])
+      );
+
+      expect(commands.length).toBe(2);
     });
   });
 
