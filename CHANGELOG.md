@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 1.4.9
+
+### Patch Changes
+
+- dbd4fd4: fix(sdk): getDomains no longer returns flows
+
 ## 1.4.8
 
 ### Patch Changes
