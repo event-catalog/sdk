@@ -57,7 +57,7 @@ export const getDomains =
   async (options?: { latestOnly?: boolean }): Promise<Domain[]> =>
     getResources(directory, {
       type: 'domains',
-      ignore: ['**/services/**', '**/events/**', '**/commands/**', '**/queries/**'],
+      ignore: ['**/services/**', '**/events/**', '**/commands/**', '**/queries/**', '**/flows/**'],
       ...options,
     }) as Promise<Domain[]>;
 
