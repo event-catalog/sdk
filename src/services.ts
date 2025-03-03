@@ -1,4 +1,4 @@
-import type { Service, Specifications } from './types';
+import type { Domain, Service, Specifications } from './types';
 import fs from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import {
@@ -11,7 +11,8 @@ import {
   getVersionedDirectory,
   getResources,
 } from './internal/resources';
-import { findFileById, uniqueVersions } from './internal/utils';
+import { findFileById, getUniqueResourcesById, uniqueVersions } from './internal/utils';
+import { getDomainFromPathToFile, getDomains } from './domains';
 
 /**
  * Returns a service from EventCatalog.
@@ -413,3 +414,31 @@ export const serviceHasVersion = (directory: string) => async (id: string, versi
   const file = await findFileById(directory, id, version);
   return !!file;
 };
+
+/**
+ * Retrieves the domain associated with a given service ID and version.
+ *
+ * This function first attempts to find the file path of the service within the specified directory.
+ * If the service is found within a nested domain structure, it retrieves the domain information.
+ * If not, it looks up the domains and filters them to find the domain associated with the service.
+ */
+export const getDomainFromService =
+  (directory: string) =>
+  async (id: string, version: string): Promise<Domain[] | undefined> => {
+    const pathToFile = await findFileById(directory, id, version);
+    if (!pathToFile) return undefined;
+
+    const domain = getDomainFromPathToFile(directory)(pathToFile);
+    if (domain) return Array.isArray(domain) ? domain : [domain];
+
+    // Look up domains
+    const domains = await getDomains(directory)();
+    if (!domains) return undefined;
+
+    const domainsContainingService = domains.filter((domain) =>
+      domain.services?.some((s) => s.id === id && s.version === version)
+    );
+    if (domainsContainingService.length === 0) return undefined;
+
+    return getUniqueResourcesById(domainsContainingService);
+  };
