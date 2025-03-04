@@ -426,6 +426,7 @@ describe('Services SDK', () => {
       const service = await getService('InventoryService');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'changelog.md'))).toBe(true);
 
       expect(service).toEqual({
         id: 'InventoryService',

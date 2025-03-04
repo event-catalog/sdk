@@ -289,6 +289,7 @@ describe('Commands SDK', () => {
       const command = await getCommand('UpdateInventory');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'changelog.md'))).toBe(true);
 
       expect(command).toEqual({
         id: 'UpdateInventory',

@@ -505,6 +505,7 @@ describe('Queries SDK', () => {
       const query = await getQuery('GetOrder');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'changelog.md'))).toBe(true);
 
       expect(query).toEqual({
         id: 'GetOrder',

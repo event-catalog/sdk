@@ -256,6 +256,7 @@ describe('Domain SDK', () => {
       const domain = await getDomain('Payment');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'changelog.md'))).toBe(true);
 
       expect(domain).toEqual({
         id: 'Payment',

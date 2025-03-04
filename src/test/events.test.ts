@@ -505,6 +505,7 @@ describe('Events SDK', () => {
       const event = await getEvent('InventoryAdjusted');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'changelog.md'))).toBe(true);
 
       expect(event).toEqual({
         id: 'InventoryAdjusted',

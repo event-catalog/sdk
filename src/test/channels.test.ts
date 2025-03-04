@@ -411,6 +411,7 @@ describe('Channels SDK', () => {
       const channel = await getChannel('inventory.{env}.events');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'changelog.md'))).toBe(true);
 
       expect(channel).toEqual({
         id: 'inventory.{env}.events',

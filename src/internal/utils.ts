@@ -1,10 +1,9 @@
-import { glob, globSync } from 'glob';
-import fs from 'node:fs/promises';
+import { globSync } from 'glob';
 import fsSync from 'node:fs';
-import { copy, copySync, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
+import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
 import { join } from 'node:path';
 import matter from 'gray-matter';
-import { satisfies, validRange, valid } from 'semver';
+import { satisfies, valid, validRange } from 'semver';
 
 /**
  * Returns true if a given version of a resource id exists in the catalog
@@ -108,7 +107,7 @@ export const copyDir = async (catalogDir: string, source: string, target: string
   fsSync.rmSync(tmpDirectory, { recursive: true });
 };
 
-// Makes sure values in sends/recieves are unique
+// Makes sure values in sends/receives are unique
 export const uniqueVersions = (messages: { id: string; version: string }[]): { id: string; version: string }[] => {
   const uniqueSet = new Set();
 
