@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.0.0
+
+### Major Changes
+
+- d3c428a: chore(sdk): moving to mdx files
+
 ## 1.4.9
 
 ### Patch Changes
