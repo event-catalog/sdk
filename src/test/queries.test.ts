@@ -504,7 +504,7 @@ describe('Queries SDK', () => {
 
       const query = await getQuery('GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
       expect(query).toEqual({
         id: 'GetOrder',
@@ -527,7 +527,7 @@ describe('Queries SDK', () => {
         { path: '/Inventory/GetOrder' }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/Inventory/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/Inventory/GetOrder', 'index.mdx'))).toBe(true);
     });
 
     it('throws an error when trying to write an query that already exists', async () => {
@@ -577,7 +577,7 @@ describe('Queries SDK', () => {
 
       const query = await getQuery('GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
       expect(query.markdown).toBe('Overridden content');
     });
 
@@ -606,8 +606,8 @@ describe('Queries SDK', () => {
         expect(query.version).toBe('1.0.0');
         expect(query.markdown).toBe('New');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.1', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.1', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
       });
 
       it('throws an error when trying to write a query and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
@@ -653,7 +653,7 @@ describe('Queries SDK', () => {
         }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
     });
     it('writes an query to the given service. When a version is given for the service the query is added to that service version', async () => {
       await writeQueryToService(
@@ -670,7 +670,7 @@ describe('Queries SDK', () => {
         }
       );
       expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/queries/GetOrder', 'index.md'))
+        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/queries/GetOrder', 'index.mdx'))
       ).toBe(true);
     });
     it('writes an query to the given service. When a version is the latest the query is added to the latest version of the service', async () => {
@@ -687,7 +687,7 @@ describe('Queries SDK', () => {
           version: 'latest',
         }
       );
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService//queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService//queries/GetOrder', 'index.mdx'))).toBe(true);
     });
   });
 
@@ -701,11 +701,11 @@ describe('Queries SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
       await rmQuery('/GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
     });
   });
 
@@ -719,11 +719,11 @@ describe('Queries SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
       await rmQueryById('GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
     });
 
     it('removes a query and all files in that query', async () => {
@@ -737,11 +737,11 @@ describe('Queries SDK', () => {
 
       fs.writeFileSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'), 'SCHEMA!');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
       await rmQueryById('GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'))).toBe(false);
     });
 
@@ -756,11 +756,11 @@ describe('Queries SDK', () => {
 
       fs.writeFileSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'), 'SCHEMA!');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
       await rmQueryById('GetOrder', '0.0.1', true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'))).toBe(true);
     });
 
@@ -773,11 +773,11 @@ describe('Queries SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
       await rmQueryById('GetOrder', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the query', async () => {
@@ -801,14 +801,14 @@ describe('Queries SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       await rmQueryById('GetOrder', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'index.mdx'))).toBe(false);
     });
 
     describe('when queries are within a service directory', () => {
@@ -826,10 +826,10 @@ describe('Queries SDK', () => {
           }
         );
 
-        // expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/queries/GetOrder', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(true);
+        // expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/queries/GetOrder', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
         await rmQueryById('GetOrder');
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(false);
       });
 
       it('if version is given, only removes that version and not any other versions of the query', async () => {
@@ -863,16 +863,16 @@ describe('Queries SDK', () => {
           }
         );
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.1', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.1', 'index.mdx'))
         ).toBe(true);
 
         await rmQueryById('GetOrder', '0.0.1');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.1', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.1', 'index.mdx'))
         ).toBe(false);
       });
     });
@@ -893,9 +893,9 @@ describe('Queries SDK', () => {
 
       await versionQuery('GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
     });
     it('adds the given query to the versioned directory and all files that are associated to it', async () => {
       await writeQuery({
@@ -911,11 +911,11 @@ describe('Queries SDK', () => {
 
       await versionQuery('GetOrder');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'index.mdx'))).toBe(true);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder/versioned/0.0.2', 'schema.json'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.mdx'))).toBe(false);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'schema.json'))).toBe(false);
     });
@@ -936,9 +936,9 @@ describe('Queries SDK', () => {
         await versionQuery('GetOrder');
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.2', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.2', 'index.mdx'))
         ).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(false);
       });
       it('adds the given query to the versioned directory and all files that are associated to it', async () => {
         await writeQueryToService(
@@ -958,14 +958,14 @@ describe('Queries SDK', () => {
         await versionQuery('GetOrder');
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.2', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.2', 'index.mdx'))
         ).toBe(true);
 
         expect(
           fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder/versioned/0.0.2', 'schema.json'))
         ).toBe(true);
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(false);
 
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'schema.json'))).toBe(false);
       });

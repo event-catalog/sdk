@@ -288,7 +288,7 @@ describe('Commands SDK', () => {
 
       const command = await getCommand('UpdateInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
       expect(command).toEqual({
         id: 'UpdateInventory',
@@ -311,7 +311,7 @@ describe('Commands SDK', () => {
         { path: '/Inventory/UpdateInventory' }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/Inventory/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/Inventory/UpdateInventory', 'index.mdx'))).toBe(true);
     });
 
     it('throws an error when trying to write an command that already exists', async () => {
@@ -362,8 +362,8 @@ describe('Commands SDK', () => {
         expect(channel.version).toBe('1.0.0');
         expect(channel.markdown).toBe('New');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.1', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.1', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
       });
 
       it('throws an error when trying to write an channel and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
@@ -409,7 +409,9 @@ describe('Commands SDK', () => {
         }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.mdx'))).toBe(
+        true
+      );
     });
     it('writes a command to the given service. When a version is given for the command the service is added to that service version', async () => {
       await writeCommandToService(
@@ -426,7 +428,7 @@ describe('Commands SDK', () => {
         }
       );
       expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/commands/UpdateInventory', 'index.md'))
+        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/commands/UpdateInventory', 'index.mdx'))
       ).toBe(true);
     });
     it('writes a command to the given service. When a version is the latest the command is added to the latest version of the service', async () => {
@@ -443,7 +445,9 @@ describe('Commands SDK', () => {
           version: 'latest',
         }
       );
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.mdx'))).toBe(
+        true
+      );
     });
   });
 
@@ -457,11 +461,11 @@ describe('Commands SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
       await rmCommand('/UpdateInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
     });
   });
 
@@ -475,11 +479,11 @@ describe('Commands SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
       await rmCommandById('UpdateInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
     });
 
     it('removes a command and all files in that command', async () => {
@@ -493,11 +497,11 @@ describe('Commands SDK', () => {
 
       fs.writeFileSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'), 'SCHEMA!');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
       await rmCommandById('UpdateInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'))).toBe(false);
     });
 
@@ -512,11 +516,11 @@ describe('Commands SDK', () => {
 
       fs.writeFileSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'), 'SCHEMA!');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
       await rmCommandById('UpdateInventory', '0.0.1', true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'))).toBe(true);
     });
 
@@ -529,11 +533,11 @@ describe('Commands SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
       await rmCommandById('UpdateInventory', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the command', async () => {
@@ -556,14 +560,14 @@ describe('Commands SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       await rmCommandById('UpdateInventory', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.mdx'))).toBe(false);
     });
 
     describe('when commands are within a service directory', () => {
@@ -579,11 +583,11 @@ describe('Commands SDK', () => {
           { id: 'Inventory' }
         );
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
         await rmCommandById('UpdateInventory');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(false);
       });
 
       it('if version is given, only removes that version and not any other versions of the command', async () => {
@@ -612,17 +616,17 @@ describe('Commands SDK', () => {
           { id: 'Inventory' }
         );
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(true);
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.1', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.1', 'index.mdx'))
         ).toBe(true);
 
         await rmCommandById('UpdateInventory', '0.0.1');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(true);
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.mdx'))
         ).toBe(false);
       });
     });
@@ -643,9 +647,9 @@ describe('Commands SDK', () => {
 
       await versionCommand('UpdateInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
     });
     it('adds the given command to the versioned directory and all files that are associated to it', async () => {
       await writeCommand({
@@ -661,11 +665,11 @@ describe('Commands SDK', () => {
 
       await versionCommand('UpdateInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'index.mdx'))).toBe(true);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory/versioned/0.0.2', 'schema.json'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.mdx'))).toBe(false);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'schema.json'))).toBe(false);
     });
@@ -689,10 +693,10 @@ describe('Commands SDK', () => {
         await versionCommand('UpdateInventory');
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.mdx'))
         ).toBe(true);
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(false);
       });
       it('adds the given command to the versioned directory and all files that are associated to it', async () => {
         await writeCommandToService(
@@ -712,14 +716,14 @@ describe('Commands SDK', () => {
         await versionCommand('UpdateInventory');
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.md'))
+          fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'index.mdx'))
         ).toBe(true);
 
         expect(
           fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory/versioned/0.0.2', 'schema.json'))
         ).toBe(true);
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(false);
 
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'schema.json'))).toBe(false);
       });
@@ -792,7 +796,7 @@ describe('Commands SDK', () => {
 
       const command = await getCommand('AdjustInventory');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/AdjustInventory', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/AdjustInventory', 'index.mdx'))).toBe(true);
       expect(command.markdown).toBe('Overridden content');
     });
 

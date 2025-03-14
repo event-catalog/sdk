@@ -10,13 +10,14 @@ import { satisfies, validRange, valid } from 'semver';
  * Returns true if a given version of a resource id exists in the catalog
  */
 export const versionExists = async (catalogDir: string, id: string, version: string) => {
-  const files = await getFiles(`${catalogDir}/**/index.md`);
+  const files = await getFiles(`${catalogDir}/**/index.{md,mdx}`);
   const matchedFiles = (await searchFilesForId(files, id, version)) || [];
   return matchedFiles.length > 0;
 };
 
 export const findFileById = async (catalogDir: string, id: string, version?: string): Promise<string | undefined> => {
-  const files = await getFiles(`${catalogDir}/**/index.md`);
+  const files = await getFiles(`${catalogDir}/**/index.{md,mdx}`);
+
   const matchedFiles = (await searchFilesForId(files, id)) || [];
   const latestVersion = matchedFiles.find((path) => !path.includes('versioned'));
 

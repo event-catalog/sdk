@@ -425,7 +425,7 @@ describe('Services SDK', () => {
 
       const service = await getService('InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
       expect(service).toEqual({
         id: 'InventoryService',
@@ -448,7 +448,7 @@ describe('Services SDK', () => {
         { path: '/Inventory/InventoryService' }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/InventoryService', 'index.mdx'))).toBe(true);
     });
 
     it('messages written to a service are always unique', async () => {
@@ -544,7 +544,7 @@ describe('Services SDK', () => {
 
       const service = await getService('InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
       expect(service.markdown).toBe('Overridden content');
     });
 
@@ -573,8 +573,8 @@ describe('Services SDK', () => {
         expect(service.version).toBe('1.0.0');
         expect(service.markdown).toBe('New');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
       });
 
       it('throws an error when trying to write a service and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
@@ -624,7 +624,7 @@ describe('Services SDK', () => {
 
       const service = await getService('InventoryService', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       expect(service).toEqual({
         id: 'InventoryService',
@@ -651,7 +651,7 @@ describe('Services SDK', () => {
         }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
     });
     it('writes a service to the given domain. When a version is given for the domain the service is added to that domain version', async () => {
       await writeServiceToDomain(
@@ -668,7 +668,7 @@ describe('Services SDK', () => {
         }
       );
       expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/versioned/1.0.0/services/InventoryService', 'index.md'))
+        fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/versioned/1.0.0/services/InventoryService', 'index.mdx'))
       ).toBe(true);
     });
     it('writes a service to the given domain. When a version is the latest the service is added to the latest version of the domain', async () => {
@@ -685,7 +685,7 @@ describe('Services SDK', () => {
           version: 'latest',
         }
       );
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/', 'index.mdx'))).toBe(true);
     });
   });
 
@@ -701,8 +701,8 @@ describe('Services SDK', () => {
 
       await versionService('InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
     });
     it('adds the given service to the versioned directory and all files that are associated to it', async () => {
       await writeService({
@@ -718,9 +718,9 @@ describe('Services SDK', () => {
 
       await versionService('InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.mdx'))).toBe(true);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'schema.json'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'))).toBe(false);
     });
   });
@@ -735,11 +735,11 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
       await rmService('/InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
     });
 
     it('removes all files with that service directory when the service is deleted', async () => {
@@ -754,11 +754,11 @@ describe('Services SDK', () => {
       // add random file
       fs.writeFileSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'), 'dummy-data');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
       await rmService('/InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'))).toBe(false);
     });
   });
@@ -773,11 +773,11 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
       await rmServiceById('InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
     });
 
     it('removes all files with that service directory when the service is deleted by id', async () => {
@@ -792,11 +792,11 @@ describe('Services SDK', () => {
       // add random file
       fs.writeFileSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'), 'dummy-data');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
       await rmServiceById('InventoryService');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'))).toBe(false);
     });
 
@@ -809,11 +809,11 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
       await rmServiceById('InventoryService', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the service', async () => {
@@ -837,14 +837,14 @@ describe('Services SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       await rmServiceById('InventoryService', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryAdjusted/versioned/0.0.2', 'index.mdx'))).toBe(false);
     });
 
     describe('when services are within a domain directory', () => {
@@ -860,11 +860,11 @@ describe('Services SDK', () => {
           { id: 'Shopping' }
         );
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
 
         await rmServiceById('InventoryService');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(false);
       });
 
       it('removes a service from eventcatalog by id and version', async () => {
@@ -879,11 +879,11 @@ describe('Services SDK', () => {
           { id: 'Shopping' }
         );
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
 
         await rmServiceById('InventoryService', '0.0.1');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(false);
       });
     });
   });
@@ -1105,7 +1105,7 @@ describe('Services SDK', () => {
         });
 
         //expect file where is was
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
       });
 
       it('takes an existing event and adds it to the receives of an existing service', async () => {
