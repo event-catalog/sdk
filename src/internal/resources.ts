@@ -11,7 +11,7 @@ type Resource = Service | Message;
 
 export const versionResource = async (catalogDir: string, id: string) => {
   // Find all the events in the directory
-  const files = await getFiles(`${catalogDir}/**/index.md`);
+  const files = await getFiles(`${catalogDir}/**/index.{md,mdx}`);
   const matchedFiles = await searchFilesForId(files, id);
 
   if (matchedFiles.length === 0) {
@@ -60,7 +60,7 @@ export const writeResource = async (
   fsSync.mkdirSync(fullPath, { recursive: true });
 
   // Create or get lock file path
-  const lockPath = join(fullPath, 'index.md');
+  const lockPath = join(fullPath, 'index.mdx');
 
   // Ensure the file exists before attempting to lock it
   if (!fsSync.existsSync(lockPath)) {
@@ -124,7 +124,7 @@ export const getResources = async (
   { type, latestOnly = false, ignore = [] }: { type: string; latestOnly?: boolean; ignore?: string[] }
 ): Promise<Resource[] | undefined> => {
   const ignoreList = latestOnly ? `**/versioned/**` : '';
-  const files = await getFiles(`${catalogDir}/**/${type}/**/index.md`, [ignoreList, ...ignore]);
+  const files = await getFiles(`${catalogDir}/**/${type}/**/index.{md,mdx}`, [ignoreList, ...ignore]);
   if (files.length === 0) return;
 
   return files.map((file) => {
@@ -142,7 +142,7 @@ export const rmResourceById = async (
   version?: string,
   options?: { type: string; persistFiles?: boolean }
 ) => {
-  const files = await getFiles(`${catalogDir}/**/index.md`);
+  const files = await getFiles(`${catalogDir}/**/index.{md,mdx}`);
 
   const matchedFiles = await searchFilesForId(files, id, version);
 

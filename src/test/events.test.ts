@@ -504,7 +504,7 @@ describe('Events SDK', () => {
 
       const event = await getEvent('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
       expect(event).toEqual({
         id: 'InventoryAdjusted',
@@ -527,7 +527,7 @@ describe('Events SDK', () => {
         { path: '/Inventory/InventoryAdjusted' }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory/InventoryAdjusted', 'index.mdx'))).toBe(true);
     });
 
     it('throws an error when trying to write an event that already exists (and override is false, default)', async () => {
@@ -577,7 +577,7 @@ describe('Events SDK', () => {
 
       const event = await getEvent('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
       expect(event.markdown).toBe('Overridden content');
     });
 
@@ -608,8 +608,8 @@ describe('Events SDK', () => {
         expect(event.markdown).toBe('New Content!');
         expect(event.version).toBe('1.0.0');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
       });
 
       it('does not version the previous event but overrides it when versionExistingContent is true and override is also true', async () => {
@@ -639,8 +639,8 @@ describe('Events SDK', () => {
         expect(event.markdown).toBe('New Content!');
         expect(event.version).toBe('0.0.1');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.md'))).toBe(false);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.mdx'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
       });
 
       it('throws an error when trying to write an event and versionExistingEvent is true and the new version number is not greater than the previous one', async () => {
@@ -685,7 +685,9 @@ describe('Events SDK', () => {
         }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
+        true
+      );
     });
     it('writes an event to the given service. When a version is given for the service the event is added to that service version', async () => {
       await writeEventToService(
@@ -702,7 +704,7 @@ describe('Events SDK', () => {
         }
       );
       expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/events/InventoryAdjusted', 'index.md'))
+        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/events/InventoryAdjusted', 'index.mdx'))
       ).toBe(true);
     });
     it('writes an event to the given service. When a version is the latest the event is added to the latest version of the service', async () => {
@@ -719,7 +721,7 @@ describe('Events SDK', () => {
           version: 'latest',
         }
       );
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService//events/InventoryAdjusted', 'index.md'))).toBe(
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService//events/InventoryAdjusted', 'index.mdx'))).toBe(
         true
       );
     });
@@ -735,11 +737,11 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
       await rmEvent('/InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
     });
   });
 
@@ -753,11 +755,11 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
       await rmEventById('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
     });
 
     it('removes and event and all files in that event', async () => {
@@ -771,11 +773,11 @@ describe('Events SDK', () => {
 
       fs.writeFileSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'), 'SCHEMA!');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
       await rmEventById('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(false);
     });
 
@@ -790,11 +792,11 @@ describe('Events SDK', () => {
 
       fs.writeFileSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'), 'SCHEMA!');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
       await rmEventById('InventoryAdjusted', '0.0.1', true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(true);
     });
 
@@ -807,11 +809,11 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
       await rmEventById('InventoryAdjusted', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the event', async () => {
@@ -835,14 +837,14 @@ describe('Events SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       await rmEventById('InventoryAdjusted', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.mdx'))).toBe(false);
     });
 
     describe('when events are within a service directory', () => {
@@ -860,12 +862,12 @@ describe('Events SDK', () => {
           }
         );
 
-        // expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/events/InventoryAdjusted', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+        // expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/events/InventoryAdjusted', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           true
         );
         await rmEventById('InventoryAdjusted');
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           false
         );
       });
@@ -901,20 +903,24 @@ describe('Events SDK', () => {
           }
         );
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           true
         );
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'index.md'))
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'index.mdx')
+          )
         ).toBe(true);
 
         await rmEventById('InventoryAdjusted', '0.0.1');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           true
         );
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'index.md'))
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.1', 'index.mdx')
+          )
         ).toBe(false);
       });
     });
@@ -935,9 +941,9 @@ describe('Events SDK', () => {
 
       await versionEvent('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
     });
     it('adds the given event to the versioned directory and all files that are associated to it', async () => {
       await writeEvent({
@@ -953,11 +959,11 @@ describe('Events SDK', () => {
 
       await versionEvent('InventoryAdjusted');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'index.mdx'))).toBe(true);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.2', 'schema.json'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.mdx'))).toBe(false);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(false);
     });
@@ -978,9 +984,11 @@ describe('Events SDK', () => {
         await versionEvent('InventoryAdjusted');
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.md'))
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.mdx')
+          )
         ).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           false
         );
       });
@@ -1005,7 +1013,9 @@ describe('Events SDK', () => {
         await versionEvent('InventoryAdjusted');
 
         expect(
-          fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.md'))
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.mdx')
+          )
         ).toBe(true);
 
         expect(
@@ -1014,7 +1024,7 @@ describe('Events SDK', () => {
           )
         ).toBe(true);
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.md'))).toBe(
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           false
         );
 

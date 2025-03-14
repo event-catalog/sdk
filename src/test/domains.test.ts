@@ -255,7 +255,7 @@ describe('Domain SDK', () => {
 
       const domain = await getDomain('Payment');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
 
       expect(domain).toEqual({
         id: 'Payment',
@@ -278,7 +278,7 @@ describe('Domain SDK', () => {
         { path: '/Inventory/Payment' }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Inventory/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Inventory/Payment', 'index.mdx'))).toBe(true);
     });
 
     it('services written to a domain are always unique', async () => {
@@ -361,7 +361,7 @@ describe('Domain SDK', () => {
 
       const service = await getDomain('Payment');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
       expect(service.markdown).toBe('Overridden content');
     });
 
@@ -390,8 +390,8 @@ describe('Domain SDK', () => {
         expect(domain.version).toBe('1.0.0');
         expect(domain.markdown).toBe('New');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
       });
 
       it('throws an error when trying to write a domain and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
@@ -434,8 +434,8 @@ describe('Domain SDK', () => {
 
       await versionDomain('Payment');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(false);
     });
     it('adds the given domain to the versioned directory and all files that are associated to it', async () => {
       await writeDomain({
@@ -451,9 +451,9 @@ describe('Domain SDK', () => {
 
       await versionDomain('Payment');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.mdx'))).toBe(true);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'schema.json'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'schema.json'))).toBe(false);
     });
   });
@@ -468,11 +468,11 @@ describe('Domain SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
 
       await rmDomain('/Payment');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(false);
     });
   });
 
@@ -486,11 +486,11 @@ describe('Domain SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
 
       await rmDomainById('Payment');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(false);
     });
 
     it('removes a domain from eventcatalog by id and version', async () => {
@@ -502,11 +502,11 @@ describe('Domain SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
 
       await rmDomainById('Payment', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the domain', async () => {
@@ -530,14 +530,14 @@ describe('Domain SDK', () => {
         markdown: '# Hello world',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       await rmDomainById('Payment', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/InventoryAdjusted/versioned/0.0.2', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/InventoryAdjusted/versioned/0.0.2', 'index.mdx'))).toBe(false);
     });
   });
 

@@ -410,7 +410,7 @@ describe('Channels SDK', () => {
 
       const channel = await getChannel('inventory.{env}.events');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
 
       expect(channel).toEqual({
         id: 'inventory.{env}.events',
@@ -433,7 +433,7 @@ describe('Channels SDK', () => {
     it('writes the given channel to EventCatalog under the correct path when a path is given', async () => {
       await writeChannel(mockChannel, { path: '/Inventory/InventoryChannel' });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/Inventory/InventoryChannel', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/Inventory/InventoryChannel', 'index.mdx'))).toBe(true);
     });
 
     it('throws an error when trying to write an channel that already exists', async () => {
@@ -453,7 +453,7 @@ describe('Channels SDK', () => {
 
       const channel = await getChannel('inventory.{env}.events');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
       expect(channel.markdown).toBe('Overridden content');
     });
 
@@ -474,8 +474,8 @@ describe('Channels SDK', () => {
         expect(channel.version).toBe('1.0.0');
         expect(channel.markdown).toBe('New');
 
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.md'))).toBe(true);
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.mdx'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
       });
 
       it('throws an error when trying to write an channel and versionExistingContent is true and the new version number is not greater than the previous one', async () => {
@@ -492,11 +492,11 @@ describe('Channels SDK', () => {
     it('removes a channel from eventcatalog', async () => {
       await writeChannel(mockChannel);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
 
       await rmChannel('/inventory.{env}.events');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(false);
     });
   });
 
@@ -504,21 +504,21 @@ describe('Channels SDK', () => {
     it('removes an channel from eventcatalog by id', async () => {
       await writeChannel(mockChannel);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
 
       await rmChannelById('inventory.{env}.events');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(false);
     });
 
     it('removes an channel from eventcatalog by id and version', async () => {
       await writeChannel(mockChannel);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
 
       await rmChannelById('inventory.{env}.events', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(false);
     });
 
     it('if version is given, only removes that version and not any other versions of the channel', async () => {
@@ -532,14 +532,14 @@ describe('Channels SDK', () => {
         version: '0.0.2',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       await rmChannelById('inventory.{env}.events', '0.0.1');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.2', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.2', 'index.mdx'))).toBe(false);
     });
   });
 
@@ -549,9 +549,9 @@ describe('Channels SDK', () => {
 
       await versionChannel('inventory.{env}.events');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(false);
     });
 
     // channel tends not to have any files associated with it (yet)
@@ -563,11 +563,11 @@ describe('Channels SDK', () => {
 
       await versionChannel('inventory.{env}.events');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'index.mdx'))).toBe(true);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events/versioned/0.0.1', 'schema.json'))).toBe(true);
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.mdx'))).toBe(false);
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'schema.json'))).toBe(false);
     });
@@ -622,7 +622,7 @@ describe('Channels SDK', () => {
         const event = await getEvent('InventoryCreated');
 
         // expect the path
-        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryCreated', 'index.md'))).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryCreated', 'index.mdx'))).toBe(true);
 
         expect(event.channels).toEqual([
           {
