@@ -6,8 +6,8 @@ export interface BaseSchema {
   version: string;
   badges?: Badge[];
   sidebar?: {
-    badge?: string
-  },
+    badge?: string;
+  };
   owners?: string[];
   schemaPath?: string;
   markdown: string;
