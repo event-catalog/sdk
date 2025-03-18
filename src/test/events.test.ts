@@ -500,6 +500,9 @@ describe('Events SDK', () => {
         version: '0.0.1',
         summary: 'This is a summary',
         markdown: '# Hello world',
+        sidebar: {
+          badge: 'badge',
+        },
       });
 
       const event = await getEvent('InventoryAdjusted');
@@ -512,6 +515,9 @@ describe('Events SDK', () => {
         version: '0.0.1',
         summary: 'This is a summary',
         markdown: '# Hello world',
+        sidebar: {
+          badge: 'badge',
+        },
       });
     });
 
