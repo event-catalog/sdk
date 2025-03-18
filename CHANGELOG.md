@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.0.1
+
+### Patch Changes
+
+- fd0327a: feat(sdk): added ability to add sidebar badges
+
 ## 2.0.0
 
 ### Major Changes
