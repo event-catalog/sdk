@@ -409,7 +409,7 @@ export const addMessageToService =
  *
  * ```
  */
-export const serviceHasVersion = (directory: string) => async (id: string, version: string) => {
+export const serviceHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
 };

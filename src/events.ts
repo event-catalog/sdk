@@ -287,7 +287,7 @@ export const addSchemaToEvent =
  *
  * ```
  */
-export const eventHasVersion = (directory: string) => async (id: string, version: string) => {
+export const eventHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
 };

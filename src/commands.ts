@@ -284,7 +284,7 @@ export const addSchemaToCommand =
  *
  * ```
  */
-export const commandHasVersion = (directory: string) => async (id: string, version: string) => {
+export const commandHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
 };
