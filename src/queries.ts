@@ -285,7 +285,7 @@ export const addSchemaToQuery =
  *
  * ```
  */
-export const queryHasVersion = (directory: string) => async (id: string, version: string) => {
+export const queryHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
 };

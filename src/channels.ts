@@ -191,7 +191,7 @@ export const versionChannel = (directory: string) => async (id: string) => versi
  *
  * ```
  */
-export const channelHasVersion = (directory: string) => async (id: string, version: string) => {
+export const channelHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
 };

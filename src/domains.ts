@@ -284,7 +284,7 @@ export const getUbiquitousLanguageFromDomain = (directory: string) => async (id:
  *
  * ```
  */
-export const domainHasVersion = (directory: string) => async (id: string, version: string) => {
+export const domainHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
 };
