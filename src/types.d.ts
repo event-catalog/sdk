@@ -34,6 +34,20 @@ enum ResourceType {
   Command = 'command',
 }
 
+export interface CustomDoc {
+  title: string;
+  summary: string;
+  slug?: string;
+  sidebar?: {
+    label: string;
+    order: number;
+  };
+  owners?: string[];
+  badges?: Badge[];
+  fileName?: string;
+  markdown: string;
+}
+
 export interface Event extends BaseSchema {
   channels?: ChannelPointer[];
 }
