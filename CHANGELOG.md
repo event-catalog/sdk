@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.1.2
+
+### Patch Changes
+
+- 869968b: feat(core): added ability to get ubiquitous lang from domain
+
 ## 2.1.1
 
 ### Patch Changes
