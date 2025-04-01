@@ -3,11 +3,11 @@ import { copyDir, findFileById, getFiles, searchFilesForId, versionExists } from
 import matter from 'gray-matter';
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
-import { Message, Service } from '../types';
+import { Message, Service, CustomDoc } from '../types';
 import { satisfies } from 'semver';
 import { lock, unlock } from 'proper-lockfile';
 
-type Resource = Service | Message;
+type Resource = Service | Message | CustomDoc;
 
 export const versionResource = async (catalogDir: string, id: string) => {
   // Find all the events in the directory
@@ -121,10 +121,17 @@ export const getResource = async (
 
 export const getResources = async (
   catalogDir: string,
-  { type, latestOnly = false, ignore = [] }: { type: string; latestOnly?: boolean; ignore?: string[] }
+  {
+    type,
+    latestOnly = false,
+    ignore = [],
+    pattern = '',
+  }: { type: string; pattern?: string; latestOnly?: boolean; ignore?: string[] }
 ): Promise<Resource[] | undefined> => {
   const ignoreList = latestOnly ? `**/versioned/**` : '';
-  const files = await getFiles(`${catalogDir}/**/${type}/**/index.{md,mdx}`, [ignoreList, ...ignore]);
+  const filePattern = pattern || `${catalogDir}/**/${type}/**/index.{md,mdx}`;
+  const files = await getFiles(filePattern, [ignoreList, ...ignore]);
+
   if (files.length === 0) return;
 
   return files.map((file) => {

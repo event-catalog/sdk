@@ -72,6 +72,8 @@ import {
   addMessageToChannel,
 } from './channels';
 
+import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
+
 import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
 
 import { writeUser, getUser, getUsers, rmUserById } from './users';
@@ -713,5 +715,38 @@ export default (path: string) => {
      *
      */
     rmUserById: rmUserById(join(path, 'users')),
+
+    /**
+     * ================================
+     *            Custom Docs
+     * ================================
+     */
+
+    /**
+     * Returns a custom doc from EventCatalog
+     * @param path - The path to the custom doc to retrieve
+     * @returns CustomDoc|Undefined
+     */
+    getCustomDoc: getCustomDoc(join(path, 'docs')),
+    /**
+     * Returns all custom docs from EventCatalog
+     * @param options - Optional options to get custom docs from a specific path
+     * @returns CustomDoc[]|Undefined
+     */
+    getCustomDocs: getCustomDocs(join(path, 'docs')),
+    /**
+     * Writes a custom doc to EventCatalog
+     * @param customDoc - The custom doc to write
+     * @param options - Optional options to write the custom doc
+     *
+     */
+    writeCustomDoc: writeCustomDoc(join(path, 'docs')),
+
+    /**
+     * Removes a custom doc from EventCatalog
+     * @param path - The path to the custom doc to remove
+     *
+     */
+    rmCustomDoc: rmCustomDoc(join(path, 'docs')),
   };
 };
