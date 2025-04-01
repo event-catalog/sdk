@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.1.0
+
+### Minor Changes
+
+- 8412445: feat(core): added custom docs sdk support
+
 ## 2.0.1
 
 ### Patch Changes
