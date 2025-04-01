@@ -98,11 +98,6 @@ export const writeCustomDoc =
     const { fileName, ...rest } = customDoc;
     const name = fileName || slugify(customDoc.title, { lower: true });
     const withExtension = name.endsWith('.mdx') ? name : `${name}.mdx`;
-    console.log('fileName', fileName);
-    console.log('slugify', slugify(customDoc.title, { lower: true }));
-    console.log('withExtension', withExtension);
-    console.log('options.path', options.path);
-    console.log('name', name);
     const fullPath = path.join(directory, options.path || '', withExtension);
 
     fsSync.mkdirSync(path.dirname(fullPath), { recursive: true });
