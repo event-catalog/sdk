@@ -96,10 +96,10 @@ export const writeCustomDoc =
   (directory: string) =>
   async (customDoc: CustomDoc, options: { path?: string } = { path: '' }): Promise<void> => {
     const { fileName, ...rest } = customDoc;
-    const name = fileName || slugify(customDoc.title);
+    const name = fileName || slugify(customDoc.title, { lower: true });
     const withExtension = name.endsWith('.mdx') ? name : `${name}.mdx`;
     console.log('fileName', fileName);
-    console.log('slugify', slugify(customDoc.title));
+    console.log('slugify', slugify(customDoc.title, { lower: true }));
     console.log('withExtension', withExtension);
     console.log('options.path', options.path);
     console.log('name', name);
