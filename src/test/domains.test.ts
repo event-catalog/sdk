@@ -15,6 +15,8 @@ const {
   rmDomain,
   rmDomainById,
   addFileToDomain,
+  addUbiquitousLanguageToDomain,
+  getUbiquitousLanguageFromDomain,
   domainHasVersion,
   addServiceToDomain,
 } = utils(CATALOG_PATH);
@@ -580,6 +582,84 @@ describe('Domain SDK', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 
       expect(addFileToDomain('Payment', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+  });
+
+  describe('addUbiquitousLanguageToDomain', () => {
+    it('adds an ubiquitous language file to the domain', async () => {
+      await writeDomain({
+        id: 'Payment',
+        name: 'Payment Domain',
+        version: '0.0.1',
+        summary: 'All things to do with the payment systems',
+        markdown: '# Hello world',
+      });
+
+      await addUbiquitousLanguageToDomain('Payment', {
+        dictionary: [
+          {
+            id: 'Order',
+            name: 'Order',
+            summary: 'All things to do with the payment systems',
+            description: 'This is a description',
+            icon: 'KeyIcon',
+          },
+        ],
+      });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'ubiquitous-language.mdx'))).toBe(true);
+    });
+  });
+
+  describe('getUbiquitousLanguageFromDomain', () => {
+    it('returns the ubiquitous language dictionary from the domain', async () => {
+      await writeDomain({
+        id: 'Payment',
+        name: 'Payment Domain',
+        version: '0.0.1',
+        summary: 'All things to do with the payment systems',
+        markdown: '# Hello world',
+      });
+
+      await addUbiquitousLanguageToDomain('Payment', {
+        dictionary: [
+          {
+            id: 'Order',
+            name: 'Order',
+            summary: 'All things to do with the payment systems',
+            description: 'This is a description',
+            icon: 'KeyIcon',
+          },
+          {
+            id: 'Inventory',
+            name: 'Inventory',
+            summary: 'All things to do with the inventory',
+            description: 'This is a description',
+            icon: 'KeyIcon',
+          },
+        ],
+      });
+
+      const ubiquitousLanguage = await getUbiquitousLanguageFromDomain('Payment');
+
+      expect(ubiquitousLanguage).toEqual({
+        dictionary: [
+          {
+            id: 'Order',
+            name: 'Order',
+            summary: 'All things to do with the payment systems',
+            description: 'This is a description',
+            icon: 'KeyIcon',
+          },
+          {
+            id: 'Inventory',
+            name: 'Inventory',
+            summary: 'All things to do with the inventory',
+            description: 'This is a description',
+            icon: 'KeyIcon',
+          },
+        ],
+      });
     });
   });
   describe('domainHasVersion', () => {

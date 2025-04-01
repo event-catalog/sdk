@@ -1,6 +1,7 @@
-import type { Domain } from './types';
+import type { Domain, UbiquitousLanguageDictionary } from './types';
 import fs from 'node:fs/promises';
-import { join } from 'node:path';
+import path, { join } from 'node:path';
+import fsSync from 'node:fs';
 import {
   addFileToResource,
   getResource,
@@ -9,7 +10,8 @@ import {
   versionResource,
   writeResource,
 } from './internal/resources';
-import { findFileById, uniqueVersions } from './internal/utils';
+import { findFileById, readMdxFile, uniqueVersions } from './internal/utils';
+import matter from 'gray-matter';
 
 /**
  * Returns a domain from EventCatalog.
@@ -206,6 +208,65 @@ export const rmDomainById = (directory: string) => async (id: string, version?: 
 export const addFileToDomain =
   (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
     addFileToResource(directory, id, file, version);
+
+/**
+ * Adds a ubiquitous language dictionary to a domain.
+ *
+ * Optionally specify a version to add a ubiquitous language dictionary to a specific version of the domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { addUbiquitousLanguageToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a ubiquitous language dictionary to the latest Payment domain
+ * await addUbiquitousLanguageToDomain('Payment', { dictionary: [{ id: 'Order', name: 'Order', summary: 'All things to do with the payment systems', description: 'This is a description', icon: 'KeyIcon' }] });
+ *
+ * // Adds a ubiquitous language dictionary to a specific version of the domain
+ * await addUbiquitousLanguageToDomain('Payment', { dictionary: [{ id: 'Order', name: 'Order', summary: 'All things to do with the payment systems', description: 'This is a description', icon: 'KeyIcon' }] }, '0.0.1');
+ * ```
+ */
+
+export const addUbiquitousLanguageToDomain =
+  (directory: string) => async (id: string, ubiquitousLanguageDictionary: UbiquitousLanguageDictionary, version?: string) => {
+    const content = matter.stringify('', {
+      ...ubiquitousLanguageDictionary,
+    });
+    await addFileToResource(directory, id, { content, fileName: 'ubiquitous-language.mdx' }, version);
+  };
+
+/**
+ * Returns the ubiquitous language dictionary from a domain.
+ *
+ * Optionally specify a version to get the ubiquitous language dictionary from a specific version of the domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getUbiquitousLanguageFromDomain } = utils('/path/to/eventcatalog');
+ *
+ * const ubiquitousLanguage = await getUbiquitousLanguageFromDomain('Payment');
+ *
+ * // Returns the ubiquitous language dictionary from a specific version of the domain
+ * const ubiquitousLanguage = await getUbiquitousLanguageFromDomain('Payment', '0.0.1');
+ * ```
+ */
+export const getUbiquitousLanguageFromDomain = (directory: string) => async (id: string, version?: string) => {
+  const pathToDomain = (await findFileById(directory, id, version)) || '';
+  const pathToUbiquitousLanguage = path.join(path.dirname(pathToDomain), 'ubiquitous-language.mdx');
+
+  const fileExists = fsSync.existsSync(pathToUbiquitousLanguage);
+
+  if (!fileExists) {
+    return undefined;
+  }
+
+  const content = await readMdxFile(pathToUbiquitousLanguage);
+
+  return content;
+};
 
 /**
  * Check to see if the catalog has a version for the given domain.
