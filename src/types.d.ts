@@ -120,3 +120,15 @@ export interface Badge {
   backgroundColor: string;
   textColor: string;
 }
+
+export interface UbiquitousLanguage {
+  id: string;
+  name: string;
+  summary?: string;
+  description?: string;
+  icon?: string;
+}
+
+export interface UbiquitousLanguageDictionary {
+  dictionary: UbiquitousLanguage[];
+}

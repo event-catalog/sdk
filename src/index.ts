@@ -57,8 +57,10 @@ import {
   rmDomain,
   rmDomainById,
   addFileToDomain,
+  addUbiquitousLanguageToDomain,
   domainHasVersion,
   addServiceToDomain,
+  getUbiquitousLanguageFromDomain,
 } from './domains';
 
 import {
@@ -634,6 +636,22 @@ export default (path: string) => {
      * @returns
      */
     addFileToDomain: addFileToDomain(join(path, 'domains')),
+
+    /**
+     * Adds an ubiquitous language dictionary to a domain
+     * @param id - The id of the domain to add the ubiquitous language to
+     * @param ubiquitousLanguageDictionary - The ubiquitous language dictionary to add
+     * @param version - Optional version of the domain to add the ubiquitous language to
+     */
+    addUbiquitousLanguageToDomain: addUbiquitousLanguageToDomain(join(path, 'domains')),
+
+    /**
+     * Get the ubiquitous language dictionary from a domain
+     * @param id - The id of the domain to get the ubiquitous language from
+     * @param version - Optional version of the domain to get the ubiquitous language from
+     * @returns
+     */
+    getUbiquitousLanguageFromDomain: getUbiquitousLanguageFromDomain(join(path, 'domains')),
 
     /**
      * Check to see if a domain version exists
