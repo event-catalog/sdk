@@ -82,4 +82,4 @@ _Sponsors help make EventCatalog sustainable, want to help the project? Get in t
 
 Interested in collaborating with us? Our offerings include dedicated support, priority assistance, feature development, custom integrations, and more.
 
-Find more details on our [services page](https://eventcatalog.dev/services)
+Find more details on our [services page](https://eventcatalog.dev/services).
