@@ -35,7 +35,7 @@ const getEventCatalogVersion = async (catalogDir: string) => {
     const packageJsonObject = JSON.parse(packageJson);
     return packageJsonObject['dependencies']['@eventcatalog/core'];
   } catch (error) {
-    return 'unknown'
+    return 'unknown';
   }
 };
 
@@ -89,56 +89,56 @@ const filterCollection = (
  */
 export const dumpCatalog =
   (directory: string) =>
-    async (options?: { includeMarkdown?: boolean }): Promise<EventCatalogObject> => {
-      const { getDomains, getServices, getEvents, getQueries, getCommands, getChannels, getTeams, getUsers } = utils(directory);
+  async (options?: { includeMarkdown?: boolean }): Promise<EventCatalogObject> => {
+    const { getDomains, getServices, getEvents, getQueries, getCommands, getChannels, getTeams, getUsers } = utils(directory);
 
-      const { includeMarkdown = true } = options || {};
+    const { includeMarkdown = true } = options || {};
 
-      const domains = await getDomains();
-      const services = await getServices();
+    const domains = await getDomains();
+    const services = await getServices();
 
-      const events = await getEvents();
-      const commands = await getCommands();
-      const queries = await getQueries();
-      const teams = await getTeams();
-      const users = await getUsers();
-      const channels = await getChannels();
+    const events = await getEvents();
+    const commands = await getCommands();
+    const queries = await getQueries();
+    const teams = await getTeams();
+    const users = await getUsers();
+    const channels = await getChannels();
 
-      const [
-        hydratedDomains,
-        hydratedServices,
-        hydratedEvents,
-        hydratedQueries,
-        hydratedCommands,
-        hydratedTeams,
-        hydratedUsers,
-        hydratedChannels,
-      ] = await Promise.all([
-        hydrateResource(directory, domains),
-        hydrateResource(directory, services),
-        hydrateResource(directory, events),
-        hydrateResource(directory, queries),
-        hydrateResource(directory, commands),
-        hydrateResource(directory, teams),
-        hydrateResource(directory, users),
-        hydrateResource(directory, channels),
-      ]);
+    const [
+      hydratedDomains,
+      hydratedServices,
+      hydratedEvents,
+      hydratedQueries,
+      hydratedCommands,
+      hydratedTeams,
+      hydratedUsers,
+      hydratedChannels,
+    ] = await Promise.all([
+      hydrateResource(directory, domains),
+      hydrateResource(directory, services),
+      hydrateResource(directory, events),
+      hydrateResource(directory, queries),
+      hydrateResource(directory, commands),
+      hydrateResource(directory, teams),
+      hydrateResource(directory, users),
+      hydrateResource(directory, channels),
+    ]);
 
-      return {
-        version: DUMP_VERSION,
-        catalogVersion: await getEventCatalogVersion(directory),
-        createdAt: new Date().toISOString(),
-        resources: {
-          domains: filterCollection(hydratedDomains, { includeMarkdown }),
-          services: filterCollection(hydratedServices, { includeMarkdown }),
-          messages: {
-            events: filterCollection(hydratedEvents, { includeMarkdown }),
-            queries: filterCollection(hydratedQueries, { includeMarkdown }),
-            commands: filterCollection(hydratedCommands, { includeMarkdown }),
-          },
-          teams: filterCollection(hydratedTeams, { includeMarkdown }),
-          users: filterCollection(hydratedUsers, { includeMarkdown }),
-          channels: filterCollection(hydratedChannels, { includeMarkdown }),
+    return {
+      version: DUMP_VERSION,
+      catalogVersion: await getEventCatalogVersion(directory),
+      createdAt: new Date().toISOString(),
+      resources: {
+        domains: filterCollection(hydratedDomains, { includeMarkdown }),
+        services: filterCollection(hydratedServices, { includeMarkdown }),
+        messages: {
+          events: filterCollection(hydratedEvents, { includeMarkdown }),
+          queries: filterCollection(hydratedQueries, { includeMarkdown }),
+          commands: filterCollection(hydratedCommands, { includeMarkdown }),
         },
-      };
+        teams: filterCollection(hydratedTeams, { includeMarkdown }),
+        users: filterCollection(hydratedUsers, { includeMarkdown }),
+        channels: filterCollection(hydratedChannels, { includeMarkdown }),
+      },
     };
+  };
