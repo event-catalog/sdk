@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.1
+
+### Patch Changes
+
+- dac1e6e: fix(sdk): teams and users now use mdx file formats
+
 ## 2.2.0
 
 ### Minor Changes
