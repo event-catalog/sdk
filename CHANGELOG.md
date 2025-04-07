@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.2
+
+### Patch Changes
+
+- 66dbc09: fix(sdk): new build
+
 ## 2.2.1
 
 ### Patch Changes
