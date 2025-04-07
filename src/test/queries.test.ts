@@ -18,6 +18,8 @@ const {
   addSchemaToQuery,
   queryHasVersion,
   writeServiceToDomain,
+  writeService,
+  writeDomain,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -164,6 +166,14 @@ describe('Queries SDK', () => {
 
     describe('when queries are within a service that is within a domain', async () => {
       it('returns the given query id from EventCatalog and the latest version when no version is given,', async () => {
+        await writeDomain({
+          id: 'Shopping',
+          name: 'Shopping Domain',
+          version: '0.0.1',
+          summary: 'Domain that handles the shopping',
+          markdown: '# Hello world',
+        });
+
         await writeServiceToDomain(
           {
             id: 'InventoryService',
@@ -200,6 +210,22 @@ describe('Queries SDK', () => {
       });
 
       it('returns the given query id from EventCatalog and the latest version when no version is given and the query is inside a services folder,', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+
+        await writeDomain({
+          id: 'Shopping',
+          name: 'Shopping Domain',
+          version: '0.0.1',
+          summary: 'Domain that handles the shopping',
+          markdown: '# Hello world',
+        });
+
         await writeServiceToDomain(
           {
             id: 'InventoryService',
@@ -236,6 +262,14 @@ describe('Queries SDK', () => {
       });
 
       it('returns the given query id from EventCatalog and the requested version when a version is given,', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+
         await writeServiceToDomain(
           {
             id: 'InventoryService',
@@ -287,6 +321,14 @@ describe('Queries SDK', () => {
       });
 
       it('returns the latest version of the query if the version matches the latest version', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+
         await writeServiceToDomain(
           {
             id: 'InventoryService',
@@ -323,6 +365,14 @@ describe('Queries SDK', () => {
       });
 
       it('returns the version of the query even if the query does not match semver matching', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '100',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+
         await writeServiceToDomain(
           {
             id: 'InventoryService',
@@ -640,6 +690,14 @@ describe('Queries SDK', () => {
 
   describe('writeQueryToService', () => {
     it('writes an query to the given service. When no version if given for the service the query is added to the latest service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
       await writeQueryToService(
         {
           id: 'GetOrder',
@@ -656,6 +714,14 @@ describe('Queries SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
     });
     it('writes an query to the given service. When a version is given for the service the query is added to that service version', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
       await writeQueryToService(
         {
           id: 'GetOrder',
@@ -674,6 +740,14 @@ describe('Queries SDK', () => {
       ).toBe(true);
     });
     it('writes an query to the given service. When a version is the latest the query is added to the latest version of the service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
       await writeQueryToService(
         {
           id: 'GetOrder',
@@ -687,7 +761,7 @@ describe('Queries SDK', () => {
           version: 'latest',
         }
       );
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService//queries/GetOrder', 'index.mdx'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
     });
   });
 
@@ -813,6 +887,14 @@ describe('Queries SDK', () => {
 
     describe('when queries are within a service directory', () => {
       it('removes an query from EventCatalog by id', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -826,14 +908,20 @@ describe('Queries SDK', () => {
           }
         );
 
-        // expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/queries/GetOrder', 'index.mdx'))).toBe(true);
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
         await rmQueryById('GetOrder');
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(false);
       });
 
       it('if version is given, only removes that version and not any other versions of the query', async () => {
-        // write the first queries
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -849,7 +937,6 @@ describe('Queries SDK', () => {
 
         await versionQuery('GetOrder');
 
-        // Write the versioned query
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -922,6 +1009,14 @@ describe('Queries SDK', () => {
 
     describe('when queries are within a service directory', () => {
       it('adds the given query to the versioned directory and removes itself from the root', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -941,6 +1036,14 @@ describe('Queries SDK', () => {
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(false);
       });
       it('adds the given query to the versioned directory and all files that are associated to it', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -1018,6 +1121,14 @@ describe('Queries SDK', () => {
       it('takes a given file and writes it to the location of the given query', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
 
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -1037,6 +1148,14 @@ describe('Queries SDK', () => {
       it('takes a given file and version and writes the file to the correct location', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
 
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -1048,7 +1167,6 @@ describe('Queries SDK', () => {
           { id: 'InventoryService' }
         );
 
-        // version the query
         await versionQuery('GetOrder');
 
         await addFileToQuery('GetOrder', file, '0.0.1');
@@ -1139,6 +1257,14 @@ describe('Queries SDK', () => {
         }`;
         const file = { schema, fileName: 'schema.json' };
 
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -1169,6 +1295,14 @@ describe('Queries SDK', () => {
         }`;
         const file = { schema, fileName: 'schema.json' };
 
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeQueryToService(
           {
             id: 'GetOrder',
@@ -1180,7 +1314,6 @@ describe('Queries SDK', () => {
           { id: 'InventoryService' }
         );
 
-        // version the query
         await versionQuery('GetOrder');
 
         await addSchemaToQuery('GetOrder', file, '0.0.1');
