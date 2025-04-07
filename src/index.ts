@@ -74,6 +74,8 @@ import {
   addMessageToChannel,
 } from './channels';
 
+import { dumpCatalog } from './eventcatalog';
+
 import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
 
 import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
@@ -766,5 +768,12 @@ export default (path: string) => {
      *
      */
     rmCustomDoc: rmCustomDoc(join(path, 'docs')),
+
+    /**
+     * Dumps the catalog to a JSON file.
+     * @param directory - The directory to dump the catalog to
+     * @returns A JSON file with the catalog
+     */
+    dumpCatalog: dumpCatalog(join(path)),
   };
 };
