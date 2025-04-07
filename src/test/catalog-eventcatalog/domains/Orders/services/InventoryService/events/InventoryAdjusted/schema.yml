@@ -24,9 +24,9 @@ properties:
     format: date
     description: The date when the employee joined the company
 required:
-- Name
-- Age
-- Department
-- Position
-- Salary
-- JoinDate
+  - Name
+  - Age
+  - Department
+  - Position
+  - Salary
+  - JoinDate

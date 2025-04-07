@@ -112,7 +112,7 @@ export const writeQuery =
  */
 export const getQueries =
   (directory: string) =>
-  async (options: { latestOnly?: boolean }): Promise<Query[]> =>
+  async (options?: { latestOnly?: boolean }): Promise<Query[]> =>
     getResources(directory, { type: 'queries', ...options }) as Promise<Query[]>;
 
 /**

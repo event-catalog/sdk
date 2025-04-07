@@ -5,14 +5,14 @@ version: 0.0.1
 summary: |
   Indicates an order has been canceled
 owners:
-    - order-management
+  - order-management
 badges:
-    - content: Recently updated!
-      backgroundColor: green
-      textColor: green
-    - content: Channel:Apache Kafka
-      backgroundColor: yellow
-      textColor: yellow
+  - content: Recently updated!
+    backgroundColor: green
+    textColor: green
+  - content: Channel:Apache Kafka
+    backgroundColor: yellow
+    textColor: yellow
 schemaPath: 'schema.json'
 channels:
   - id: orders.{env}.events
@@ -44,13 +44,12 @@ The OrderCancelled event is triggered whenever an existing order is cancelled. T
   "cancellationReason": "Customer requested cancellation",
   "timestamp": "2024-07-04T14:48:00Z"
 }
-
 ```
 
 ## Schema
 
 JSON schema for the event.
 
-<Schema title="JSON Schema" file="schema.json"/>
+<Schema title="JSON Schema" file="schema.json" />
 
 <Footer />

@@ -5,18 +5,18 @@ version: 1.0.0
 summary: |
   Indicates a change in inventory level
 owners:
-    - dboyne
-    - msmith
-    - asmith
-    - full-stack
-    - mobile-devs
+  - dboyne
+  - msmith
+  - asmith
+  - full-stack
+  - mobile-devs
 badges:
-    - content: Recently updated!
-      backgroundColor: green
-      textColor: green
-    - content: Channel:Apache Kafka
-      backgroundColor: yellow
-      textColor: yellow
+  - content: Recently updated!
+    backgroundColor: green
+    textColor: green
+  - content: Channel:Apache Kafka
+    backgroundColor: yellow
+    textColor: yellow
 ---
 
 ## Overview
@@ -28,12 +28,15 @@ The `Inventory Adjusted` event is triggered whenever there is a change in the in
 ## Event Details
 
 ### Event Name
+
 `inventory.adjusted`
 
 ### Description
+
 This event indicates that the inventory count for one or more products has been adjusted. The event carries the updated inventory details including the product ID, the new quantity, and the reason for the adjustment.
 
 ### Payload
+
 The payload of the `Inventory Adjusted` event includes the following fields:
 
 ```json title="Example of payload" frame="terminal"

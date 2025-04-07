@@ -56,7 +56,7 @@ export const getCommand =
  */
 export const getCommands =
   (directory: string) =>
-  async (options: { latestOnly?: boolean }): Promise<Command[]> =>
+  async (options?: { latestOnly?: boolean }): Promise<Command[]> =>
     getResources(directory, { type: 'commands', ...options }) as Promise<Command[]>;
 
 /**

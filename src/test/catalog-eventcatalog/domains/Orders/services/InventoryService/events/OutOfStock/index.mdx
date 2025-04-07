@@ -5,20 +5,20 @@ version: 0.0.4
 summary: |
   Indicates inventory is out of stock
 owners:
-    - dboyne
-    - msmith
-    - asmith
-    - full-stack
-    - mobile-devs
+  - dboyne
+  - msmith
+  - asmith
+  - full-stack
+  - mobile-devs
 channels:
   - id: inventory.{env}.events
 badges:
-    - content: Recently updated!
-      backgroundColor: green
-      textColor: green
-    - content: Channel:Apache Kafka
-      backgroundColor: yellow
-      textColor: yellow
+  - content: Recently updated!
+    backgroundColor: green
+    textColor: green
+  - content: Channel:Apache Kafka
+    backgroundColor: yellow
+    textColor: yellow
 ---
 
 import Footer from '@catalog/components/footer.astro';
@@ -30,6 +30,7 @@ The `Inventory Adjusted` event is triggered whenever there is a change in the in
 <NodeGraph />
 
 ### Payload
+
 The payload of the `Inventory Adjusted` event includes the following fields:
 
 ```json title="Example of payload" frame="terminal"

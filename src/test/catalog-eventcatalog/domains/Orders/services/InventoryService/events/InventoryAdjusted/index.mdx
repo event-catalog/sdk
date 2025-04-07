@@ -5,20 +5,20 @@ version: 1.0.1
 summary: |
   Indicates a change in inventory level
 owners:
-    - dboyne
-    - msmith
-    - asmith
-    - full-stack
-    - mobile-devs
+  - dboyne
+  - msmith
+  - asmith
+  - full-stack
+  - mobile-devs
 channels:
   - id: inventory.{env}.events
 badges:
-    - content: Recently updated!
-      backgroundColor: green
-      textColor: green
-    - content: Channel:Apache Kafka
-      backgroundColor: yellow
-      textColor: yellow
+  - content: Recently updated!
+    backgroundColor: green
+    textColor: green
+  - content: Channel:Apache Kafka
+    backgroundColor: yellow
+    textColor: yellow
 schemaPath: 'schema.avro'
 ---
 
@@ -28,15 +28,24 @@ import Footer from '@catalog/components/footer.astro';
 
 The `Inventory Adjusted` event is triggered whenever there is a change in the inventory levels of a product. This could occur due to various reasons such as receiving new stock, sales, returns, or manual adjustments by the inventory management team. The event ensures that all parts of the system that rely on inventory data are kept up-to-date with the latest inventory levels.
 
-<Tiles >
-    <Tile icon="UserGroupIcon" href="/docs/teams/full-stack" title="Contact the team" description="Any questions? Feel free to contact the owners" />
-    <Tile icon="DocumentIcon" href={`/generated/events/Inventory/${frontmatter.id}/schema.avro`} title="View the schema" description="View the schema directly in your browser" />
+<Tiles>
+  <Tile
+    icon="UserGroupIcon"
+    href="/docs/teams/full-stack"
+    title="Contact the team"
+    description="Any questions? Feel free to contact the owners"
+  />
+  <Tile
+    icon="DocumentIcon"
+    href={`/generated/events/Inventory/${frontmatter.id}/schema.avro`}
+    title="View the schema"
+    description="View the schema directly in your browser"
+  />
 </Tiles>
 
 ## Architecture diagram
 
 <NodeGraph />
-
 
 <SchemaViewer file="schema.yml" title="JSON Schema" maxHeight="500" />
 
@@ -50,7 +59,7 @@ Event example you my see being published.
   "Age": 30,
   "Department": "Engineering",
   "Position": "Software Engineer",
-  "Salary": 85000.50,
+  "Salary": 85000.5,
   "JoinDate": "2024-01-15"
 }
 ```
@@ -92,6 +101,7 @@ Select the language you want to produce the event in to see an example.
     producer.send('inventory.adjusted', event_data)
     producer.flush()
     ```
+
   </TabItem>
   <TabItem title="TypeScript">
 
@@ -110,7 +120,7 @@ Select the language you want to produce the event in to see an example.
     const eventData = {
       event_id: "abc123",
       timestamp: new Date().toISOString(),
-      product_id: "prod987", 
+      product_id: "prod987",
       adjusted_quantity: 10,
       new_quantity: 150,
       adjustment_reason: "restock",
@@ -131,6 +141,7 @@ Select the language you want to produce the event in to see an example.
 
     produceEvent().catch(console.error);
     ```
+
   </TabItem>
   <TabItem title="Java">
 
@@ -188,10 +199,9 @@ Select the language you want to produce the event in to see an example.
         }
     }
     ```
+
   </TabItem>
 </Tabs>
-
-
 
 ### Consuming the Event
 

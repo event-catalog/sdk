@@ -62,4 +62,3 @@
   },
   "required": ["shipmentId", "orderId", "address", "items", "shippingMethod"]
 }
-

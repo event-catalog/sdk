@@ -11,7 +11,7 @@ info:
 
 servers:
   - url: https://example.com/
-    
+
 paths:
   /v1/task/{id}:
     put:

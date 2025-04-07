@@ -5,10 +5,10 @@ name: Notifications
 summary: |
   Service that handles orders
 owners:
-    - order-management
+  - order-management
 receives:
   - id: InventoryAdjusted
-    version: ">1.0.0"
+    version: '>1.0.0'
   - id: PaymentProcessed
     version: ^1.0.0
   - id: GetUserNotifications
@@ -31,27 +31,45 @@ import Footer from '@catalog/components/footer.astro';
 
 The Notification Service is responsible for managing and delivering notifications to users and other services. It supports various notification channels such as email, SMS, push notifications, and in-app notifications. The service ensures reliable and timely delivery of messages and integrates with other services to trigger notifications based on specific events.
 
-<Tiles >
-    <Tile icon="DocumentIcon" href={`/docs/services/${frontmatter.id}/${frontmatter.version}/changelog`}  title="View the changelog" description="Want to know the history of this service? View the change logs" />
-    <Tile icon="UserGroupIcon" href="/docs/teams/full-stack" title="Contact the team" description="Any questions? Feel free to contact the owners" />
-    <Tile icon="BoltIcon" href={`/visualiser/services/${frontmatter.id}/${frontmatter.version}`} title={`Sends ${frontmatter.sends.length} messages`} description="This service sends messages to downstream consumers" />
-    <Tile icon="BoltIcon"  href={`/visualiser/services/${frontmatter.id}/${frontmatter.version}`} title={`Receives ${frontmatter.receives.length} messages`} description="This service receives messages from other services" />
+<Tiles>
+  <Tile
+    icon="DocumentIcon"
+    href={`/docs/services/${frontmatter.id}/${frontmatter.version}/changelog`}
+    title="View the changelog"
+    description="Want to know the history of this service? View the change logs"
+  />
+  <Tile
+    icon="UserGroupIcon"
+    href="/docs/teams/full-stack"
+    title="Contact the team"
+    description="Any questions? Feel free to contact the owners"
+  />
+  <Tile
+    icon="BoltIcon"
+    href={`/visualiser/services/${frontmatter.id}/${frontmatter.version}`}
+    title={`Sends ${frontmatter.sends.length} messages`}
+    description="This service sends messages to downstream consumers"
+  />
+  <Tile
+    icon="BoltIcon"
+    href={`/visualiser/services/${frontmatter.id}/${frontmatter.version}`}
+    title={`Receives ${frontmatter.receives.length} messages`}
+    description="This service receives messages from other services"
+  />
 </Tiles>
 
 ### Core features
 
-| Feature | Description |
-|---------|-------------|
-| Multi-Channel Delivery | Supports notifications via email, SMS, push notifications, and in-app messages |
-| Template Management | Customizable notification templates with dynamic content placeholders |
-| Delivery Status Tracking | Real-time tracking and monitoring of notification delivery status |
-| Rate Limiting | Prevents notification flooding through configurable rate limits |
-| Priority Queue | Handles urgent notifications with priority delivery mechanisms |
-| Batch Processing | Efficiently processes and sends bulk notifications |
-| Retry Mechanism | Automatic retry logic for failed notification deliveries |
-| Event-Driven Notifications | Triggers notifications based on system events and user actions |
-
-
+| Feature                    | Description                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| Multi-Channel Delivery     | Supports notifications via email, SMS, push notifications, and in-app messages |
+| Template Management        | Customizable notification templates with dynamic content placeholders          |
+| Delivery Status Tracking   | Real-time tracking and monitoring of notification delivery status              |
+| Rate Limiting              | Prevents notification flooding through configurable rate limits                |
+| Priority Queue             | Handles urgent notifications with priority delivery mechanisms                 |
+| Batch Processing           | Efficiently processes and sends bulk notifications                             |
+| Retry Mechanism            | Automatic retry logic for failed notification deliveries                       |
+| Event-Driven Notifications | Triggers notifications based on system events and user actions                 |
 
 ## Architecture diagram
 
@@ -63,12 +81,12 @@ The Notification Service is responsible for managing and delivering notification
 
 <AccordionGroup>
   <Accordion title="Notification">
-    - Description: A message that is sent to a user or a service.
-    - Attributes: notificationId, type, recipient, content, channel, status, timestamp
+    - Description: A message that is sent to a user or a service. - Attributes: notificationId, type, recipient, content, channel,
+    status, timestamp
   </Accordion>
   <Accordion title="Channel">
-    - Description: The medium through which the notification is delivered (e.g., email, SMS, push notification).
-    - Attributes: channelId, name, provider, configuration 
+    - Description: The medium through which the notification is delivered (e.g., email, SMS, push notification). - Attributes:
+    channelId, name, provider, configuration
   </Accordion>
 </AccordionGroup>
 
