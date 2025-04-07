@@ -23,7 +23,7 @@ import { getFiles } from './internal/utils';
 export const getUser =
   (catalogDir: string) =>
   async (id: string): Promise<User | undefined> => {
-    const files = await getFiles(`${catalogDir}/${id}.md`);
+    const files = await getFiles(`${catalogDir}/${id}.{md,mdx}`);
 
     if (files.length == 0) return undefined;
     const file = files[0];
@@ -55,7 +55,7 @@ export const getUser =
 export const getUsers =
   (catalogDir: string) =>
   async (options?: {}): Promise<User[]> => {
-    const files = await getFiles(`${catalogDir}/users/*.md`);
+    const files = await getFiles(`${catalogDir}/users/*.{md,mdx}`);
     if (files.length === 0) return [];
 
     return files.map((file) => {
@@ -117,7 +117,7 @@ export const writeUser =
 
     const document = matter.stringify(markdown, frontmatter);
     fsSync.mkdirSync(join(catalogDir, ''), { recursive: true });
-    fsSync.writeFileSync(join(catalogDir, '', `${resource.id}.md`), document);
+    fsSync.writeFileSync(join(catalogDir, '', `${resource.id}.mdx`), document);
   };
 
 /**
@@ -135,5 +135,5 @@ export const writeUser =
  * ```
  */
 export const rmUserById = (catalogDir: string) => async (id: string) => {
-  fsSync.rmSync(join(catalogDir, `${id}.md`), { recursive: true });
+  fsSync.rmSync(join(catalogDir, `${id}.mdx`), { recursive: true });
 };

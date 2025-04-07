@@ -82,7 +82,7 @@ describe('Teams SDK', () => {
 
       const team = await getTeam('eventcatalog-core-team');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.mdx'))).toBe(true);
 
       expect(team).toEqual({
         id: 'eventcatalog-core-team',
@@ -125,7 +125,7 @@ describe('Teams SDK', () => {
 
       const team = await getTeam('eventcatalog-core-team');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.mdx'))).toBe(true);
       expect(team.name).toBe('Eventcatalog Core Team Overridden');
     });
   });
@@ -138,11 +138,11 @@ describe('Teams SDK', () => {
         markdown: 'This is the core team for Eventcatalog',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.mdx'))).toBe(true);
 
       await rmTeamById('eventcatalog-core-team');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.mdx'))).toBe(false);
     });
   });
 });
