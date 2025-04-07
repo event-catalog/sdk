@@ -30,9 +30,13 @@ const DUMP_VERSION = '0.0.1';
 
 const getEventCatalogVersion = async (catalogDir: string) => {
   // Read package.json in the catalogDir
-  const packageJson = fs.readFileSync(join(catalogDir, 'package.json'), 'utf8');
-  const packageJsonObject = JSON.parse(packageJson);
-  return packageJsonObject['dependencies']['@eventcatalog/core'];
+  try {
+    const packageJson = fs.readFileSync(join(catalogDir, 'package.json'), 'utf8');
+    const packageJsonObject = JSON.parse(packageJson);
+    return packageJsonObject['dependencies']['@eventcatalog/core'];
+  } catch (error) {
+    return 'unknown';
+  }
 };
 
 const hydrateResource = async (
