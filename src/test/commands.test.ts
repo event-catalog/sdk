@@ -17,6 +17,7 @@ const {
   addSchemaToCommand,
   commandHasVersion,
   writeCommandToService,
+  writeService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -52,6 +53,13 @@ describe('Commands SDK', () => {
     });
 
     it('returns the given command id from EventCatalog and the latest version when no version is given and the command is inside a services folder,', async () => {
+      await writeService({
+        id: 'Inventory',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
       await writeCommandToService(
         {
           id: 'UpdateInventory',
@@ -396,6 +404,14 @@ describe('Commands SDK', () => {
 
   describe('writeCommandToService', () => {
     it('writes a command to the given service. When no version if given for the command the service is added to the latest service', async () => {
+      await writeService({
+        id: 'Inventory',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
       await writeCommandToService(
         {
           id: 'UpdateInventory',
@@ -404,16 +420,20 @@ describe('Commands SDK', () => {
           summary: 'This is a summary',
           markdown: '# Hello world',
         },
-        {
-          id: 'InventoryService',
-        }
+        { id: 'Inventory' }
       );
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.mdx'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(true);
     });
     it('writes a command to the given service. When a version is given for the command the service is added to that service version', async () => {
+      await writeService({
+        id: 'Inventory',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
       await writeCommandToService(
         {
           id: 'UpdateInventory',
@@ -422,16 +442,21 @@ describe('Commands SDK', () => {
           summary: 'This is a summary',
           markdown: '# Hello world',
         },
-        {
-          id: 'InventoryService',
-          version: '1.0.0',
-        }
+        { id: 'Inventory', version: '1.0.0' }
       );
       expect(
-        fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/1.0.0/commands/UpdateInventory', 'index.mdx'))
+        fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/versioned/1.0.0/commands/UpdateInventory', 'index.mdx'))
       ).toBe(true);
     });
     it('writes a command to the given service. When a version is the latest the command is added to the latest version of the service', async () => {
+      await writeService({
+        id: 'Inventory',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
       await writeCommandToService(
         {
           id: 'UpdateInventory',
@@ -440,14 +465,9 @@ describe('Commands SDK', () => {
           summary: 'This is a summary',
           markdown: '# Hello world',
         },
-        {
-          id: 'InventoryService',
-          version: 'latest',
-        }
+        { id: 'Inventory', version: 'latest' }
       );
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/commands/UpdateInventory', 'index.mdx'))).toBe(
-        true
-      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(true);
     });
   });
 
@@ -572,6 +592,14 @@ describe('Commands SDK', () => {
 
     describe('when commands are within a service directory', () => {
       it('removes an command from eventcatalog by id', async () => {
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeCommandToService(
           {
             id: 'UpdateInventory',
@@ -591,6 +619,14 @@ describe('Commands SDK', () => {
       });
 
       it('if version is given, only removes that version and not any other versions of the command', async () => {
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeCommandToService(
           {
             id: 'UpdateInventory',
@@ -676,6 +712,14 @@ describe('Commands SDK', () => {
 
     describe('when commands are within a service directory', () => {
       it('adds the given command to the versioned directory and removes itself from the root', async () => {
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeCommandToService(
           {
             id: 'UpdateInventory',
@@ -699,6 +743,14 @@ describe('Commands SDK', () => {
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(false);
       });
       it('adds the given command to the versioned directory and all files that are associated to it', async () => {
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeCommandToService(
           {
             id: 'UpdateInventory',
@@ -804,6 +856,14 @@ describe('Commands SDK', () => {
       it('takes a given file and writes it to the location of the given command', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
 
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeCommandToService(
           {
             id: 'UpdateInventory',
@@ -822,6 +882,14 @@ describe('Commands SDK', () => {
 
       it('takes a given file and version and writes the file to the correct location', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
 
         await writeCommandToService(
           {
@@ -925,6 +993,14 @@ describe('Commands SDK', () => {
         }`;
         const file = { schema, fileName: 'schema.json' };
 
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
+
         await writeCommandToService(
           {
             id: 'UpdateInventory',
@@ -954,6 +1030,14 @@ describe('Commands SDK', () => {
           }
         }`;
         const file = { schema, fileName: 'schema.json' };
+
+        await writeService({
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        });
 
         await writeCommandToService(
           {

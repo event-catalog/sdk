@@ -25,6 +25,7 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core user',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
       const test = await getUser('eventcatalog-core-user');
@@ -33,6 +34,7 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core user',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
     });
 
@@ -47,12 +49,14 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
       await writeUser({
         id: 'eventcatalog-second-user',
         name: 'Eventcatalog Second User',
         markdown: 'This is the second user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
       const users = await getUsers();
@@ -62,11 +66,13 @@ describe('Users SDK', () => {
           id: 'eventcatalog-second-user',
           name: 'Eventcatalog Second User',
           markdown: 'This is the second user for Eventcatalog',
+          avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
         },
         {
           id: 'eventcatalog-core-user',
           name: 'Eventcatalog Core User',
           markdown: 'This is the core user for Eventcatalog',
+          avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
         },
       ]);
     });
@@ -78,16 +84,18 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
       const user = await getUser('eventcatalog-core-user');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.mdx'))).toBe(true);
 
       expect(user).toEqual({
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
     });
 
@@ -96,6 +104,7 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
       await expect(
@@ -103,6 +112,7 @@ describe('Users SDK', () => {
           id: 'eventcatalog-core-user',
           name: 'Eventcatalog Core User',
           markdown: 'This is the core user for Eventcatalog',
+          avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
         })
       ).rejects.toThrowError('Failed to write eventcatalog-core-user (user) as it already exists');
     });
@@ -112,6 +122,7 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
       await writeUser(
@@ -119,14 +130,15 @@ describe('Users SDK', () => {
           id: 'eventcatalog-core-user',
           name: 'Eventcatalog Core User Overridden',
           markdown: 'This is the core user for Eventcatalog',
+          avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
         },
         { override: true }
       );
 
       const user = await getUser('eventcatalog-core-user');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.md'))).toBe(true);
-      expect(user.name).toBe('Eventcatalog Core User Overridden');
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.mdx'))).toBe(true);
+      expect(user?.name).toBe('Eventcatalog Core User Overridden');
     });
   });
 
@@ -136,13 +148,14 @@ describe('Users SDK', () => {
         id: 'eventcatalog-core-user',
         name: 'Eventcatalog Core User',
         markdown: 'This is the core user for Eventcatalog',
+        avatarUrl: 'https://pbs.twimg.com/profile_images/1262283153563140096/DYRDqKg6_400x400.png',
       });
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.md'))).toBe(true);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.mdx'))).toBe(true);
 
       await rmUserById('eventcatalog-core-user');
 
-      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.md'))).toBe(false);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'users', 'eventcatalog-core-user.mdx'))).toBe(false);
     });
   });
 });

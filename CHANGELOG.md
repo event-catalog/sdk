@@ -1,5 +1,21 @@
 # @eventcatalog/sdk
 
+## 2.2.1
+
+### Patch Changes
+
+- dac1e6e: fix(sdk): teams and users now use mdx file formats
+
+## 2.2.0
+
+### Minor Changes
+
+- 8ea729b: fix(core): fixed problem adding messages to services when in domains
+
+### Patch Changes
+
+- 16d5c4b: fix(sdk): Allow nullable version for xxxHasVersion methods
+
 ## 2.1.2
 
 ### Patch Changes

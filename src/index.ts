@@ -119,7 +119,7 @@ export default (path: string) => {
      * @param options - Optional options to write the event
      *
      */
-    writeEventToService: writeEventToService(join(path, 'services')),
+    writeEventToService: writeEventToService(join(path)),
     /**
      * Remove an event to EventCatalog (modeled on the standard POSIX rm utility)
      *
@@ -199,7 +199,7 @@ export default (path: string) => {
      * @param options - Optional options to write the command
      *
      */
-    writeCommandToService: writeCommandToService(join(path, 'services')),
+    writeCommandToService: writeCommandToService(join(path)),
 
     /**
      * Remove an command to EventCatalog (modeled on the standard POSIX rm utility)
@@ -280,7 +280,7 @@ export default (path: string) => {
      * @param options - Optional options to write the query
      *
      */
-    writeQueryToService: writeQueryToService(join(path, 'services')),
+    writeQueryToService: writeQueryToService(join(path)),
     /**
      * Remove an query to EventCatalog (modeled on the standard POSIX rm utility)
      *

@@ -15,7 +15,7 @@ export const versionResource = async (catalogDir: string, id: string) => {
   const matchedFiles = await searchFilesForId(files, id);
 
   if (matchedFiles.length === 0) {
-    throw new Error(`No event found with id: ${id}`);
+    throw new Error(`No resource found with id: ${id}`);
   }
 
   // Event that is in the route of the project
@@ -117,6 +117,17 @@ export const getResource = async (
     ...data,
     markdown: content.trim(),
   } as Resource;
+};
+
+export const getResourcePath = async (catalogDir: string, id: string, version?: string) => {
+  const file = await findFileById(catalogDir, id, version);
+  if (!file) return;
+
+  return {
+    fullPath: file,
+    relativePath: file.replace(catalogDir, ''),
+    directory: dirname(file.replace(catalogDir, '')),
+  };
 };
 
 export const getResources = async (

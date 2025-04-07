@@ -18,6 +18,7 @@ const {
   addSchemaToEvent,
   eventHasVersion,
   writeServiceToDomain,
+  writeService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -357,6 +358,38 @@ describe('Events SDK', () => {
           markdown: '# Hello world',
         });
       });
+
+      it('writes the event to the correct folder path', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service tat handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          {
+            id: 'InventoryService',
+          }
+        );
+
+        const files = await fs.readdirSync(
+          path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/events/InventoryAdjusted')
+        );
+
+        expect(files).toEqual(['index.mdx']);
+      });
     });
   });
 
@@ -678,6 +711,14 @@ describe('Events SDK', () => {
 
   describe('writeEventToService', () => {
     it('writes an event to the given service. When no version if given for the service the event is added to the latest service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
       await writeEventToService(
         {
           id: 'InventoryAdjusted',
@@ -696,6 +737,13 @@ describe('Events SDK', () => {
       );
     });
     it('writes an event to the given service. When a version is given for the service the event is added to that service version', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
       await writeEventToService(
         {
           id: 'InventoryAdjusted',
@@ -714,6 +762,14 @@ describe('Events SDK', () => {
       ).toBe(true);
     });
     it('writes an event to the given service. When a version is the latest the event is added to the latest version of the service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
       await writeEventToService(
         {
           id: 'InventoryAdjusted',
@@ -855,6 +911,13 @@ describe('Events SDK', () => {
 
     describe('when events are within a service directory', () => {
       it('removes an event from EventCatalog by id', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
         await writeEventToService(
           {
             id: 'InventoryAdjusted',
@@ -880,13 +943,19 @@ describe('Events SDK', () => {
 
       it('if version is given, only removes that version and not any other versions of the event', async () => {
         // write the first events
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
         await writeEventToService(
           {
             id: 'InventoryAdjusted',
             name: 'Inventory Adjusted',
-            version: '0.0.1',
-            summary: 'This is a summary',
             markdown: '# Hello world',
+            version: '0.0.1',
           },
           {
             id: 'InventoryService',
@@ -976,6 +1045,14 @@ describe('Events SDK', () => {
 
     describe('when events are within a service directory', () => {
       it('adds the given event to the versioned directory and removes itself from the root', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
         await writeEventToService(
           {
             id: 'InventoryAdjusted',
@@ -999,6 +1076,14 @@ describe('Events SDK', () => {
         );
       });
       it('adds the given event to the versioned directory and all files that are associated to it', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
         await writeEventToService(
           {
             id: 'InventoryAdjusted',
@@ -1087,6 +1172,14 @@ describe('Events SDK', () => {
       it('takes a given file and writes it to the location of the given event', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
 
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
         await writeEventToService(
           {
             id: 'InventoryAdjusted',
@@ -1107,6 +1200,14 @@ describe('Events SDK', () => {
 
       it('takes a given file and version and writes the file to the correct location', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
+
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
 
         await writeEventToService(
           {
@@ -1210,6 +1311,14 @@ describe('Events SDK', () => {
         }`;
         const file = { schema, fileName: 'schema.json' };
 
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
         await writeEventToService(
           {
             id: 'InventoryAdjusted',
@@ -1241,6 +1350,14 @@ describe('Events SDK', () => {
           }
         }`;
         const file = { schema, fileName: 'schema.json' };
+
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
 
         await writeEventToService(
           {
