@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.3
+
+### Patch Changes
+
+- 03539b9: fix(sdk): eventcatalog version ignored if not found on dump
+
 ## 2.2.2
 
 ### Patch Changes
