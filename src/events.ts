@@ -1,10 +1,11 @@
 import fs from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { findFileById } from './internal/utils';
 import type { Event } from './types';
 import {
   addFileToResource,
   getResource,
+  getResourcePath,
   getResources,
   rmResourceById,
   versionResource,
@@ -141,10 +142,15 @@ export const writeEvent =
 export const writeEventToService =
   (directory: string) =>
   async (event: Event, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
+    const resourcePath = await getResourcePath(directory, service.id, service.version);
+    if (!resourcePath) {
+      throw new Error('Service not found');
+    }
+
     let pathForEvent =
       service.version && service.version !== 'latest'
-        ? `/${service.id}/versioned/${service.version}/events`
-        : `/${service.id}/events`;
+        ? `${resourcePath.directory}/versioned/${service.version}/events`
+        : `${resourcePath.directory}/events`;
     pathForEvent = join(pathForEvent, event.id);
     await writeResource(directory, { ...event }, { ...options, path: pathForEvent, type: 'event' });
   };

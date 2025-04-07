@@ -5,6 +5,7 @@ import type { Query } from './types';
 import {
   addFileToResource,
   getResource,
+  getResourcePath,
   getResources,
   rmResourceById,
   versionResource,
@@ -139,10 +140,14 @@ export const getQueries =
 export const writeQueryToService =
   (directory: string) =>
   async (query: Query, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
+    const resourcePath = await getResourcePath(directory, service.id, service.version);
+    if (!resourcePath) {
+      throw new Error('Service not found');
+    }
     let pathForQuery =
       service.version && service.version !== 'latest'
-        ? `/${service.id}/versioned/${service.version}/queries`
-        : `/${service.id}/queries`;
+        ? `${resourcePath.directory}/versioned/${service.version}/queries`
+        : `${resourcePath.directory}/queries`;
     pathForQuery = join(pathForQuery, query.id);
     await writeResource(directory, { ...query }, { ...options, path: pathForQuery, type: 'query' });
   };

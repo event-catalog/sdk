@@ -4,6 +4,7 @@ import type { Command } from './types';
 import {
   addFileToResource,
   getResource,
+  getResourcePath,
   getResources,
   rmResourceById,
   versionResource,
@@ -138,13 +139,18 @@ export const writeCommand =
 export const writeCommandToService =
   (directory: string) =>
   async (command: Command, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
-    let pathForEvent =
-      service.version && service.version !== 'latest'
-        ? `/${service.id}/versioned/${service.version}/commands`
-        : `/${service.id}/commands`;
-    pathForEvent = join(pathForEvent, command.id);
+    const resourcePath = await getResourcePath(directory, service.id, service.version);
+    if (!resourcePath) {
+      throw new Error('Service not found');
+    }
 
-    await writeResource(directory, { ...command }, { ...options, path: pathForEvent, type: 'command' });
+    let pathForCommand =
+      service.version && service.version !== 'latest'
+        ? `${resourcePath.directory}/versioned/${service.version}/commands`
+        : `${resourcePath.directory}/commands`;
+    pathForCommand = join(pathForCommand, command.id);
+
+    await writeResource(directory, { ...command }, { ...options, path: pathForCommand, type: 'command' });
   };
 
 /**
