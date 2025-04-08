@@ -15,6 +15,13 @@ export interface BaseSchema {
     language?: string;
     url?: string;
   };
+  styles?: {
+    icon?: string;
+    node?: {
+      color?: string;
+      label?: string;
+    };
+  };
 }
 
 export type ResourcePointer = {
