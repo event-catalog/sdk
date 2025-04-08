@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.4
+
+### Patch Changes
+
+- b5ad42d: chore(sdk): updated types for new styles on resources
+
 ## 2.2.3
 
 ### Patch Changes
