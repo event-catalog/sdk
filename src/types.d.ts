@@ -20,7 +20,7 @@ export interface BaseSchema {
     node?: {
       color?: string;
       label?: string;
-    }
+    };
   };
 }
 
