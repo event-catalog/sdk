@@ -15,7 +15,7 @@ export interface BaseSchema {
     language?: string;
     url?: string;
   };
-  deprecated?: {
+  deprecated?: boolean | {
     date?: string;
     message?: string;
   };
