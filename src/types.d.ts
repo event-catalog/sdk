@@ -15,10 +15,12 @@ export interface BaseSchema {
     language?: string;
     url?: string;
   };
-  deprecated?: boolean | {
-    date?: string;
-    message?: string;
-  };
+  deprecated?:
+    | boolean
+    | {
+        date?: string;
+        message?: string;
+      };
   styles?: {
     icon?: string;
     node?: {
