@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.5
+
+### Patch Changes
+
+- eed1aa7: feat(sdk): added support for deprecated fields
+
 ## 2.2.4
 
 ### Patch Changes
