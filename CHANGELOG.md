@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.6
+
+### Patch Changes
+
+- e2f7a36: feat(sdk): deprecation field now supports booleans
+
 ## 2.2.5
 
 ### Patch Changes
