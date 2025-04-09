@@ -15,6 +15,10 @@ export interface BaseSchema {
     language?: string;
     url?: string;
   };
+  deprecated?: {
+    date?: string;
+    message?: string;
+  };
   styles?: {
     icon?: string;
     node?: {
