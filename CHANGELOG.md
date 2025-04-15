@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.7
+
+### Patch Changes
+
+- 43d9243: fix(sdk): fixed small bug when getting resources could return resources it should not
+
 ## 2.2.6
 
 ### Patch Changes
