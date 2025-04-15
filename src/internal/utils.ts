@@ -1,8 +1,7 @@
-import { glob, globSync } from 'glob';
-import fs from 'node:fs/promises';
+import { globSync } from 'glob';
 import fsSync from 'node:fs';
-import { copy, copySync, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
-import { join } from 'node:path';
+import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
+import { join, dirname } from 'node:path';
 import matter from 'gray-matter';
 import { satisfies, validRange, valid } from 'semver';
 
@@ -55,7 +54,8 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
 export const getFiles = async (pattern: string, ignore: string | string[] = '') => {
   try {
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
-    const files = globSync(pattern, { ignore: ['node_modules/**', ...ignoreList] });
+    const baseDir = pattern.includes('**') ? pattern.split('**')[0] : dirname(pattern);
+    const files = globSync(pattern, { cwd: baseDir, ignore: ['node_modules/**', ...ignoreList] });
     return files;
   } catch (error) {
     throw new Error(`Error finding files: ${error}`);

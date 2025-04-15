@@ -30,7 +30,7 @@ describe('EventCatalog', () => {
 
     it('should not include markdown if the includeMarkdown option is false', async () => {
       const dump = await dumpCatalog({ includeMarkdown: false });
-      expect(dump.resources.messages.events[0].markdown).toBeUndefined();
+      expect(dump.resources.messages?.events?.[0].markdown).toBeUndefined();
     });
 
     describe('domains', () => {
@@ -38,7 +38,7 @@ describe('EventCatalog', () => {
         const dump = await dumpCatalog();
         expect(dump.resources.domains).toHaveLength(3);
 
-        const domain1 = dump.resources.domains[0];
+        const domain1 = dump.resources.domains?.[0];
 
         expect(domain1).toEqual(
           expect.objectContaining({
@@ -70,7 +70,7 @@ describe('EventCatalog', () => {
         const dump = await dumpCatalog();
         expect(dump.resources.services).toHaveLength(6);
 
-        const service1 = dump.resources.services[0];
+        const service1 = dump.resources.services?.[0];
 
         expect(service1).toEqual(
           expect.objectContaining({
@@ -87,8 +87,8 @@ describe('EventCatalog', () => {
           })
         );
 
-        expect(service1.sends).toHaveLength(6);
-        expect(service1.receives).toHaveLength(5);
+        expect(service1?.sends).toHaveLength(6);
+        expect(service1?.receives).toHaveLength(5);
       });
     });
 
@@ -96,21 +96,21 @@ describe('EventCatalog', () => {
       describe('events', () => {
         it('returns a list of events from the catalog', async () => {
           const dump = await dumpCatalog();
-          expect(dump.resources.messages.events).toHaveLength(14);
+          expect(dump.resources.messages?.events).toHaveLength(14);
         });
       });
 
       describe('queries', () => {
         it('returns a list of queries from the catalog', async () => {
           const dump = await dumpCatalog();
-          expect(dump.resources.messages.queries).toHaveLength(5);
+          expect(dump.resources.messages?.queries).toHaveLength(5);
         });
       });
 
       describe('commands', () => {
         it('returns a list of commands from the catalog', async () => {
           const dump = await dumpCatalog();
-          expect(dump.resources.messages.commands).toHaveLength(8);
+          expect(dump.resources.messages?.commands).toHaveLength(8);
         });
       });
     });
