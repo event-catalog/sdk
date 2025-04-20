@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.2.10
+
+### Patch Changes
+
+- d2bc29c: feat(sdk): added backwards compatibility for md files
+
 ## 2.2.9
 
 ### Patch Changes
