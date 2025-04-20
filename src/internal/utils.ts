@@ -1,7 +1,7 @@
 import { globSync } from 'glob';
 import fsSync from 'node:fs';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
-import { join, dirname, normalize, sep as pathSeparator, resolve } from 'node:path';
+import { join, dirname, normalize, sep as pathSeparator, resolve, basename, relative } from 'node:path';
 import matter from 'gray-matter';
 import { satisfies, validRange, valid } from 'semver';
 
@@ -53,31 +53,54 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
 
 export const getFiles = async (pattern: string, ignore: string | string[] = '') => {
   try {
-    // Normalize the input pattern to use the OS-specific separator
-    const normalizedPattern = normalize(pattern);
+    // 1. Normalize the input pattern to handle mixed separators potentially
+    const normalizedInputPattern = normalize(pattern);
 
-    // Determine the base directory for glob searching
-    // If pattern includes globstar, take the part before it, otherwise take the directory of the pattern
-    const baseDir = normalizedPattern.includes('**') ? normalizedPattern.split('**')[0] : dirname(normalizedPattern);
-    // Ensure baseDir ends with a separator for correct cwd behavior in glob
-    const cwd = baseDir.endsWith(pathSeparator) ? baseDir : `${baseDir}${pathSeparator}`;
+    // 2. Determine the absolute base directory (cwd for glob)
+    // Resolve ensures it's absolute. Handles cases with/without globstar.
+    const absoluteBaseDir = resolve(
+        normalizedInputPattern.includes('**')
+        ? normalizedInputPattern.split('**')[0]
+        : dirname(normalizedInputPattern)
+    );
+
+    // 3. Determine the pattern part relative to the absolute base directory
+    // We extract the part of the normalized pattern that comes *after* the absoluteBaseDir
+    let relativePattern = relative(absoluteBaseDir, normalizedInputPattern);
+
+    // On Windows, relative() might return empty string if paths are identical,
+    // or might need normalization if the original pattern didn't have `**`
+    // Example: pattern = 'dir/file.md', absoluteBaseDir='.../dir', normalized='...\dir\file.md'
+    // relative() -> 'file.md'
+    // Example: pattern = 'dir/**/file.md', absoluteBaseDir='.../dir', normalized='...\dir\**\file.md'
+    // relative() -> '**\file.md'
+    // Convert separators in the relative pattern to forward slashes for glob
+    relativePattern = relativePattern.replace(/\\/g, '/');
 
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
 
-    // Use globSync with the normalized pattern relative to the calculated cwd
-    // Pass `absolute: true` to get absolute paths, which avoids issues with relative path resolution
-    const files = globSync(normalizedPattern, {
-      cwd: resolve(cwd), // Use absolute path for cwd
+    // 4. Call globSync with the relative pattern and absolute cwd
+    const files = globSync(relativePattern, { // Use the relative pattern (with / separators)
+      cwd: absoluteBaseDir, // Use the absolute directory
       ignore: ['node_modules/**', ...ignoreList],
-      absolute: true, // Get absolute paths back
-      nodir: true, // Ensure we only get files
+      absolute: true, // Request absolute paths in the result
+      nodir: true,
     });
 
-    // Normalize the returned paths for consistency (though absolute paths should be fine)
+    // 5. Normalize results for consistency before returning
     return files.map(normalize);
+
   } catch (error: any) {
-    // Provide more context in the error message
-    throw new Error(`Error finding files for pattern "${pattern}": ${error.message}`);
+    // Add more diagnostic info to the error
+    const absoluteBaseDirForError = resolve(
+      normalize(pattern).includes('**')
+        ? normalize(pattern).split('**')[0]
+        : dirname(normalize(pattern))
+    );
+    const relativePatternForError = relative(absoluteBaseDirForError, normalize(pattern)).replace(/\\/g, '/');
+    throw new Error(
+      `Error finding files for pattern "${pattern}" (using cwd: "${absoluteBaseDirForError}", globPattern: "${relativePatternForError}"): ${error.message}`
+    );
   }
 };
 
