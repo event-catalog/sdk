@@ -59,9 +59,7 @@ export const getFiles = async (pattern: string, ignore: string | string[] = '') 
     // 2. Determine the absolute base directory (cwd for glob)
     // Resolve ensures it's absolute. Handles cases with/without globstar.
     const absoluteBaseDir = resolve(
-        normalizedInputPattern.includes('**')
-        ? normalizedInputPattern.split('**')[0]
-        : dirname(normalizedInputPattern)
+      normalizedInputPattern.includes('**') ? normalizedInputPattern.split('**')[0] : dirname(normalizedInputPattern)
     );
 
     // 3. Determine the pattern part relative to the absolute base directory
@@ -80,7 +78,8 @@ export const getFiles = async (pattern: string, ignore: string | string[] = '') 
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
 
     // 4. Call globSync with the relative pattern and absolute cwd
-    const files = globSync(relativePattern, { // Use the relative pattern (with / separators)
+    const files = globSync(relativePattern, {
+      // Use the relative pattern (with / separators)
       cwd: absoluteBaseDir, // Use the absolute directory
       ignore: ['node_modules/**', ...ignoreList],
       absolute: true, // Request absolute paths in the result
@@ -89,13 +88,10 @@ export const getFiles = async (pattern: string, ignore: string | string[] = '') 
 
     // 5. Normalize results for consistency before returning
     return files.map(normalize);
-
   } catch (error: any) {
     // Add more diagnostic info to the error
     const absoluteBaseDirForError = resolve(
-      normalize(pattern).includes('**')
-        ? normalize(pattern).split('**')[0]
-        : dirname(normalize(pattern))
+      normalize(pattern).includes('**') ? normalize(pattern).split('**')[0] : dirname(normalize(pattern))
     );
     const relativePatternForError = relative(absoluteBaseDirForError, normalize(pattern)).replace(/\\/g, '/');
     throw new Error(
