@@ -114,7 +114,10 @@ export const getChannels =
  */
 export const writeChannel =
   (directory: string) =>
-  async (channel: Channel, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) =>
+  async (
+    channel: Channel,
+    options: { path?: string; override?: boolean; versionExistingContent?: boolean; format?: 'md' | 'mdx' } = { path: '' }
+  ) =>
     writeResource(directory, { ...channel }, { ...options, type: 'channel' });
 
 /**
