@@ -113,7 +113,15 @@ export const getCommands =
  */
 export const writeCommand =
   (directory: string) =>
-  async (command: Command, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) =>
+  async (
+    command: Command,
+    options: { path?: string; override?: boolean; versionExistingContent?: boolean; format?: 'md' | 'mdx' } = {
+      path: '',
+      override: false,
+      versionExistingContent: false,
+      format: 'mdx',
+    }
+  ) =>
     writeResource(directory, { ...command }, { ...options, type: 'command' });
 
 /**
@@ -138,7 +146,11 @@ export const writeCommand =
  */
 export const writeCommandToService =
   (directory: string) =>
-  async (command: Command, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
+  async (
+    command: Command,
+    service: { id: string; version?: string },
+    options: { path?: string; format?: 'md' | 'mdx' } = { path: '', format: 'mdx' }
+  ) => {
     const resourcePath = await getResourcePath(directory, service.id, service.version);
     if (!resourcePath) {
       throw new Error('Service not found');

@@ -268,6 +268,21 @@ describe('Domain SDK', () => {
       });
     });
 
+    it('writes the given domain (as md) to EventCatalog and assumes the path if one if not given', async () => {
+      await writeDomain(
+        {
+          id: 'Payment',
+          name: 'Payment Domain',
+          version: '0.0.1',
+          summary: 'All things to do with the payment systems',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Payment', 'index.md'))).toBe(true);
+    });
+
     it('writes the given domain to EventCatalog under the correct path when a path is given', async () => {
       await writeDomain(
         {

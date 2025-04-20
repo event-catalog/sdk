@@ -565,6 +565,21 @@ describe('Queries SDK', () => {
       });
     });
 
+    it('writes the given query to EventCatalog (as md). When no version if given for the query the service is added to the latest service', async () => {
+      await writeQuery(
+        {
+          id: 'GetOrder',
+          name: 'Get Order',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'queries/GetOrder', 'index.md'))).toBe(true);
+    });
+
     it('writes the given query to EventCatalog under the correct path when a path is given', async () => {
       await writeQuery(
         {
@@ -712,6 +727,31 @@ describe('Queries SDK', () => {
       );
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
+    });
+    it('writes an query to the given service (as md). When no version if given for the service the query is added to the latest service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeQueryToService(
+        {
+          id: 'GetOrder',
+          name: 'Get Order',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+        },
+        { format: 'md' }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.md'))).toBe(true);
     });
     it('writes an query to the given service. When a version is given for the service the query is added to that service version', async () => {
       await writeService({

@@ -117,7 +117,14 @@ export const getServices =
  */
 export const writeService =
   (directory: string) =>
-  async (service: Service, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) => {
+  async (
+    service: Service,
+    options: { path?: string; override?: boolean; versionExistingContent?: boolean; format?: 'md' | 'mdx' } = {
+      path: '',
+      override: false,
+      format: 'mdx',
+    }
+  ) => {
     const resource: Service = { ...service };
 
     if (Array.isArray(service.sends)) {
@@ -186,7 +193,7 @@ export const writeServiceToDomain =
   async (
     service: Service,
     domain: { id: string; version?: string; direction?: string },
-    options: { path: string } = { path: '' }
+    options: { path?: string; format?: 'md' | 'mdx' } = { path: '', format: 'mdx' }
   ) => {
     let pathForService =
       domain.version && domain.version !== 'latest'

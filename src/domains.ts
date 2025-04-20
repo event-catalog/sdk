@@ -117,7 +117,15 @@ export const getDomains =
  */
 export const writeDomain =
   (directory: string) =>
-  async (domain: Domain, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) => {
+  async (
+    domain: Domain,
+    options: { path?: string; override?: boolean; versionExistingContent?: boolean; format?: 'md' | 'mdx' } = {
+      path: '',
+      override: false,
+      versionExistingContent: false,
+      format: 'mdx',
+    }
+  ) => {
     const resource: Domain = { ...domain };
 
     if (Array.isArray(domain.services)) {
