@@ -1117,6 +1117,23 @@ describe('Services SDK', () => {
       ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
     });
 
+    it('when an event is added to the service, the extension of the service is maintained', async () => {
+      await writeService(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      await addEventToService('InventoryService', 'sends', { id: 'InventoryUpdatedEvent', version: '2.0.0' }, '0.0.1');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+    });
+
     describe('when services are within a domain directory', () => {
       it('takes an existing event and adds it to the sends of an existing service', async () => {
         await writeServiceToDomain(

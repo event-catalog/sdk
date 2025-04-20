@@ -5,6 +5,7 @@ import fsSync from 'node:fs';
 import {
   addFileToResource,
   getResource,
+  getResourcePath,
   getResources,
   rmResourceById,
   versionResource,
@@ -319,6 +320,10 @@ export const domainHasVersion = (directory: string) => async (id: string, versio
 export const addServiceToDomain =
   (directory: string) => async (id: string, service: { id: string; version: string }, version?: string) => {
     let domain: Domain = await getDomain(directory)(id, version);
+    const domainPath = await getResourcePath(directory, id, version);
+
+    // Get the extension of the file
+    const extension = path.extname(domainPath?.fullPath || '');
 
     if (domain.services === undefined) {
       domain.services = [];
@@ -334,5 +339,5 @@ export const addServiceToDomain =
     domain.services.push(service);
 
     await rmDomainById(directory)(id, version, true);
-    await writeDomain(directory)(domain);
+    await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
   };

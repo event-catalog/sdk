@@ -744,6 +744,37 @@ describe('Domain SDK', () => {
       expect(domain.services).toEqual([{ id: 'Order Service', version: '2.0.0' }]);
     });
 
+    it('adds a service to the domain, if the extension of the domain is `md` then the extension is maintained', async () => {
+      await writeDomain(
+        {
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      await addServiceToDomain('Orders', { id: 'Order Service', version: '2.0.0' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Orders', 'index.md'))).toBe(true);
+    });
+
+    it('adds a service to the domain, if the extension of the domain is `mdx (default)` then the extension is maintained', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addServiceToDomain('Orders', { id: 'Order Service', version: '2.0.0' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Orders', 'index.mdx'))).toBe(true);
+    });
+
     it('does not add a service to the domain if the service is already on the list', async () => {
       await writeDomain({
         id: 'Orders',
