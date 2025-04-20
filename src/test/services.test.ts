@@ -436,6 +436,31 @@ describe('Services SDK', () => {
       });
     });
 
+    it('writes the given service (as .md) to EventCatalog if the format is .md', async () => {
+      await writeService(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      const service = await getService('InventoryService');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service tat handles the inventory',
+        markdown: '# Hello world',
+      });
+    });
+
     it('writes the given service to EventCatalog under the correct path when a path is given', async () => {
       await writeService(
         {
@@ -653,6 +678,25 @@ describe('Services SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
     });
+
+    it('writes a service to the given domain (as md). When no version if given for the domain the service is added to the latest domain', async () => {
+      await writeServiceToDomain(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'Shopping',
+        },
+        { format: 'md' }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.md'))).toBe(true);
+    });
+
     it('writes a service to the given domain. When a version is given for the domain the service is added to that domain version', async () => {
       await writeServiceToDomain(
         {

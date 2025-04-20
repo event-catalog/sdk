@@ -554,6 +554,39 @@ describe('Events SDK', () => {
       });
     });
 
+    it('writes the given event (as .md) to EventCatalog if the format is .md', async () => {
+      await writeEvent(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          sidebar: {
+            badge: 'badge',
+          },
+        },
+        {
+          format: 'md',
+        }
+      );
+
+      const event = await getEvent('InventoryAdjusted');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'index.md'))).toBe(true);
+
+      expect(event).toEqual({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sidebar: {
+          badge: 'badge',
+        },
+      });
+    });
+
     it('writes the given event to EventCatalog under the correct path when a path is given', async () => {
       await writeEvent(
         {

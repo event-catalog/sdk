@@ -46,21 +46,23 @@ export const versionResource = async (catalogDir: string, id: string) => {
 export const writeResource = async (
   catalogDir: string,
   resource: Resource,
-  options: { path?: string; type: string; override?: boolean; versionExistingContent?: boolean } = {
+  options: { path?: string; type: string; override?: boolean; versionExistingContent?: boolean; format?: 'md' | 'mdx' } = {
     path: '',
     type: '',
     override: false,
     versionExistingContent: false,
+    format: 'mdx',
   }
 ) => {
   const path = options.path || `/${resource.id}`;
   const fullPath = join(catalogDir, path);
+  const format = options.format || 'mdx';
 
   // Create directory if it doesn't exist
   fsSync.mkdirSync(fullPath, { recursive: true });
 
   // Create or get lock file path
-  const lockPath = join(fullPath, 'index.mdx');
+  const lockPath = join(fullPath, `index.${format}`);
 
   // Ensure the file exists before attempting to lock it
   if (!fsSync.existsSync(lockPath)) {

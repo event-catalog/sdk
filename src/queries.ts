@@ -89,7 +89,15 @@ export const getQuery =
  */
 export const writeQuery =
   (directory: string) =>
-  async (query: Query, options: { path?: string; override?: boolean; versionExistingContent?: boolean } = { path: '' }) =>
+  async (
+    query: Query,
+    options: { path?: string; override?: boolean; versionExistingContent?: boolean; format?: 'md' | 'mdx' } = {
+      path: '',
+      override: false,
+      versionExistingContent: false,
+      format: 'mdx',
+    }
+  ) =>
     writeResource(directory, { ...query }, { ...options, type: 'query' });
 
 /**
@@ -139,7 +147,11 @@ export const getQueries =
  */
 export const writeQueryToService =
   (directory: string) =>
-  async (query: Query, service: { id: string; version?: string }, options: { path: string } = { path: '' }) => {
+  async (
+    query: Query,
+    service: { id: string; version?: string },
+    options: { path?: string; format?: 'md' | 'mdx' } = { path: '', format: 'mdx' }
+  ) => {
     const resourcePath = await getResourcePath(directory, service.id, service.version);
     if (!resourcePath) {
       throw new Error('Service not found');

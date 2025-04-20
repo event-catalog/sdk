@@ -307,6 +307,23 @@ describe('Commands SDK', () => {
       });
     });
 
+    it('writes the given command (as md) to EventCatalog if the format is md', async () => {
+      await writeCommand(
+        {
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      const command = await getCommand('UpdateInventory');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'commands/UpdateInventory', 'index.md'))).toBe(true);
+    });
+
     it('writes the given command to EventCatalog under the correct path when a path is given', async () => {
       await writeCommand(
         {
@@ -425,6 +442,34 @@ describe('Commands SDK', () => {
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.mdx'))).toBe(true);
     });
+
+    it('writes a command to the given service (as md). When no version if given for the command the service is added to the latest service', async () => {
+      await writeService(
+        {
+          id: 'Inventory',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles inventory',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      await writeCommandToService(
+        {
+          id: 'UpdateInventory',
+          name: 'Update Inventory',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { id: 'Inventory' },
+        { format: 'md' }
+      );
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/Inventory/commands/UpdateInventory', 'index.md'))).toBe(true);
+    });
+
     it('writes a command to the given service. When a version is given for the command the service is added to that service version', async () => {
       await writeService({
         id: 'Inventory',
