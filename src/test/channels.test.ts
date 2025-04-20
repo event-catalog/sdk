@@ -430,6 +430,32 @@ describe('Channels SDK', () => {
       });
     });
 
+    it('writes the given channel (as md) to EventCatalog when format is md and assumes the path if one if not given', async () => {
+      await writeChannel(
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          address: 'inventory.{env}.events',
+          protocols: ['kafka'],
+          parameters: {
+            env: {
+              enum: ['dev', 'staging', 'prod'],
+              default: 'dev',
+              description: 'The environment to deploy to',
+            },
+          },
+        },
+        { format: 'md' }
+      );
+
+      const channel = await getChannel('inventory.{env}.events');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'channels/inventory.{env}.events', 'index.md'))).toBe(true);
+    });
+
     it('writes the given channel to EventCatalog under the correct path when a path is given', async () => {
       await writeChannel(mockChannel, { path: '/Inventory/InventoryChannel' });
 
