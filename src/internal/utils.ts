@@ -1,7 +1,7 @@
 import { globSync } from 'glob';
 import fsSync from 'node:fs';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
-import { join, dirname } from 'node:path';
+import { join, dirname, normalize, sep as pathSeparator, resolve } from 'node:path';
 import matter from 'gray-matter';
 import { satisfies, validRange, valid } from 'semver';
 
@@ -53,12 +53,31 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
 
 export const getFiles = async (pattern: string, ignore: string | string[] = '') => {
   try {
+    // Normalize the input pattern to use the OS-specific separator
+    const normalizedPattern = normalize(pattern);
+
+    // Determine the base directory for glob searching
+    // If pattern includes globstar, take the part before it, otherwise take the directory of the pattern
+    const baseDir = normalizedPattern.includes('**') ? normalizedPattern.split('**')[0] : dirname(normalizedPattern);
+    // Ensure baseDir ends with a separator for correct cwd behavior in glob
+    const cwd = baseDir.endsWith(pathSeparator) ? baseDir : `${baseDir}${pathSeparator}`;
+
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
-    const baseDir = pattern.includes('**') ? pattern.split('**')[0] : dirname(pattern);
-    const files = globSync(pattern, { cwd: baseDir, ignore: ['node_modules/**', ...ignoreList] });
-    return files;
-  } catch (error) {
-    throw new Error(`Error finding files: ${error}`);
+
+    // Use globSync with the normalized pattern relative to the calculated cwd
+    // Pass `absolute: true` to get absolute paths, which avoids issues with relative path resolution
+    const files = globSync(normalizedPattern, {
+      cwd: resolve(cwd), // Use absolute path for cwd
+      ignore: ['node_modules/**', ...ignoreList],
+      absolute: true, // Get absolute paths back
+      nodir: true, // Ensure we only get files
+    });
+
+    // Normalize the returned paths for consistency (though absolute paths should be fine)
+    return files.map(normalize);
+  } catch (error: any) {
+    // Provide more context in the error message
+    throw new Error(`Error finding files for pattern "${pattern}": ${error.message}`);
   }
 };
 
