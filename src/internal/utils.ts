@@ -77,12 +77,10 @@ export const getFiles = async (pattern: string, ignore: string | string[] = '') 
 
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
 
-    // 4. Call globSync with the relative pattern and absolute cwd
     const files = globSync(relativePattern, {
-      // Use the relative pattern (with / separators)
-      cwd: absoluteBaseDir, // Use the absolute directory
+      cwd: absoluteBaseDir,
       ignore: ['node_modules/**', ...ignoreList],
-      absolute: true, // Request absolute paths in the result
+      absolute: true,
       nodir: true,
     });
 
