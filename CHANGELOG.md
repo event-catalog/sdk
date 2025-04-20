@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.3.0
+
+### Minor Changes
+
+- aef0e28: chore(sdk): fix(sdk): fix SDK on windows, also added window tests
+
 ## 2.2.10
 
 ### Patch Changes
