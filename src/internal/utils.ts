@@ -1,7 +1,7 @@
 import { globSync } from 'glob';
 import fsSync from 'node:fs';
 import { copy, CopyFilterAsync, CopyFilterSync } from 'fs-extra';
-import { join, dirname } from 'node:path';
+import { join, dirname, normalize, sep as pathSeparator, resolve, basename, relative } from 'node:path';
 import matter from 'gray-matter';
 import { satisfies, validRange, valid } from 'semver';
 
@@ -53,12 +53,48 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
 
 export const getFiles = async (pattern: string, ignore: string | string[] = '') => {
   try {
+    // 1. Normalize the input pattern to handle mixed separators potentially
+    const normalizedInputPattern = normalize(pattern);
+
+    // 2. Determine the absolute base directory (cwd for glob)
+    // Resolve ensures it's absolute. Handles cases with/without globstar.
+    const absoluteBaseDir = resolve(
+      normalizedInputPattern.includes('**') ? normalizedInputPattern.split('**')[0] : dirname(normalizedInputPattern)
+    );
+
+    // 3. Determine the pattern part relative to the absolute base directory
+    // We extract the part of the normalized pattern that comes *after* the absoluteBaseDir
+    let relativePattern = relative(absoluteBaseDir, normalizedInputPattern);
+
+    // On Windows, relative() might return empty string if paths are identical,
+    // or might need normalization if the original pattern didn't have `**`
+    // Example: pattern = 'dir/file.md', absoluteBaseDir='.../dir', normalized='...\dir\file.md'
+    // relative() -> 'file.md'
+    // Example: pattern = 'dir/**/file.md', absoluteBaseDir='.../dir', normalized='...\dir\**\file.md'
+    // relative() -> '**\file.md'
+    // Convert separators in the relative pattern to forward slashes for glob
+    relativePattern = relativePattern.replace(/\\/g, '/');
+
     const ignoreList = Array.isArray(ignore) ? ignore : [ignore];
-    const baseDir = pattern.includes('**') ? pattern.split('**')[0] : dirname(pattern);
-    const files = globSync(pattern, { cwd: baseDir, ignore: ['node_modules/**', ...ignoreList] });
-    return files;
-  } catch (error) {
-    throw new Error(`Error finding files: ${error}`);
+
+    const files = globSync(relativePattern, {
+      cwd: absoluteBaseDir,
+      ignore: ['node_modules/**', ...ignoreList],
+      absolute: true,
+      nodir: true,
+    });
+
+    // 5. Normalize results for consistency before returning
+    return files.map(normalize);
+  } catch (error: any) {
+    // Add more diagnostic info to the error
+    const absoluteBaseDirForError = resolve(
+      normalize(pattern).includes('**') ? normalize(pattern).split('**')[0] : dirname(normalize(pattern))
+    );
+    const relativePatternForError = relative(absoluteBaseDirForError, normalize(pattern)).replace(/\\/g, '/');
+    throw new Error(
+      `Error finding files for pattern "${pattern}" (using cwd: "${absoluteBaseDirForError}", globPattern: "${relativePatternForError}"): ${error.message}`
+    );
   }
 };
 
