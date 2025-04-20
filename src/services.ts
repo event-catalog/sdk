@@ -1,6 +1,6 @@
 import type { Service, Specifications } from './types';
 import fs from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { join, dirname, extname } from 'node:path';
 import {
   addFileToResource,
   getFileFromResource,
@@ -10,6 +10,7 @@ import {
   writeResource,
   getVersionedDirectory,
   getResources,
+  getResourcePath,
 } from './internal/resources';
 import { findFileById, uniqueVersions } from './internal/utils';
 
@@ -359,6 +360,8 @@ export const getSpecificationFilesForService = (directory: string) => async (id:
 export const addMessageToService =
   (directory: string) => async (id: string, direction: string, event: { id: string; version: string }, version?: string) => {
     let service: Service = await getService(directory)(id, version);
+    const servicePath = await getResourcePath(directory, id, version);
+    const extension = extname(servicePath?.fullPath || '');
 
     if (direction === 'sends') {
       if (service.sends === undefined) {
@@ -397,7 +400,7 @@ export const addMessageToService =
     const pathToResource = join(path, 'services');
 
     await rmServiceById(directory)(id, version);
-    await writeService(pathToResource)(service);
+    await writeService(pathToResource)(service, { format: extension === '.md' ? 'md' : 'mdx' });
   };
 
 /**

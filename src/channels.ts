@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, extname } from 'node:path';
 import type { Channel } from './types';
-import { getResource, getResources, rmResourceById, versionResource, writeResource } from './internal/resources';
+import { getResource, getResourcePath, getResources, rmResourceById, versionResource, writeResource } from './internal/resources';
 import { findFileById } from './internal/utils';
 import { getEvent, rmEventById, writeEvent } from './events';
 import { getCommand, rmCommandById, writeCommand } from './commands';
@@ -255,6 +255,8 @@ export const addMessageToChannel =
     const { getMessage, rmMessageById, writeMessage } = functions[collection as keyof typeof functions];
 
     const message = await getMessage(directory)(_message.id, _message.version);
+    const messagePath = await getResourcePath(directory, _message.id, _message.version);
+    const extension = extname(messagePath?.fullPath || '');
 
     if (!message) throw new Error(`Message ${_message.id} with version ${_message.version} not found`);
 
@@ -276,5 +278,5 @@ export const addMessageToChannel =
     const pathToResource = join(path, collection);
 
     await rmMessageById(directory)(_message.id, _message.version, true);
-    await writeMessage(pathToResource)(message);
+    await writeMessage(pathToResource)(message, { format: extension === '.md' ? 'md' : 'mdx' });
   };
