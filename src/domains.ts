@@ -348,14 +348,15 @@ export const addServiceToDomain =
 
 /**
  * Add a subdomain to a domain by it's id.
- *
  * Optionally specify a version to add the subdomain to a specific version of the domain.
+ * 
+ * You can read the documentation about subdomains in the [Subdomains documentation](/docs/development/guides/domains/subdomains).
  *
  * @example
  * ```ts
  * import utils from '@eventcatalog/utils';
  *
- * // Adds a service to the domain
+ * // Adds a subdomain to the given domain
  * const { addSubDomainToDomain } = utils('/path/to/eventcatalog');
  *
  * // Adds a subdomain (Payment Domain) to the domain (Orders)
