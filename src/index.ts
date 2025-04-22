@@ -60,6 +60,7 @@ import {
   addUbiquitousLanguageToDomain,
   domainHasVersion,
   addServiceToDomain,
+  addSubDomainToDomain,
   getUbiquitousLanguageFromDomain,
 } from './domains';
 
@@ -671,6 +672,15 @@ export default (path: string) => {
      * @returns
      */
     addServiceToDomain: addServiceToDomain(join(path, 'domains')),
+
+    /**
+     * Adds a given subdomain to a domain
+     * @param id - The id of the domain
+     * @param subDomain - The id and version of the subdomain to add
+     * @param version - (Optional) The version of the domain to add the subdomain to
+     * @returns
+     */
+    addSubDomainToDomain: addSubDomainToDomain(join(path, 'domains')),
 
     /**
      * ================================

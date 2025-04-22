@@ -97,6 +97,7 @@ export interface Service extends BaseSchema {
 
 export interface Domain extends BaseSchema {
   services?: ResourcePointer[];
+  domains?: ResourcePointer[];
 }
 
 export interface Team {

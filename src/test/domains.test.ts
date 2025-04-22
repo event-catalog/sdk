@@ -19,6 +19,7 @@ const {
   getUbiquitousLanguageFromDomain,
   domainHasVersion,
   addServiceToDomain,
+  addSubDomainToDomain,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -331,6 +332,48 @@ describe('Domain SDK', () => {
       expect(service.services).toEqual([
         {
           id: 'PaymentService',
+          version: '1.0.0',
+        },
+      ]);
+    });
+
+    it('domains written to a domain are always unique', async () => {
+      await writeDomain(
+        {
+          id: 'Payment',
+          name: 'Payment Domain',
+          version: '0.0.1',
+          summary: 'All things to do with the payment systems',
+          markdown: '# Hello world',
+          domains: [
+            {
+              id: 'Inventory',
+              version: '1.0.0',
+            },
+            {
+              id: 'Inventory',
+              version: '1.0.0',
+            },
+            {
+              id: 'Orders',
+              version: '1.0.0',
+            },
+          ],
+        },
+        { path: '/Inventory/InventoryService' }
+      );
+
+      const service = await getDomain('Payment');
+
+      expect(service.domains).toHaveLength(2);
+
+      expect(service.domains).toEqual([
+        {
+          id: 'Inventory',
+          version: '1.0.0',
+        },
+        {
+          id: 'Orders',
           version: '1.0.0',
         },
       ]);
@@ -790,6 +833,72 @@ describe('Domain SDK', () => {
       const domain = await getDomain('Orders');
 
       expect(domain.services).toEqual([{ id: 'Order Service', version: '2.0.0' }]);
+    });
+  });
+
+  describe('addSubDomainToDomain', () => {
+    it('adds a subdomain to the domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addSubDomainToDomain('Orders', { id: 'Inventory', version: '1.0.0' });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.domains).toEqual([{ id: 'Inventory', version: '1.0.0' }]);
+    });
+
+    it('adds a subdomain to the domain, if the extension of the domain is `md` then the extension is maintained', async () => {
+      await writeDomain(
+        {
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      await addSubDomainToDomain('Orders', { id: 'Inventory', version: '1.0.0' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Orders', 'index.md'))).toBe(true);
+    });
+
+    it('adds a subdomain to the domain, if the extension of the domain is `mdx (default)` then the extension is maintained', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addSubDomainToDomain('Orders', { id: 'Inventory', version: '1.0.0' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Orders', 'index.mdx'))).toBe(true);
+    });
+
+    it('does not add a subdomain to the domain if the subdomain is already on the list', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        domains: [{ id: 'Inventory', version: '1.0.0' }],
+      });
+
+      await addSubDomainToDomain('Orders', { id: 'Inventory', version: '1.0.0' });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.domains).toEqual([{ id: 'Inventory', version: '1.0.0' }]);
     });
   });
 });
