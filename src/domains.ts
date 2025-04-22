@@ -133,6 +133,10 @@ export const writeDomain =
       resource.services = uniqueVersions(domain.services);
     }
 
+    if (Array.isArray(domain.domains)) {
+      resource.domains = uniqueVersions(domain.domains);
+    }
+
     return await writeResource(directory, resource, { ...options, type: 'domain' });
   };
 
@@ -337,6 +341,50 @@ export const addServiceToDomain =
 
     // Add service to the list
     domain.services.push(service);
+
+    await rmDomainById(directory)(id, version, true);
+    await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
+  };
+
+/**
+ * Add a subdomain to a domain by it's id.
+ *
+ * Optionally specify a version to add the subdomain to a specific version of the domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds a service to the domain
+ * const { addSubDomainToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a service (Orders Service) to the domain (Orders)
+ * await addSubDomainToDomain('Orders', { service: 'Order Service', version: '2.0.0' });
+ * // Adds a service (Orders Service) to the domain (Orders) with a specific version
+ * await addServiceToDomain('Orders', { service: 'Order Service', version: '2.0.0' }, '1.0.0');
+ * ```
+ */
+
+export const addSubDomainToDomain =
+  (directory: string) => async (id: string, subDomain: { id: string; version: string }, version?: string) => {
+    let domain: Domain = await getDomain(directory)(id, version);
+    const domainPath = await getResourcePath(directory, id, version);
+
+    // Get the extension of the file
+    const extension = path.extname(domainPath?.fullPath || '');
+
+    if (domain.domains === undefined) {
+      domain.domains = [];
+    }
+
+    const subDomainExistsInList = domain.domains.some((s) => s.id === subDomain.id && s.version === subDomain.version);
+
+    if (subDomainExistsInList) {
+      return;
+    }
+
+    // Add service to the list
+    domain.domains.push(subDomain);
 
     await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
