@@ -358,10 +358,10 @@ export const addServiceToDomain =
  * // Adds a service to the domain
  * const { addSubDomainToDomain } = utils('/path/to/eventcatalog');
  *
- * // Adds a service (Orders Service) to the domain (Orders)
- * await addSubDomainToDomain('Orders', { service: 'Order Service', version: '2.0.0' });
- * // Adds a service (Orders Service) to the domain (Orders) with a specific version
- * await addServiceToDomain('Orders', { service: 'Order Service', version: '2.0.0' }, '1.0.0');
+ * // Adds a subdomain (Payment Domain) to the domain (Orders)
+ * await addSubDomainToDomain('Orders', { service: 'Payment Domain', version: '2.0.0' });
+ * // Adds a subdomain (Inventory Domain) to the domain (Orders) with a specific version
+ * await addSubDomainToDomain('Orders', { service: 'Inventory Domain', version: '2.0.0' }, '1.0.0');
  * ```
  */
 
