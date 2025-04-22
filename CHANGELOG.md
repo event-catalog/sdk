@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.3.1
+
+### Patch Changes
+
+- cd4cfdd: feat(sdk): introduced subdomain sdk functions
+
 ## 2.3.0
 
 ### Minor Changes
