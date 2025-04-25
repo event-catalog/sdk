@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.3.4
+
+### Patch Changes
+
+- 5427184: feat(sdk): when adding services to domains you can override the service
+
 ## 2.3.3
 
 ### Patch Changes
