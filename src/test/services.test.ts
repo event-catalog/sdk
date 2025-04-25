@@ -731,6 +731,41 @@ describe('Services SDK', () => {
       );
       expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/', 'index.mdx'))).toBe(true);
     });
+
+    it('when override is true, it overrides the service if it already exists', async () => {
+      await writeServiceToDomain(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'Shopping',
+        }
+      );
+
+      await writeServiceToDomain(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is overridden content',
+          markdown: 'Overridden content',
+        },
+        {
+          id: 'Shopping',
+        },
+        { override: true }
+      );
+
+      const service = await getService('InventoryService', '0.0.1');
+
+      expect(service.markdown).toBe('Overridden content');
+      expect(service.summary).toBe('This is overridden content');
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
+    });
   });
 
   describe('versionService', () => {
