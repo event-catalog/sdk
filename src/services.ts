@@ -194,7 +194,7 @@ export const writeServiceToDomain =
   async (
     service: Service,
     domain: { id: string; version?: string; direction?: string },
-    options: { path?: string; format?: 'md' | 'mdx' } = { path: '', format: 'mdx' }
+    options: { path?: string; format?: 'md' | 'mdx'; override?: boolean } = { path: '', format: 'mdx', override: false }
   ) => {
     let pathForService =
       domain.version && domain.version !== 'latest'
