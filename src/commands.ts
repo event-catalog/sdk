@@ -149,7 +149,7 @@ export const writeCommandToService =
   async (
     command: Command,
     service: { id: string; version?: string },
-    options: { path?: string; format?: 'md' | 'mdx' } = { path: '', format: 'mdx' }
+    options: { path?: string; format?: 'md' | 'mdx'; override?: boolean } = { path: '', format: 'mdx', override: false }
   ) => {
     const resourcePath = await getResourcePath(directory, service.id, service.version);
     if (!resourcePath) {

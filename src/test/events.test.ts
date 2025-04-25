@@ -820,6 +820,50 @@ describe('Events SDK', () => {
         true
       );
     });
+
+    it('when override is true, it overrides the event if it already exists', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // Write the first event
+      await writeEventToService(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+        }
+      );
+
+      await writeEventToService(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: 'Overridden content',
+        },
+        {
+          id: 'InventoryService',
+        },
+        {
+          override: true,
+        }
+      );
+
+      const event = await getEvent('InventoryAdjusted', '0.0.1');
+
+      expect(event.markdown).toBe('Overridden content');
+    });
   });
 
   describe('rmEvent', () => {
