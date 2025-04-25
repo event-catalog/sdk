@@ -803,6 +803,50 @@ describe('Queries SDK', () => {
       );
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/queries/GetOrder', 'index.mdx'))).toBe(true);
     });
+
+    it('when override is true, it overrides the event if it already exists', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // Write the first event
+      await writeQueryToService(
+        {
+          id: 'GetOrder',
+          name: 'Get Order',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        {
+          id: 'InventoryService',
+        }
+      );
+
+      await writeQueryToService(
+        {
+          id: 'GetOrder',
+          name: 'Get Order',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: 'Overridden content',
+        },
+        {
+          id: 'InventoryService',
+        },
+        {
+          override: true,
+        }
+      );
+
+      const query = await getQuery('GetOrder', '0.0.1');
+
+      expect(query.markdown).toBe('Overridden content');
+    });
   });
 
   describe('rmQuery', () => {
