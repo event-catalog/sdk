@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.3.3
+
+### Patch Changes
+
+- c99feda: feat(sdk): added override flag for writing messages to services
+
 ## 2.3.2
 
 ### Patch Changes
