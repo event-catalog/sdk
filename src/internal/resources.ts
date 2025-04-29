@@ -202,7 +202,8 @@ export const addFileToResource = async (
     const json = JSON.parse(fileContent);
     fileContent = JSON.stringify(json, null, 2);
   } catch (error) {
-    console.error(error);
+    // Just silently fail if the file is not valid JSON
+    // Write it as it is
   }
 
   fsSync.writeFileSync(join(dirname(pathToResource), file.fileName), fileContent);
