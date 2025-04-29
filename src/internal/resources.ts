@@ -196,7 +196,16 @@ export const addFileToResource = async (
 
   if (!pathToResource) throw new Error('Cannot find directory to write file to');
 
-  fsSync.writeFileSync(join(dirname(pathToResource), file.fileName), file.content);
+  let fileContent = file.content.trim();
+
+  try {
+    const json = JSON.parse(fileContent);
+    fileContent = JSON.stringify(json, null, 2);
+  } catch (error) {
+    console.error(error);
+  }
+
+  fsSync.writeFileSync(join(dirname(pathToResource), file.fileName), fileContent);
 };
 
 export const getFileFromResource = async (catalogDir: string, id: string, file: { fileName: string }, version?: string) => {
