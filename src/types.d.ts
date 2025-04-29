@@ -133,6 +133,7 @@ export interface Badge {
   content: string;
   backgroundColor: string;
   textColor: string;
+  icon?: string;
 }
 
 export interface UbiquitousLanguage {

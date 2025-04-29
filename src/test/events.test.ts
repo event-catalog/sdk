@@ -1373,6 +1373,28 @@ describe('Events SDK', () => {
       expect(addSchemaToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
     });
 
+    it('if the file can be parsed into JSON, it will be parsed into JSON and written to the file formatted', async () => {
+      const unformattedJson = `{ "name": "John", "age": 30 }`;
+      const file = { schema: unformattedJson, fileName: 'schema.json' };
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addSchemaToEvent('InventoryAdjusted', file);
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(true);
+      const formattedJson = fs.readFileSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'), 'utf8');
+      expect(formattedJson).toBe(`{
+  "name": "John",
+  "age": 30
+}`);
+    });
+
     describe('when events are within a service directory', () => {
       it('takes a given file and writes it to the location of the given event', async () => {
         const schema = `{
