@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.3.6
+
+### Patch Changes
+
+- f1ad57f: chore(sdk): sdk now formats JSON files before writing them
+
 ## 2.3.5
 
 ### Patch Changes
