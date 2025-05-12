@@ -75,9 +75,7 @@ import {
   addMessageToChannel,
 } from './channels';
 
-import { 
-  getResourcePath
-} from './internal/resources';
+import { getResourcePath } from './internal/resources';
 
 import { dumpCatalog } from './eventcatalog';
 
@@ -790,7 +788,6 @@ export default (path: string) => {
      */
     dumpCatalog: dumpCatalog(join(path)),
 
-
     /**
      * ================================
      *            Resources Utils
@@ -801,7 +798,5 @@ export default (path: string) => {
      * Returns the path to a given resource by id and version
      */
     getResourcePath: getResourcePath,
-
-
   };
 };
