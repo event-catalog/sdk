@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.3.7
+
+### Patch Changes
+
+- d977d24: feat(sdk): added util function to get a path to a resource
+
 ## 2.3.6
 
 ### Patch Changes
