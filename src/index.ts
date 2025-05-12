@@ -75,6 +75,10 @@ import {
   addMessageToChannel,
 } from './channels';
 
+import { 
+  getResourcePath
+} from './internal/resources';
+
 import { dumpCatalog } from './eventcatalog';
 
 import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
@@ -785,5 +789,19 @@ export default (path: string) => {
      * @returns A JSON file with the catalog
      */
     dumpCatalog: dumpCatalog(join(path)),
+
+
+    /**
+     * ================================
+     *            Resources Utils
+     * ================================
+     */
+
+    /**
+     * Returns the path to a given resource by id and version
+     */
+    getResourcePath: getResourcePath,
+
+
   };
 };
