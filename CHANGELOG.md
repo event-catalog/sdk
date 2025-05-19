@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.4.0
+
+### Minor Changes
+
+- 099fcd8: feat(sdk): added ability to fetch schemas
+
 ## 2.3.7
 
 ### Patch Changes
