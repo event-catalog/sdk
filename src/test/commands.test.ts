@@ -132,6 +132,56 @@ describe('Commands SDK', () => {
       });
     });
 
+    it('returns the command with the schema attached when the attachSchema option is set to true', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      await writeCommand({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        schemaPath: 'schema.json',
+      });
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await addSchemaToCommand('UpdateInventory', file);
+
+      const test = await getCommand('UpdateInventory', '0.0.1', { attachSchema: true });
+
+      expect(test.schema).toEqual(schema);
+    });
+
+    it('does not attach the schema if the attachSchema option is set to false', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await writeCommand({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        schemaPath: 'schema.json',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const test = await getCommand('UpdateInventory', '0.0.1', { attachSchema: false });
+
+      expect(test.schema).toBeUndefined();
+    });
+
     it('returns undefined if the command is not found', async () => {
       await expect(await getCommand('UpdateInventory')).toBe(undefined);
     });
@@ -281,6 +331,32 @@ describe('Commands SDK', () => {
       );
 
       expect(commands.length).toBe(2);
+    });
+
+    it('returns the commands with the schema attached when the attachSchema option is set to true', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await writeCommand({
+        id: 'UpdateInventory',
+        name: 'Update Inventory',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        schemaPath: 'schema.json',
+      });
+
+      await addSchemaToCommand('UpdateInventory', file);
+
+      const commands = await getCommands({ attachSchema: true });
+
+      expect(commands[0].schema).toEqual(schema);
     });
   });
 

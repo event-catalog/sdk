@@ -28,6 +28,9 @@ export interface BaseSchema {
       label?: string;
     };
   };
+
+  // SDK types
+  schema?: any;
 }
 
 export type ResourcePointer = {

@@ -147,6 +147,58 @@ describe('Queries SDK', () => {
       });
     });
 
+    it('returns the query with the schema attached when the attachSchema option is set to true', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await writeQuery({
+        id: 'GetOrder',
+        name: 'Get Order',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        schemaPath: 'schema.json',
+      });
+
+      await addSchemaToQuery('GetOrder', file);
+
+      const test = await getQuery('GetOrder', '0.0.1', { attachSchema: true });
+
+      expect(test.schema).toEqual(schema);
+    });
+
+    it('does not attach the schema if the attachSchema option is set to false', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await writeQuery({
+        id: 'GetOrder2',
+        name: 'Get Order',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        schemaPath: 'schema.json',
+      });
+
+      await addSchemaToQuery('GetOrder2', file);
+
+      const test = await getQuery('GetOrder2', '0.0.1', { attachSchema: false });
+
+      expect(test.schema).toEqual(undefined);
+    });
+
     it('returns undefined when a given resource is not found', async () => {
       const query = await getQuery('GetOrder');
       await expect(query).toEqual(undefined);
@@ -539,6 +591,31 @@ describe('Queries SDK', () => {
           },
         ])
       );
+    });
+    it('returns the queries with the schema attached when the attachSchema option is set to true', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await writeQuery({
+        id: 'GetOrder',
+        name: 'Get Order',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        schemaPath: 'schema.json',
+      });
+
+      await addSchemaToQuery('GetOrder', file);
+
+      const test = await getQueries({ attachSchema: true });
+
+      expect(test[0].schema).toEqual(schema);
     });
   });
 
