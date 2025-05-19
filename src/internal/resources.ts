@@ -108,12 +108,27 @@ export const getResource = async (
   catalogDir: string,
   id: string,
   version?: string,
-  options?: { type: string }
+  options?: { type: string; attachSchema?: boolean }
 ): Promise<Resource | undefined> => {
+  const attachSchema = options?.attachSchema || false;
   const file = await findFileById(catalogDir, id, version);
   if (!file) return;
 
   const { data, content } = matter.read(file);
+
+  if (attachSchema && data?.schemaPath) {
+    const resourceDirectory = dirname(file);
+    const pathToSchema = join(resourceDirectory, data.schemaPath);
+    if (fsSync.existsSync(pathToSchema)) {
+      const schema = fsSync.readFileSync(pathToSchema, 'utf8');
+      // Try to parse the schema
+      try {
+        data.schema = JSON.parse(schema);
+      } catch (error) {
+        data.schema = schema;
+      }
+    }
+  }
 
   return {
     ...data,
@@ -139,7 +154,8 @@ export const getResources = async (
     latestOnly = false,
     ignore = [],
     pattern = '',
-  }: { type: string; pattern?: string; latestOnly?: boolean; ignore?: string[] }
+    attachSchema = false,
+  }: { type: string; pattern?: string; latestOnly?: boolean; ignore?: string[]; attachSchema?: boolean }
 ): Promise<Resource[] | undefined> => {
   const ignoreList = latestOnly ? `**/versioned/**` : '';
   const filePattern = pattern || `${catalogDir}/**/${type}/**/index.{md,mdx}`;
@@ -149,6 +165,21 @@ export const getResources = async (
 
   return files.map((file) => {
     const { data, content } = matter.read(file);
+
+    // Attach the schema if the attachSchema option is set to true
+    if (attachSchema && data?.schemaPath) {
+      const resourceDirectory = dirname(file);
+      const pathToSchema = join(resourceDirectory, data.schemaPath);
+      if (fsSync.existsSync(pathToSchema)) {
+        const schema = fsSync.readFileSync(pathToSchema, 'utf8');
+        // Try to parse the schema
+        try {
+          data.schema = JSON.parse(schema);
+        } catch (error) {
+          data.schema = schema;
+        }
+      }
+    }
     return {
       ...data,
       markdown: content.trim(),

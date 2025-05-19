@@ -29,12 +29,15 @@ import { addMessageToService } from './services';
  *
  * // Gets a version of the command
  * const command = await getCommand('UpdateInventory', '0.0.1');
+ *
+ * // Gets the command with the schema attached
+ * const command = await getCommand('UpdateInventory', '0.0.1', { attachSchema: true });
  * ```
  */
 export const getCommand =
   (directory: string) =>
-  async (id: string, version?: string): Promise<Command> =>
-    getResource(directory, id, version, { type: 'command' }) as Promise<Command>;
+  async (id: string, version?: string, options?: { attachSchema?: boolean }): Promise<Command> =>
+    getResource(directory, id, version, { type: 'command', ...options }) as Promise<Command>;
 
 /**
  * Returns all commands from EventCatalog.
@@ -52,11 +55,14 @@ export const getCommand =
  *
  * // Gets all commands (only latest version) from the catalog
  * const commands = await getCommands({ latestOnly: true });
+ *
+ * // Gets all commands with the schema attached
+ * const commands = await getCommands({ attachSchema: true });
  * ```
  */
 export const getCommands =
   (directory: string) =>
-  async (options?: { latestOnly?: boolean }): Promise<Command[]> =>
+  async (options?: { latestOnly?: boolean; attachSchema?: boolean }): Promise<Command[]> =>
     getResources(directory, { type: 'commands', ...options }) as Promise<Command[]>;
 
 /**

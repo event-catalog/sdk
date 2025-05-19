@@ -28,12 +28,15 @@ import {
  *
  * // Gets a version of the event
  * const event = await getQuery('GetOrder', '0.0.1');
+ *
+ * // Gets the query with the schema attached
+ * const event = await getQuery('GetOrder', '0.0.1', { attachSchema: true });
  * ```
  */
 export const getQuery =
   (directory: string) =>
-  async (id: string, version?: string): Promise<Query> =>
-    getResource(directory, id, version, { type: 'query' }) as Promise<Query>;
+  async (id: string, version?: string, options?: { attachSchema?: boolean }): Promise<Query> =>
+    getResource(directory, id, version, { type: 'query', ...options }) as Promise<Query>;
 
 /**
  * Write a query to EventCatalog.
@@ -116,11 +119,14 @@ export const writeQuery =
  *
  * // Gets all queries (only latest version) from the catalog
  * const queries = await getQueries({ latestOnly: true });
+ *
+ * // Gets all queries with the schema attached
+ * const queries = await getQueries({ attachSchema: true });
  * ```
  */
 export const getQueries =
   (directory: string) =>
-  async (options?: { latestOnly?: boolean }): Promise<Query[]> =>
+  async (options?: { latestOnly?: boolean; attachSchema?: boolean }): Promise<Query[]> =>
     getResources(directory, { type: 'queries', ...options }) as Promise<Query[]>;
 
 /**

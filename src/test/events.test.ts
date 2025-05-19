@@ -146,6 +146,58 @@ describe('Events SDK', () => {
       });
     });
 
+    it('returns the event with the schema attached when the attachSchema option is set to true', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        schemaPath: 'schema.json',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await addSchemaToEvent('InventoryAdjusted', file);
+
+      const test = await getEvent('InventoryAdjusted', '0.0.1', { attachSchema: true });
+
+      expect(test.schema).toEqual(schema);
+    });
+
+    it('does not attach the schema if the attachSchema option is not set', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await writeEvent({
+        id: 'InventoryAdjusted2',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        schemaPath: 'schema.json',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addSchemaToEvent('InventoryAdjusted2', file);
+
+      const test = await getEvent('InventoryAdjusted2', '0.0.1', { attachSchema: false });
+
+      expect(test.schema).toEqual(undefined);
+    });
+
     it('returns undefined when a given resource is not found', async () => {
       const event = await getEvent('InventoryAdjusted');
       await expect(event).toEqual(undefined);
@@ -522,6 +574,31 @@ describe('Events SDK', () => {
           },
         ])
       );
+    });
+    it('returns the event with the schema attached when the attachSchema option is set to true', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+      };
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        schemaPath: 'schema.json',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const file = { schema: JSON.stringify(schema), fileName: 'schema.json' };
+
+      await addSchemaToEvent('InventoryAdjusted', file);
+
+      const test = await getEvent('InventoryAdjusted', '0.0.1', { attachSchema: true });
+
+      expect(test.schema).toEqual(schema);
     });
   });
 

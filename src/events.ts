@@ -28,12 +28,15 @@ import {
  *
  * // Gets a version of the event
  * const event = await getEvent('InventoryAdjusted', '0.0.1');
+ *
+ * // Get the event with the schema attached
+ * const event = await getEvent('InventoryAdjusted', '0.0.1', { attachSchema: true });
  * ```
  */
 export const getEvent =
   (directory: string) =>
-  async (id: string, version?: string): Promise<Event> =>
-    getResource(directory, id, version, { type: 'event' }) as Promise<Event>;
+  async (id: string, version?: string, options?: { attachSchema?: boolean }): Promise<Event> =>
+    getResource(directory, id, version, { type: 'event', ...options }) as Promise<Event>;
 
 /**
  * Returns all events from EventCatalog.
@@ -51,11 +54,14 @@ export const getEvent =
  *
  * // Gets all events (only latest version) from the catalog
  * const events = await getEvents({ latestOnly: true });
+ *
+ * // Get all events with the schema attached
+ * const events = await getEvents({ attachSchema: true });
  * ```
  */
 export const getEvents =
   (directory: string) =>
-  async (options?: { latestOnly?: boolean }): Promise<Event[]> =>
+  async (options?: { latestOnly?: boolean; attachSchema?: boolean }): Promise<Event[]> =>
     getResources(directory, { type: 'events', ...options }) as Promise<Event[]>;
 
 /**
