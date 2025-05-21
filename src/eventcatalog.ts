@@ -89,20 +89,18 @@ const filterCollection = (
  * @param directory - The directory of the catalog.
  * @returns A JSON object with the configuration for the event catalog.
  */
-export const getEventCatalogConfigurationFile =
-  (directory: string) =>
-  async (): Promise<any> => {
-    // Read package.json in the catalogDir
-    try {
-      const path = join(directory, 'eventcatalog.config.js');
-      // require the file
-      const config = require(path);
-      return config.default;
-    } catch (error) {
-      console.error('Error getting event catalog configuration file', error);
-      return null;
-    }
-  };
+export const getEventCatalogConfigurationFile = (directory: string) => async (): Promise<any> => {
+  // Read package.json in the catalogDir
+  try {
+    const path = join(directory, 'eventcatalog.config.js');
+    // require the file
+    const config = require(path);
+    return config.default;
+  } catch (error) {
+    console.error('Error getting event catalog configuration file', error);
+    return null;
+  }
+};
 
 /**
  * Dumps the catalog to a JSON file.
