@@ -82,7 +82,7 @@ import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './cust
 import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
 
 import { writeUser, getUser, getUsers, rmUserById } from './users';
-import { dumpCatalog } from './eventcatalog';
+import { dumpCatalog, getEventCatalogConfigurationFile } from './eventcatalog';
 
 // Export the types
 export type * from './types';
@@ -790,6 +790,14 @@ export default (path: string) => {
      */
     dumpCatalog: dumpCatalog(join(path)),
 
+    /**
+     * Returns the event catalog configuration file.
+     * The event catalog configuration file is the file that contains the configuration for the event catalog.
+     *
+     * @param directory - The directory of the catalog.
+     * @returns A JSON object with the configuration for the event catalog.
+     */
+    getEventCatalogConfigurationFile: getEventCatalogConfigurationFile(join(path)),
     /**
      * ================================
      *            Resources Utils
