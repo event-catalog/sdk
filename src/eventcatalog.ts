@@ -91,7 +91,7 @@ const filterCollection = (
  */
 export const getEventCatalogConfigurationFile =
   (directory: string) =>
-  async (options?: { includeMarkdown?: boolean }): Promise<any> => {
+  async (): Promise<any> => {
     // Read package.json in the catalogDir
     try {
       const path = join(directory, 'eventcatalog.config.js');
@@ -99,6 +99,7 @@ export const getEventCatalogConfigurationFile =
       const config = require(path);
       return config.default;
     } catch (error) {
+      console.error('Error getting event catalog configuration file', error);
       return null;
     }
   };
