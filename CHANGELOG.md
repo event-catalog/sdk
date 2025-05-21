@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.5.1
+
+### Patch Changes
+
+- a0dc38c: feat(sdk): added new function to get eventcatalog config file
+
 ## 2.5.0
 
 ### Minor Changes
