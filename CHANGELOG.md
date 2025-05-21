@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.5.2
+
+### Patch Changes
+
+- 13aee9d: fix(sdk): get domains no longer returns entities
+
 ## 2.5.1
 
 ### Patch Changes
