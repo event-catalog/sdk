@@ -77,13 +77,15 @@ import {
 
 import { getResourcePath } from './internal/resources';
 
-import { dumpCatalog } from './eventcatalog';
-
 import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
 
 import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
 
 import { writeUser, getUser, getUsers, rmUserById } from './users';
+import { dumpCatalog } from './eventcatalog';
+
+// Export the types
+export type * from './types';
 
 /**
  * Init the SDK for EventCatalog

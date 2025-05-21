@@ -28,7 +28,7 @@ export interface BaseSchema {
       label?: string;
     };
   };
-
+  resourceGroups?: ResourceGroup[];
   // SDK types
   schema?: any;
 }
@@ -36,7 +36,16 @@ export interface BaseSchema {
 export type ResourcePointer = {
   id: string;
   version: string;
+  type?: string;
 };
+
+export interface ResourceGroup {
+  id?: string;
+  title?: string;
+  items: ResourcePointer[];
+  limit?: number;
+  sidebar?: boolean;
+}
 
 export interface ChannelPointer extends ResourcePointer {
   parameters?: Record<string, string>;

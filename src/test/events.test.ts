@@ -664,6 +664,32 @@ describe('Events SDK', () => {
       });
     });
 
+    it('when resourceGroups is given, it writes the event with the given resourceGroups', async () => {
+      await writeEvent(
+        {
+          id: 'InventoryAdjusted',
+          name: 'Inventory Adjusted',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          resourceGroups: [
+            {
+              id: 'Inventory',
+              items: [
+                { id: 'InventoryAdjusted', version: '0.0.1', type: 'event' },
+                { id: 'InventoryAdjusted', version: '0.0.2', type: 'event' },
+              ],
+              title: 'Related Resources',
+              limit: 10,
+              sidebar: true,
+            },
+          ],
+        },
+        { path: '/Inventory/InventoryAdjusted' }
+      );
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory/InventoryAdjusted', 'index.mdx'))).toBe(true);
+    });
+
     it('writes the given event to EventCatalog under the correct path when a path is given', async () => {
       await writeEvent(
         {
