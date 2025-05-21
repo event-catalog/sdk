@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.5.0
+
+### Minor Changes
+
+- ec3bebb: chore(sdk): export types
+
 ## 2.4.0
 
 ### Minor Changes
