@@ -82,9 +82,10 @@ import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './cust
 import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
 
 import { writeUser, getUser, getUsers, rmUserById } from './users';
+import { dumpCatalog } from './eventcatalog';
 
 // Export the types
-export * from './types';
+export type * from './types';
 
 /**
  * Init the SDK for EventCatalog
