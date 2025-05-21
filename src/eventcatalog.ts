@@ -93,9 +93,9 @@ export const getEventCatalogConfigurationFile = (directory: string) => async ():
   // Read package.json in the catalogDir
   try {
     const path = join(directory, 'eventcatalog.config.js');
-    // require the file
-    const config = require(path);
-    return config.default;
+    // Dynamically import the ES module
+    const configModule = await import(path);
+    return configModule.default;
   } catch (error) {
     console.error('Error getting event catalog configuration file', error);
     return null;
