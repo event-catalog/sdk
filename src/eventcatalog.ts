@@ -81,6 +81,28 @@ const filterCollection = (
     markdown: options?.includeMarkdown ? item.markdown : undefined,
   }));
 };
+
+/**
+ * Returns the event catalog configuration file.
+ * The event catalog configuration file is the file that contains the configuration for the event catalog.
+ *
+ * @param directory - The directory of the catalog.
+ * @returns A JSON object with the configuration for the event catalog.
+ */
+export const getEventCatalogConfigurationFile =
+  (directory: string) =>
+  async (options?: { includeMarkdown?: boolean }): Promise<any> => {
+    // Read package.json in the catalogDir
+    try {
+      const path = join(directory, 'eventcatalog.config.js');
+      // require the file
+      const config = require(path);
+      return config.default;
+    } catch (error) {
+      return null;
+    }
+  };
+
 /**
  * Dumps the catalog to a JSON file.
  *
