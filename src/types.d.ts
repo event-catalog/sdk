@@ -159,3 +159,22 @@ export interface UbiquitousLanguage {
 export interface UbiquitousLanguageDictionary {
   dictionary: UbiquitousLanguage[];
 }
+
+export type EventCatalog = {
+  version: string;
+  catalogVersion: string;
+  createdAt: string;
+  resources: {
+    domains?: ExportedResource<Domain>[];
+    services?: ExportedResource<Service>[];
+    messages?: {
+      events?: ExportedResource<Event>[];
+      queries?: ExportedResource<Query>[];
+      commands?: ExportedResource<Command>[];
+    };
+    teams?: ExportedResource<Team>[];
+    users?: ExportedResource<User>[];
+    channels?: ExportedResource<Channel>[];
+    customDocs?: ExportedResource<CustomDoc>[];
+  };
+};
