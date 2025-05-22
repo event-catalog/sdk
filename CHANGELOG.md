@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.5.3
+
+### Patch Changes
+
+- 6f6a38e: chore(sdk): now export eventcatalog type
+
 ## 2.5.2
 
 ### Patch Changes
