@@ -60,7 +60,7 @@ export const getServices =
   async (options?: { latestOnly?: boolean }): Promise<Service[]> =>
     getResources(directory, {
       type: 'services',
-      ignore: ['**/events/**', '**/commands/**', '**/queries/**', '**/entities/**'],
+      ignore: ['**/events/**', '**/commands/**', '**/queries/**', '**/entities/**', '**/subdomains/**/entities/**'],
       ...options,
     }) as Promise<Service[]>;
 

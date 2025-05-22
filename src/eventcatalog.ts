@@ -1,30 +1,8 @@
-import type { Domain, Service, Event, Query, Command, Team, CustomDoc, User, Channel } from './types';
+import type { EventCatalog } from './types';
 import fs from 'fs';
 import path, { join } from 'node:path';
 import utils from './index';
 import { getResourcePath } from './internal/resources';
-type ExportedResource<T = any> = T & {
-  directory: string;
-};
-
-export type EventCatalogObject = {
-  version: string;
-  catalogVersion: string;
-  createdAt: string;
-  resources: {
-    domains?: ExportedResource<Domain>[];
-    services?: ExportedResource<Service>[];
-    messages?: {
-      events?: ExportedResource<Event>[];
-      queries?: ExportedResource<Query>[];
-      commands?: ExportedResource<Command>[];
-    };
-    teams?: ExportedResource<Team>[];
-    users?: ExportedResource<User>[];
-    channels?: ExportedResource<Channel>[];
-    customDocs?: ExportedResource<CustomDoc>[];
-  };
-};
 
 const DUMP_VERSION = '0.0.1';
 
@@ -110,7 +88,7 @@ export const getEventCatalogConfigurationFile = (directory: string) => async ():
  */
 export const dumpCatalog =
   (directory: string) =>
-  async (options?: { includeMarkdown?: boolean }): Promise<EventCatalogObject> => {
+  async (options?: { includeMarkdown?: boolean }): Promise<EventCatalog> => {
     const { getDomains, getServices, getEvents, getQueries, getCommands, getChannels, getTeams, getUsers } = utils(directory);
 
     const { includeMarkdown = true } = options || {};
