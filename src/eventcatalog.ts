@@ -19,7 +19,7 @@ const getEventCatalogVersion = async (catalogDir: string) => {
 
 const hydrateResource = async (
   catalogDir: string,
-  resources: any[],
+  resources: any[] = [],
   { attachSchema = false }: { attachSchema?: boolean } = {}
 ) => {
   return await Promise.all(
