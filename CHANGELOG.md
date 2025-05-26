@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.5.4
+
+### Patch Changes
+
+- 05f5156: fix(sdk): when dumping catalog resources are defaulted empty
+
 ## 2.5.3
 
 ### Patch Changes
