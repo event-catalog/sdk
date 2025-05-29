@@ -261,7 +261,7 @@ export const addFileToEvent =
  * ```ts
  * import utils from '@eventcatalog/utils';
  *
- * const { addSchemaToEvent } = utils('/path/to/eventcatalog');
+ * const { addFileToEvent } = utils('/path/to/eventcatalog');
  *
  * // JSON schema example
  * const schema = {
@@ -278,11 +278,11 @@ export const addFileToEvent =
  *  "required": ["name", "age"]
  * };
  *
- * // adds a schema to the latest InventoryAdjusted event
- * await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+ * // adds a file to the latest InventoryAdjusted event
+ * await addFileToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
  *
  * // adds a file to a specific version of the InventoryAdjusted event
- * await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' }, '0.0.1');
+ * await addFileToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' }, '0.0.1');
  *
  * ```
  */

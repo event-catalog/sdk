@@ -1498,6 +1498,32 @@ describe('Events SDK', () => {
 }`);
     });
 
+    it('if the id of the event has a $ value in the id, the schema is still added to the event', async () => {
+      const { getEvent } = utils(CATALOG_PATH);
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+      const file = { schema, fileName: 'schema.json' };
+
+      await writeEvent({
+        id: 'Inventory$Adjusted$1',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const event = await getEvent('Inventory$Adjusted$1');
+
+      await addSchemaToEvent(event.id, file);
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/Inventory$Adjusted$1', 'schema.json'))).toBe(true);
+    });
     describe('when events are within a service directory', () => {
       it('takes a given file and writes it to the location of the given event', async () => {
         const schema = `{

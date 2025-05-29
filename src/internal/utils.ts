@@ -105,7 +105,10 @@ export const readMdxFile = async (path: string) => {
 };
 
 export const searchFilesForId = async (files: string[], id: string, version?: string) => {
-  const idRegex = new RegExp(`^id:\\s*(['"]|>-)?\\s*${id}['"]?\\s*$`, 'm');
+  // Escape the id to avoid regex issues
+  const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const idRegex = new RegExp(`^id:\\s*(['"]|>-)?\\s*${escapedId}['"]?\\s*$`, 'm');
+
   const versionRegex = new RegExp(`^version:\\s*['"]?${version}['"]?\\s*$`, 'm');
 
   const matches = files.map((file) => {
