@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.5.5
+
+### Patch Changes
+
+- cb82968: fix(sdk): searching resources by id now escapes special characters
+
 ## 2.5.4
 
 ### Patch Changes
