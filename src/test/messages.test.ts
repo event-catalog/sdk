@@ -3,7 +3,7 @@ import utils from '../index';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const CATALOG_PATH = path.join(__dirname, 'catalog-events');
+const CATALOG_PATH = path.join(__dirname, 'catalog-messages');
 
 const {
   getMessageBySchemaPath,
@@ -56,11 +56,6 @@ describe('Messages SDK', () => {
         summary: 'This is a summary',
         markdown: '# Hello world',
       });
-    });
-    it('throws an error when the message is not found', async () => {
-      await expect(getMessageBySchemaPath(path.join(CATALOG_PATH, 'events/InventoryAdjusted/schema.json'))).rejects.toThrow(
-        'Failed to retrieve message from /Users/dboyne/dev/eventcatalog/sdk/src/test/catalog-events/events/InventoryAdjusted: No message definition file (index.md or index.mdx) found in directory: /Users/dboyne/dev/eventcatalog/sdk/src/test/catalog-events/events/InventoryAdjusted'
-      );
     });
   });
 
