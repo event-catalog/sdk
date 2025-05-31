@@ -129,11 +129,11 @@ export const writeService =
     const resource: Service = { ...service };
 
     if (Array.isArray(service.sends)) {
-      resource.sends = uniqueVersions(service.sends);
+      resource.sends = uniqueVersions(service.sends as { id: string; version: string }[]);
     }
 
     if (Array.isArray(service.receives)) {
-      resource.receives = uniqueVersions(service.receives);
+      resource.receives = uniqueVersions(service.receives as { id: string; version: string }[]);
     }
 
     return await writeResource(directory, resource, { ...options, type: 'service' });

@@ -35,3 +35,4 @@ export * from './custom-docs';
 export * from './teams';
 export * from './users';
 export * from './eventcatalog';
+export * from './messages';

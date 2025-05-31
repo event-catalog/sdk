@@ -35,7 +35,7 @@ export interface BaseSchema {
 
 export type ResourcePointer = {
   id: string;
-  version: string;
+  version?: string;
   type?: string;
 };
 
@@ -51,7 +51,7 @@ export interface ChannelPointer extends ResourcePointer {
   parameters?: Record<string, string>;
 }
 
-export type Message = Event | Command;
+export type Message = Event | Command | Query;
 
 enum ResourceType {
   Service = 'service',
