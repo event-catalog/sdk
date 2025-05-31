@@ -256,3 +256,12 @@ export const getFileFromResource = async (catalogDir: string, id: string, file: 
 export const getVersionedDirectory = (sourceDirectory: string, version: any): string => {
   return join(sourceDirectory, 'versioned', version);
 };
+
+export const isLatestVersion = async (catalogDir: string, id: string, version?: string) => {
+  const resource = await getResource(catalogDir, id, version);
+  if (!resource) return false;
+
+  const pathToResource = await getResourcePath(catalogDir, id, version);
+
+  return !pathToResource?.relativePath.replace(/\\/g, '/').includes('/versioned/');
+};

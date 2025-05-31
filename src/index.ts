@@ -75,6 +75,8 @@ import {
   addMessageToChannel,
 } from './channels';
 
+import { getMessageBySchemaPath, getProducersAndConsumersForMessage } from './messages';
+
 import { getResourcePath } from './internal/resources';
 
 import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
@@ -808,5 +810,27 @@ export default (path: string) => {
      * Returns the path to a given resource by id and version
      */
     getResourcePath: getResourcePath,
+
+    /**
+     * ================================
+     *            General Message Utils
+     * ================================
+     */
+
+    /**
+     * Returns a message from EventCatalog by a given schema path.
+     *
+     * @param path - The path to the message to retrieve
+     * @returns Message|Undefined
+     */
+    getMessageBySchemaPath: getMessageBySchemaPath(join(path)),
+
+    /**
+     * Returns the producers and consumers (services) for a given message
+     * @param id - The id of the message to get the producers and consumers for
+     * @param version - Optional version of the message
+     * @returns { producers: Service[], consumers: Service[] }
+     */
+    getProducersAndConsumersForMessage: getProducersAndConsumersForMessage(join(path)),
   };
 };
