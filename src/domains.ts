@@ -130,11 +130,11 @@ export const writeDomain =
     const resource: Domain = { ...domain };
 
     if (Array.isArray(domain.services)) {
-      resource.services = uniqueVersions(domain.services);
+      resource.services = uniqueVersions(domain.services as { id: string; version: string }[]);
     }
 
     if (Array.isArray(domain.domains)) {
-      resource.domains = uniqueVersions(domain.domains);
+      resource.domains = uniqueVersions(domain.domains as { id: string; version: string }[]);
     }
 
     return await writeResource(directory, resource, { ...options, type: 'domain' });
