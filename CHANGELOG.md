@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.0
+
+### Minor Changes
+
+- cbe2e80: feat(sdk): added new functions for messages
+
 ## 2.5.5
 
 ### Patch Changes
