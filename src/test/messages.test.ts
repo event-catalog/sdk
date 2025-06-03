@@ -47,7 +47,7 @@ describe('Messages SDK', () => {
 
       await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
 
-      const test = await getMessageBySchemaPath(path.join(CATALOG_PATH, 'events/InventoryAdjusted/schema.json'));
+      const test = await getMessageBySchemaPath('events/InventoryAdjusted/schema.json');
 
       expect(test).toEqual({
         id: 'InventoryAdjusted',
