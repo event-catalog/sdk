@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.1
+
+### Patch Changes
+
+- 96bafa2: fix(sdk): getting messages by path now uses catalog directory
+
 ## 2.6.0
 
 ### Minor Changes
