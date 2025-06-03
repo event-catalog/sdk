@@ -24,7 +24,7 @@ export const getMessageBySchemaPath =
   async (path: string, options?: { attachSchema?: boolean }): Promise<Message> => {
     const pathToMessage = dirname(path);
     try {
-      const files = await getFiles(`${pathToMessage}/index.{md,mdx}`);
+      const files = await getFiles(`${directory}/${pathToMessage}/index.{md,mdx}`);
 
       if (!files || files.length === 0) {
         throw new Error(`No message definition file (index.md or index.mdx) found in directory: ${pathToMessage}`);
