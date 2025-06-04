@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { getResource, getResourcePath, isLatestVersion } from './internal/resources';
 import { getFiles } from './internal/utils';
 import { getServices } from './services';
+import { satisfies, validRange } from 'semver';
 
 /**
  * Returns a message from EventCatalog by a given schema path.
@@ -84,7 +85,7 @@ export const getProducersAndConsumersForMessage =
     for (const service of services) {
       const servicePublishesMessage = service.sends?.some((_message) => {
         if (_message.version) {
-          return _message.id === message.id && _message.version === message.version;
+          return _message.id === message.id && satisfies(message.version, _message.version);
         }
         if (isMessageLatestVersion && _message.id === message.id) {
           return true;
@@ -93,7 +94,7 @@ export const getProducersAndConsumersForMessage =
       });
       const serviceSubscribesToMessage = service.receives?.some((_message) => {
         if (_message.version) {
-          return _message.id === message.id && _message.version === message.version;
+          return _message.id === message.id && satisfies(message.version, _message.version);
         }
         if (isMessageLatestVersion && _message.id === message.id) {
           return true;

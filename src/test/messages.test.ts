@@ -230,5 +230,74 @@ describe('Messages SDK', () => {
 
       expect(producers).toEqual([]);
     });
+
+    it('when the service sends the message using semver versioning, and the message matches the semver versioning, that service should be returned as a producer', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [
+          {
+            id: 'InventoryAdjusted',
+            version: '~0.0.1',
+          },
+        ],
+      });
+
+      await writeService({
+        id: 'OrderService',
+        name: 'Order Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [
+          {
+            id: 'InventoryAdjusted',
+            version: '>0.0.1',
+          },
+        ],
+      });
+
+      const { producers } = await getProducersAndConsumersForMessage('InventoryAdjusted', '0.0.2');
+
+      expect(producers).toEqual([
+        {
+          id: 'OrderService',
+          name: 'Order Service',
+          version: '0.0.1',
+          sends: [
+            {
+              id: 'InventoryAdjusted',
+              version: '>0.0.1',
+            },
+          ],
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+        },
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          sends: [
+            {
+              id: 'InventoryAdjusted',
+              version: '~0.0.1',
+            },
+          ],
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+        },
+      ]);
+    });
   });
 });
