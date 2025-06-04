@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.3
+
+### Patch Changes
+
+- c4f661c: fix(sdk): getting producers and consumers for a message, now supports latestOnly flag
+
 ## 2.6.2
 
 ### Patch Changes
