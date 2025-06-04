@@ -70,8 +70,12 @@ export const getMessageBySchemaPath =
  */
 export const getProducersAndConsumersForMessage =
   (directory: string) =>
-  async (id: string, version?: string): Promise<{ producers: Service[]; consumers: Service[] }> => {
-    const services = await getServices(directory)({ latestOnly: true });
+  async (
+    id: string,
+    version?: string,
+    options?: { latestOnly?: boolean }
+  ): Promise<{ producers: Service[]; consumers: Service[] }> => {
+    const services = await getServices(directory)({ latestOnly: options?.latestOnly ?? true });
     const message = (await getResource(directory, id, version, { type: 'message' })) as Message;
     const isMessageLatestVersion = await isLatestVersion(directory, id, version);
 
@@ -85,7 +89,12 @@ export const getProducersAndConsumersForMessage =
     for (const service of services) {
       const servicePublishesMessage = service.sends?.some((_message) => {
         if (_message.version) {
-          return _message.id === message.id && satisfies(message.version, _message.version);
+          const isServiceUsingSemverRange = validRange(_message.version);
+          if (isServiceUsingSemverRange) {
+            return _message.id === message.id && satisfies(message.version, _message.version);
+          } else {
+            return _message.id === message.id && message.version === _message.version;
+          }
         }
         if (isMessageLatestVersion && _message.id === message.id) {
           return true;
@@ -94,7 +103,12 @@ export const getProducersAndConsumersForMessage =
       });
       const serviceSubscribesToMessage = service.receives?.some((_message) => {
         if (_message.version) {
-          return _message.id === message.id && satisfies(message.version, _message.version);
+          const isServiceUsingSemverRange = validRange(_message.version);
+          if (isServiceUsingSemverRange) {
+            return _message.id === message.id && satisfies(message.version, _message.version);
+          } else {
+            return _message.id === message.id && message.version === _message.version;
+          }
         }
         if (isMessageLatestVersion && _message.id === message.id) {
           return true;

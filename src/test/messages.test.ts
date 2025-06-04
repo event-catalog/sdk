@@ -13,6 +13,7 @@ const {
   writeService,
   addEventToService,
   versionEvent,
+  versionService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -22,7 +23,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
+  // fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
 });
 
 describe('Messages SDK', () => {
@@ -296,6 +297,77 @@ describe('Messages SDK', () => {
           ],
           markdown: '# Hello world',
           summary: 'This is a summary',
+        },
+      ]);
+    });
+
+    it('when latestOnly is false, it returns the all versions of the services that consume a message', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        receives: [
+          {
+            id: 'InventoryAdjusted',
+            version: '0.0.2',
+          },
+        ],
+      });
+
+      await versionService('InventoryService');
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        receives: [
+          {
+            id: 'InventoryAdjusted',
+            version: '0.0.2',
+          },
+        ],
+      });
+
+      const { consumers } = await getProducersAndConsumersForMessage('InventoryAdjusted', '0.0.2', { latestOnly: false });
+
+      expect(consumers).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '1.0.0',
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+          receives: [
+            {
+              id: 'InventoryAdjusted',
+              version: '0.0.2',
+            },
+          ],
+        },
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+          receives: [
+            {
+              id: 'InventoryAdjusted',
+              version: '0.0.2',
+            },
+          ],
         },
       ]);
     });
