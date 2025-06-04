@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.2
+
+### Patch Changes
+
+- 450d2b3: fix(sdk): fixed issue getting producers and consumers for messages
+
 ## 2.6.1
 
 ### Patch Changes
