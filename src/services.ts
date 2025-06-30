@@ -396,7 +396,7 @@ export const addMessageToService =
     }
 
     // Get where the service was located, make sure it goes back there.
-    const path = existingResource.split('/services')[0];
+    const path = existingResource.split(/[\\/]+services/)[0];
     const pathToResource = join(path, 'services');
 
     await rmServiceById(directory)(id, version);
