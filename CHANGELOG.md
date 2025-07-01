@@ -1,5 +1,12 @@
 # @eventcatalog/sdk
 
+## 2.6.4
+
+### Patch Changes
+
+- a801c8a: Updates the string search split for forward or backward path separators
+- 8515f90: fix(sdk): fixed issue with broken path seperators for windows/linux
+
 ## 2.6.3
 
 ### Patch Changes
