@@ -1704,4 +1704,58 @@ describe('Services SDK', () => {
       });
     });
   });
+
+  describe('addMessageToService (addEventToService)', () => {
+    it('adds the given message to the service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addEventToService('InventoryService', 'sends', { id: 'InventoryAdjusted', version: '0.0.1' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service.sends).toEqual([
+        {
+          id: 'InventoryAdjusted',
+          version: '0.0.1',
+        },
+      ]);
+    });
+
+    it('the folder location of the service does not change when adding a message to the service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addEventToService('InventoryService', 'sends', { id: 'InventoryAdjusted', version: '0.0.1' }, '0.0.1');
+
+      const pathToService = path.join(CATALOG_PATH, 'services', 'InventoryService');
+      expect(fs.existsSync(pathToService)).toEqual(true);
+    });
+  });
 });
