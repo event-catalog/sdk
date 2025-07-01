@@ -698,6 +698,28 @@ describe('Channels SDK', () => {
         expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryCreated', 'test.txt'))).toBe(true);
       });
 
+      it('the folder location of the event does not change when adding a message to the event', async () => {
+        await writeChannel(mockChannel);
+        await writeEvent({
+          id: 'InventoryCreated',
+          name: 'Inventory Created',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addEventToChannel('inventory.{env}.events', {
+          id: 'InventoryCreated',
+          version: '0.0.1',
+          parameters: {
+            env: 'dev',
+          },
+        });
+
+        const pathToEvent = path.join(CATALOG_PATH, 'events', 'InventoryCreated');
+        expect(fs.existsSync(pathToEvent)).toEqual(true);
+      });
+
       it('throws an error when message cannot be found', async () => {
         await writeChannel(mockChannel);
 
