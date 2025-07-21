@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.5
+
+### Patch Changes
+
+- 5f64b2e: feat(sdk): added new functions to get owners of resources and service…
+
 ## 2.6.4
 
 ### Patch Changes
