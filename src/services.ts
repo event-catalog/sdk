@@ -1,6 +1,6 @@
 import type { Service, Specifications } from './types';
 import fs from 'node:fs/promises';
-import { join, dirname, extname } from 'node:path';
+import { join, dirname, extname, relative } from 'node:path';
 import {
   addFileToResource,
   getFileFromResource,
@@ -457,5 +457,12 @@ export const serviceHasVersion = (directory: string) => async (id: string, versi
  */
 export const isService = (directory: string) => async (path: string) => {
   const service = await getServiceByPath(directory)(path);
-  return !!service && path.includes('/services/');
+  // Get relative path from root directory
+  const relativePath = relative(directory, path);
+
+  // Split into path segments using regex to handle both / and \
+  const segments = relativePath.split(/[/\\]+/);
+
+  // needs to workf or windows too
+  return !!service && segments.includes('services');
 };
