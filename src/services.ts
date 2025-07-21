@@ -1,6 +1,6 @@
 import type { Service, Specifications } from './types';
 import fs from 'node:fs/promises';
-import { join, dirname, extname } from 'node:path';
+import { join, dirname, extname, relative } from 'node:path';
 import {
   addFileToResource,
   getFileFromResource,
@@ -36,6 +36,24 @@ export const getService =
   (directory: string) =>
   async (id: string, version?: string): Promise<Service> =>
     getResource(directory, id, version, { type: 'service' }) as Promise<Service>;
+
+/**
+ * Returns a service from EventCatalog by it's path.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getServiceByPath } = utils('/path/to/eventcatalog');
+ *
+ * // Returns a service from the catalog by it's path
+ * const service = await getServiceByPath('/services/InventoryService/index.mdx');
+ * ```
+ */
+export const getServiceByPath = (directory: string) => async (path: string) => {
+  const service = await getResource(directory, undefined, undefined, { type: 'service' }, path);
+  return service as Service;
+};
 
 /**
  * Returns all services from EventCatalog.
@@ -422,4 +440,29 @@ export const addMessageToService =
 export const serviceHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
+};
+
+/**
+ * Check to see if the path is a service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { isService } = utils('/path/to/eventcatalog');
+ *
+ * // returns true if the path is a service
+ * await isService('/services/InventoryService/index.mdx');
+ * ```
+ */
+export const isService = (directory: string) => async (path: string) => {
+  const service = await getServiceByPath(directory)(path);
+  // Get relative path from root directory
+  const relativePath = relative(directory, path);
+
+  // Split into path segments using regex to handle both / and \
+  const segments = relativePath.split(/[/\\]+/);
+
+  // needs to workf or windows too
+  return !!service && segments.includes('services');
 };

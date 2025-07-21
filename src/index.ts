@@ -48,6 +48,8 @@ import {
   getSpecificationFilesForService,
   writeVersionedService,
   getServices,
+  getServiceByPath,
+  isService,
 } from './services';
 import {
   writeDomain,
@@ -81,7 +83,7 @@ import { getResourcePath } from './internal/resources';
 
 import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
 
-import { writeTeam, getTeam, getTeams, rmTeamById } from './teams';
+import { writeTeam, getTeam, getTeams, rmTeamById, getOwnersForResource } from './teams';
 
 import { writeUser, getUser, getUsers, rmUserById } from './users';
 import { dumpCatalog, getEventCatalogConfigurationFile } from './eventcatalog';
@@ -480,6 +482,12 @@ export default (path: string) => {
      */
     getService: getService(join(path)),
     /**
+     * Returns a service from EventCatalog by it's path.
+     * @param path - The path to the service to retrieve
+     * @returns Service|Undefined
+     */
+    getServiceByPath: getServiceByPath(join(path)),
+    /**
      * Returns all services from EventCatalog
      * @param latestOnly - optional boolean, set to true to get only latest versions
      * @returns Service[]|Undefined
@@ -589,6 +597,24 @@ export default (path: string) => {
      * ```
      */
     addQueryToService: addMessageToService(join(path)),
+
+    /**
+     * Check to see if a service exists by it's path.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { isService } = utils('/path/to/eventcatalog');
+     *
+     * // returns true if the path is a service
+     * await isService('/services/InventoryService/index.mdx');
+     * ```
+     *
+     * @param path - The path to the service to check
+     * @returns boolean
+     */
+    isService: isService(join(path)),
 
     /**
      * ================================
@@ -711,7 +737,7 @@ export default (path: string) => {
      * Returns all teams from EventCatalog
      * @returns Team[]|Undefined
      */
-    getTeams: getTeams(join(path)),
+    getTeams: getTeams(join(path, 'teams')),
     /**
      * Remove a team by the team id
      *
@@ -832,5 +858,13 @@ export default (path: string) => {
      * @returns { producers: Service[], consumers: Service[] }
      */
     getProducersAndConsumersForMessage: getProducersAndConsumersForMessage(join(path)),
+
+    /**
+     * Returns the owners for a given resource (e.g domain, service, event, command, query, etc.)
+     * @param id - The id of the resource to get the owners for
+     * @param version - Optional version of the resource
+     * @returns { owners: User[] }
+     */
+    getOwnersForResource: getOwnersForResource(join(path)),
   };
 };

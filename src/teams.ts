@@ -4,6 +4,9 @@ import { join } from 'node:path';
 import type { Team } from './types';
 import matter from 'gray-matter';
 import { getFiles } from './internal/utils';
+import { getResource } from './internal/resources';
+import path from 'node:path';
+import { getUser, getUsers } from './users';
 
 /**
  * Returns a team from EventCatalog.
@@ -54,7 +57,7 @@ export const getTeam =
 export const getTeams =
   (catalogDir: string) =>
   async (options?: {}): Promise<Team[]> => {
-    const files = await getFiles(`${catalogDir}/teams/*.{md,mdx}`);
+    const files = await getFiles(`${catalogDir}/*.{md,mdx}`);
     if (files.length === 0) return [];
 
     return files.map((file) => {
@@ -134,4 +137,34 @@ export const writeTeam =
  */
 export const rmTeamById = (catalogDir: string) => async (id: string) => {
   await fs.rm(join(catalogDir, `${id}.mdx`), { recursive: true });
+};
+
+/**
+ * Returns the owners for a given resource (e.g domain, service, event, command, query, etc.)
+ * @param id - The id of the resource to get the owners for
+ * @param version - Optional version of the resource
+ * @returns { owners: User[] }
+ */
+export const getOwnersForResource = (catalogDir: string) => async (id: string, version?: string) => {
+  const resource = await getResource(catalogDir, id, version);
+  let owners: Team[] = [];
+  if (!resource) return [];
+
+  if (!resource.owners) return [];
+
+  // First check if the owner is a team
+  for (const owner of resource.owners) {
+    const team = await getTeam(path.join(catalogDir, 'teams'))(owner);
+    if (team) {
+      owners.push(team);
+    } else {
+      // If the owner is not a team, check if it's a user
+      const user = await getUser(path.join(catalogDir, 'users'))(owner);
+      if (user) {
+        owners.push(user);
+      }
+    }
+  }
+
+  return owners;
 };

@@ -13,6 +13,7 @@ const {
   writeVersionedService,
   writeEvent,
   getService,
+  getServiceByPath,
   getServices,
   versionService,
   rmService,
@@ -23,6 +24,7 @@ const {
   addQueryToService,
   serviceHasVersion,
   getSpecificationFilesForService,
+  isService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -32,7 +34,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
+  // fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
 });
 
 describe('Services SDK', () => {
@@ -182,6 +184,34 @@ describe('Services SDK', () => {
         summary: 'Service that handles the inventory',
         markdown: '# Hello world',
         specifications: { asyncapiPath: 'spec.yaml' },
+      });
+    });
+
+    describe('getServiceByPath', () => {
+      it('returns the given service id from EventCatalog and the latest version when no version is given,', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+
+        const pathToService = path.join(CATALOG_PATH, 'services/InventoryService/index.mdx');
+
+        const service = await getServiceByPath(pathToService);
+
+        expect(service).toEqual({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service tat handles the inventory',
+          markdown: '# Hello world',
+        });
+      });
+
+      it('returns undefined if the service is not found', async () => {
+        await expect(await getServiceByPath(path.join(CATALOG_PATH, 'services/PaymentService/index.mdx'))).toEqual(undefined);
       });
     });
 
@@ -1756,6 +1786,24 @@ describe('Services SDK', () => {
 
       const pathToService = path.join(CATALOG_PATH, 'services', 'InventoryService');
       expect(fs.existsSync(pathToService)).toEqual(true);
+    });
+  });
+
+  describe('isService', () => {
+    it('returns true if the path is a service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      expect(await isService(path.join(CATALOG_PATH, 'services', 'InventoryService', 'index.mdx'))).toEqual(true);
+    });
+
+    it('returns false if the path is not a service', async () => {
+      expect(await isService('/services/InventoryService/index.mdx')).toEqual(false);
     });
   });
 });
