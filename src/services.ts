@@ -38,6 +38,24 @@ export const getService =
     getResource(directory, id, version, { type: 'service' }) as Promise<Service>;
 
 /**
+ * Returns a service from EventCatalog by it's path.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getServiceByPath } = utils('/path/to/eventcatalog');
+ *
+ * // Returns a service from the catalog by it's path
+ * const service = await getServiceByPath('/services/InventoryService/index.mdx');
+ * ```
+ */
+export const getServiceByPath = (directory: string) => async (path: string) => {
+  const service = await getResource(directory, undefined, undefined, { type: 'service' }, path);
+  return service as Service;
+};
+
+/**
  * Returns all services from EventCatalog.
  *
  * You can optionally specify if you want to get the latest version of the services.
@@ -422,4 +440,22 @@ export const addMessageToService =
 export const serviceHasVersion = (directory: string) => async (id: string, version?: string) => {
   const file = await findFileById(directory, id, version);
   return !!file;
+};
+
+/**
+ * Check to see if the path is a service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { isService } = utils('/path/to/eventcatalog');
+ *
+ * // returns true if the path is a service
+ * await isService('/services/InventoryService/index.mdx');
+ * ```
+ */
+export const isService = (directory: string) => async (path: string) => {
+  const service = await getServiceByPath(directory)(path);
+  return !!service && path.includes('/services/');
 };

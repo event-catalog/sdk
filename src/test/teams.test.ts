@@ -6,7 +6,7 @@ import fs from 'node:fs';
 
 const CATALOG_PATH = path.join(__dirname, 'catalog-teams');
 
-const { writeTeam, getTeam, getTeams, rmTeamById } = utils(CATALOG_PATH);
+const { writeTeam, getTeam, getTeams, rmTeamById, writeService, getOwnersForResource, writeUser } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
 beforeEach(() => {
@@ -143,6 +143,62 @@ describe('Teams SDK', () => {
       await rmTeamById('eventcatalog-core-team');
 
       expect(fs.existsSync(path.join(CATALOG_PATH, 'teams', 'eventcatalog-core-team.mdx'))).toBe(false);
+    });
+  });
+
+  describe('getOwnersForResource', () => {
+    it('returns the owners for a given resource', async () => {
+      await writeTeam({
+        id: 'eventcatalog-core-team',
+        name: 'Eventcatalog Core Team',
+        markdown: 'This is the core team for Eventcatalog',
+      });
+
+      await writeUser({
+        id: 'eventcatalog-core-user',
+        name: 'Eventcatalog Core User',
+        avatarUrl: 'https://example.com/avatar.png',
+        markdown: 'This is the core user for Eventcatalog',
+      });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: 'This is the inventory service',
+        owners: ['eventcatalog-core-team', 'eventcatalog-core-user'],
+      });
+
+      const owners = await getOwnersForResource('InventoryService');
+
+      expect(owners).toEqual([
+        {
+          id: 'eventcatalog-core-team',
+          name: 'Eventcatalog Core Team',
+          markdown: 'This is the core team for Eventcatalog',
+        },
+        {
+          id: 'eventcatalog-core-user',
+          name: 'Eventcatalog Core User',
+          avatarUrl: 'https://example.com/avatar.png',
+          markdown: 'This is the core user for Eventcatalog',
+        },
+      ]);
+    });
+
+    it('returns an empty array if the resource has no owners', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: 'This is the inventory service',
+      });
+
+      const owners = await getOwnersForResource('InventoryService');
+
+      expect(owners).toEqual([]);
     });
   });
 });
