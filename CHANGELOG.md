@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.6
+
+### Patch Changes
+
+- c57d2f7: feat(sdk): added new function to convert file to service
+
 ## 2.6.5
 
 ### Patch Changes
