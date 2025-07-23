@@ -479,8 +479,11 @@ export const isService = (directory: string) => async (path: string) => {
  *
  * const { toService } = utils('/path/to/eventcatalog');
  *
- * // Converts a file to a service
- * await toService('/services/InventoryService/index.mdx');
+ * // Read the file from somewhere
+ * const file = fs.readFileSync('/path/to/services/InventoryService/index.mdx', 'utf8');
+ *
+ * // Converts the raw file to a service
+ * await toService(file);
  * ```
  */
 export const toService = (directory: string) => async (file: string) => toResource(directory, file) as Promise<Service>;

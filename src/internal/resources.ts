@@ -148,8 +148,8 @@ export const getResourcePath = async (catalogDir: string, id: string, version?: 
   };
 };
 
-export const toResource = async (catalogDir: string, file: string) => {
-  const { data, content } = matter.read(file);
+export const toResource = async (catalogDir: string, rawContents: string) => {
+  const { data, content } = matter(rawContents);
   return {
     ...data,
     markdown: content.trim(),
