@@ -1823,7 +1823,7 @@ describe('Services SDK', () => {
       const pathToService = path.join(CATALOG_PATH, 'services', 'InventoryService', 'index.mdx');
 
       // Convert the file to a service
-      const service = await toService(pathToService);
+      const service = await toService(fs.readFileSync(pathToService, 'utf8'));
 
       // Assert the service is correct
       expect(service).toEqual(
