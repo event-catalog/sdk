@@ -11,6 +11,7 @@ import {
   getVersionedDirectory,
   getResources,
   getResourcePath,
+  toResource,
 } from './internal/resources';
 import { findFileById, uniqueVersions } from './internal/utils';
 
@@ -466,3 +467,20 @@ export const isService = (directory: string) => async (path: string) => {
   // needs to workf or windows too
   return !!service && segments.includes('services');
 };
+
+/**
+ * Takes a given raw file and converts it to a service.
+ *
+ * @param directory - The directory to convert the file to a service.
+ * @returns The service.
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { toService } = utils('/path/to/eventcatalog');
+ *
+ * // Converts a file to a service
+ * await toService('/services/InventoryService/index.mdx');
+ * ```
+ */
+export const toService = (directory: string) => async (file: string) => toResource(directory, file) as Promise<Service>;
