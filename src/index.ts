@@ -50,6 +50,7 @@ import {
   getServices,
   getServiceByPath,
   isService,
+  toService,
 } from './services';
 import {
   writeDomain,
@@ -615,6 +616,13 @@ export default (path: string) => {
      * @returns boolean
      */
     isService: isService(join(path)),
+
+    /**
+     * Converts a file to a service.
+     * @param file - The file to convert to a service.
+     * @returns The service.
+     */
+    toService: toService(join(path)),
 
     /**
      * ================================

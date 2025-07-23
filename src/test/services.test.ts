@@ -25,6 +25,7 @@ const {
   serviceHasVersion,
   getSpecificationFilesForService,
   isService,
+  toService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -1804,6 +1805,36 @@ describe('Services SDK', () => {
 
     it('returns false if the path is not a service', async () => {
       expect(await isService('/services/InventoryService/index.mdx')).toEqual(false);
+    });
+  });
+
+  describe('toService', () => {
+    it('converts a file to a service', async () => {
+      // First we create a service for the test
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      // Get the path to the service
+      const pathToService = path.join(CATALOG_PATH, 'services', 'InventoryService', 'index.mdx');
+
+      // Convert the file to a service
+      const service = await toService(pathToService);
+
+      // Assert the service is correct
+      expect(service).toEqual(
+        expect.objectContaining({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          markdown: '# Hello world',
+        })
+      );
     });
   });
 });
