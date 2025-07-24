@@ -78,7 +78,12 @@ import {
   addMessageToChannel,
 } from './channels';
 
-import { getMessageBySchemaPath, getProducersAndConsumersForMessage } from './messages';
+import {
+  getConsumersOfSchema,
+  getMessageBySchemaPath,
+  getProducersAndConsumersForMessage,
+  getProducersOfSchema,
+} from './messages';
 
 import { getResourcePath } from './internal/resources';
 
@@ -866,6 +871,20 @@ export default (path: string) => {
      * @returns { producers: Service[], consumers: Service[] }
      */
     getProducersAndConsumersForMessage: getProducersAndConsumersForMessage(join(path)),
+
+    /**
+     * Returns the consumers of a given schema path
+     * @param path - The path to the schema to get the consumers for
+     * @returns Service[]
+     */
+    getConsumersOfSchema: getConsumersOfSchema(join(path)),
+
+    /**
+     * Returns the producers of a given schema path
+     * @param path - The path to the schema to get the producers for
+     * @returns Service[]
+     */
+    getProducersOfSchema: getProducersOfSchema(join(path)),
 
     /**
      * Returns the owners for a given resource (e.g domain, service, event, command, query, etc.)
