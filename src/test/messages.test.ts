@@ -518,7 +518,7 @@ describe('Messages SDK', () => {
 
       expect(consumers).toEqual([]);
     });
-    it.only('if no consumers are found for the schema, an empty array is returned', async () => {
+    it('if no consumers are found for the schema, an empty array is returned', async () => {
       const consumers = await getConsumersOfSchema('events/InventoryAdjusted/schema.json');
       expect(consumers).toEqual([]);
     });
