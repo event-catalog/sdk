@@ -14,6 +14,8 @@ const {
   addEventToService,
   versionEvent,
   versionService,
+  getConsumersOfSchema,
+  getProducersOfSchema,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -370,6 +372,304 @@ describe('Messages SDK', () => {
           ],
         },
       ]);
+    });
+  });
+
+  describe('getConsumersOfSchema', () => {
+    it('returns the consumers of a given schema path', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+
+      await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        receives: [
+          {
+            id: 'InventoryAdjusted',
+            version: '0.0.2',
+          },
+        ],
+      });
+
+      const consumers = await getConsumersOfSchema('events/InventoryAdjusted/schema.json');
+
+      expect(consumers).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+          receives: [
+            {
+              id: 'InventoryAdjusted',
+              version: '0.0.2',
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('when a service is a consumer, but the version is not specified, it matches the latest version of the message', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+
+      await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        receives: [
+          {
+            id: 'InventoryAdjusted',
+          },
+        ],
+      });
+
+      const consumers = await getConsumersOfSchema('events/InventoryAdjusted/schema.json');
+
+      expect(consumers).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+          receives: [
+            {
+              id: 'InventoryAdjusted',
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('when a service is a consumer, but the version does not match the consumer is not returned', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+
+      await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        receives: [
+          {
+            id: 'InventoryAdjusted',
+            version: '1.0.0',
+          },
+        ],
+      });
+
+      const consumers = await getConsumersOfSchema('events/InventoryAdjusted/schema.json');
+
+      expect(consumers).toEqual([]);
+    });
+    it('if no consumers are found for the schema, an empty array is returned', async () => {
+      const consumers = await getConsumersOfSchema('events/InventoryAdjusted/schema.json');
+      expect(consumers).toEqual([]);
+    });
+  });
+
+  describe('getProducersOfSchema', () => {
+    it('returns the producers of a given schema path', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+
+      await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [
+          {
+            id: 'InventoryAdjusted',
+            version: '0.0.2',
+          },
+        ],
+      });
+
+      const producers = await getProducersOfSchema('events/InventoryAdjusted/schema.json');
+
+      expect(producers).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+          sends: [
+            {
+              id: 'InventoryAdjusted',
+              version: '0.0.2',
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('when a service is a producer, but the version is not specified, it matches the latest version of the message', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+
+      await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [
+          {
+            id: 'InventoryAdjusted',
+          },
+        ],
+      });
+
+      const producers = await getProducersOfSchema('events/InventoryAdjusted/schema.json');
+
+      expect(producers).toEqual([
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          markdown: '# Hello world',
+          summary: 'This is a summary',
+          sends: [
+            {
+              id: 'InventoryAdjusted',
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('when a service is a producer, but the version does not match the producer is not returned', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.2',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+
+      await addSchemaToEvent('InventoryAdjusted', { schema, fileName: 'schema.json' });
+
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [
+          {
+            id: 'InventoryAdjusted',
+            version: '1.0.0',
+          },
+        ],
+      });
+
+      const producers = await getProducersOfSchema('events/InventoryAdjusted/schema.json');
+
+      expect(producers).toEqual([]);
+    });
+    it('if no producers are found for the schema, an empty array is returned', async () => {
+      const producers = await getProducersOfSchema('events/InventoryAdjusted/schema.json');
+      expect(producers).toEqual([]);
     });
   });
 });

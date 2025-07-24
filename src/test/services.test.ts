@@ -35,7 +35,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
+  fs.rmSync(CATALOG_PATH, { recursive: true, force: true });
 });
 
 describe('Services SDK', () => {

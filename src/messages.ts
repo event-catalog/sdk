@@ -46,7 +46,7 @@ export const getMessageBySchemaPath =
       }
       return message as Message;
     } catch (error) {
-      console.error(`Failed to get message for schema path ${path}. Error processing directory ${pathToMessage}:`, error);
+      // console.error(`Failed to get message for schema path ${path}. Error processing directory ${pathToMessage}:`, error);
       if (error instanceof Error) {
         // Prepend more context to the existing error message
         error.message = `Failed to retrieve message from ${pathToMessage}: ${error.message}`;
@@ -126,3 +126,47 @@ export const getProducersAndConsumersForMessage =
 
     return { producers, consumers };
   };
+
+/**
+ * Returns the consumers of a given schema path.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getConsumersOfSchema } = utils('/path/to/eventcatalog');
+ *
+ * // Returns the consumers of a given schema path
+ * const consumers = await getConsumersOfSchema('events/InventoryAdjusted/schema.json');
+ */
+export const getConsumersOfSchema = (directory: string) => async (path: string) => {
+  try {
+    const message = await getMessageBySchemaPath(directory)(path);
+    const { consumers } = await getProducersAndConsumersForMessage(directory)(message.id, message.version);
+    return consumers;
+  } catch (error) {
+    return [];
+  }
+};
+
+/**
+ * Returns the producers of a given schema path.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { getProducersOfSchema } = utils('/path/to/eventcatalog');
+ *
+ * // Returns the producers of a given schema path
+ * const producers = await getProducersOfSchema('events/InventoryAdjusted/schema.json');
+ */
+export const getProducersOfSchema = (directory: string) => async (path: string) => {
+  try {
+    const message = await getMessageBySchemaPath(directory)(path);
+    const { producers } = await getProducersAndConsumersForMessage(directory)(message.id, message.version);
+    return producers;
+  } catch (error) {
+    return [];
+  }
+};
