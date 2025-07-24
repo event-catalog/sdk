@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.8
+
+### Patch Changes
+
+- 7a766aa: feat(sdk): added new functions to get producers/consumers by schema
+
 ## 2.6.7
 
 ### Patch Changes
