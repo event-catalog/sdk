@@ -40,6 +40,10 @@ describe('Events SDK', () => {
         version: '0.0.1',
         summary: 'This is a summary',
         markdown: '# Hello world',
+        draft: {
+          title: 'Draft',
+          message: 'This is a draft',
+        },
       });
 
       const test = await getEvent('InventoryAdjusted');
@@ -50,6 +54,10 @@ describe('Events SDK', () => {
         version: '0.0.1',
         summary: 'This is a summary',
         markdown: '# Hello world',
+        draft: {
+          title: 'Draft',
+          message: 'This is a draft',
+        },
       });
     });
 
