@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.6.9
+
+### Patch Changes
+
+- 315ff4c: chore(sdk): added editUrl and draft properties on all resources
+
 ## 2.6.8
 
 ### Patch Changes
