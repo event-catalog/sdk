@@ -29,6 +29,8 @@ export interface BaseSchema {
     };
   };
   resourceGroups?: ResourceGroup[];
+  editUrl?: string;
+  draft?: boolean | { title?: string; message?: string };
   // SDK types
   schema?: any;
 }
