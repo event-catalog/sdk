@@ -1,5 +1,5 @@
 ---
-"@eventcatalog/sdk": patch
+"@eventcatalog/sdk": minor
 ---
 
 feat(sdk): added entity SDK
