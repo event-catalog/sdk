@@ -46,22 +46,6 @@ const service await getService('PaymentService');
 
 See the [SDK docs](https://www.eventcatalog.dev/docs/sdk) for more information and examples
 
-# Sponsors
-
-Thank you to our project sponsors.
-
-## Gold sponsors
-
-<div align="center">
-  <img alt="hookdeck" src="./images/sponsors/hookdeck.svg" />
-  <p style="margin: 0; padding: 0;">Serverless infrastructure for event-driven architecture. </p>
-  <a href="https://hookdeck.com/?ref=eventcatalog-sponsor" target="_blank" >Learn more</a>
-</div>
-
-<hr />
-
-_Sponsors help make EventCatalog sustainable, want to help the project? Get in touch! Or [visit our sponsor page](https://www.eventcatalog.dev/support)._
-
 # Enterprise support
 
 Interested in collaborating with us? Our offerings include dedicated support, priority assistance, feature development, custom integrations, and more.
