@@ -22,6 +22,7 @@ const {
   addEventToService,
   addCommandToService,
   addQueryToService,
+  addEntityToService,
   serviceHasVersion,
   getSpecificationFilesForService,
   isService,
@@ -1535,6 +1536,120 @@ describe('Services SDK', () => {
       expect(
         addQueryToService('InventoryService', 'doesnotexist', { id: 'GetInventory', version: '2.0.0' }, '0.0.1')
       ).rejects.toThrowError("Direction doesnotexist is invalid, only 'receives' and 'sends' are supported");
+    });
+  });
+
+  describe('addEntityToService', () => {
+    it('takes an existing entity and adds it to an existing service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addEntityToService('InventoryService', { id: 'User', version: '1.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service).toEqual({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        entities: [
+          {
+            id: 'User',
+            version: '1.0.0',
+          },
+        ],
+        markdown: '# Hello world',
+      });
+    });
+
+    it('adds multiple entities to a service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addEntityToService('InventoryService', { id: 'User', version: '1.0.0' }, '0.0.1');
+      await addEntityToService('InventoryService', { id: 'Product', version: '2.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service.entities).toEqual([
+        {
+          id: 'User',
+          version: '1.0.0',
+        },
+        {
+          id: 'Product',
+          version: '2.0.0',
+        },
+      ]);
+    });
+
+    it('does not add duplicate entities to a service', async () => {
+      await writeService({
+        id: 'InventoryService2',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await addEntityToService('InventoryService2', { id: 'User', version: '1.0.0' }, '0.0.1');
+      await addEntityToService('InventoryService2', { id: 'User', version: '1.0.0' }, '0.0.1');
+
+      const service = await getService('InventoryService2');
+
+      expect(service.entities).toEqual([
+        {
+          id: 'User',
+          version: '1.0.0',
+        },
+      ]);
+    });
+
+    it('maintains the extension of the service when adding an entity', async () => {
+      await writeService(
+        {
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'Service that handles the inventory',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      await addEntityToService('InventoryService', { id: 'User', version: '1.0.0' }, '0.0.1');
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.md'))).toBe(true);
+    });
+
+    describe('when services are within a domain directory', () => {
+      it('adds an entity to a service within a domain and maintains location', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await addEntityToService('InventoryService', { id: 'User', version: '1.0.0' }, '0.0.1');
+        // Ensure file remains in the domain directory
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(true);
+      });
     });
   });
 

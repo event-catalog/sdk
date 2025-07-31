@@ -44,6 +44,7 @@ import {
   rmServiceById,
   addFileToService,
   addMessageToService,
+  addEntityToService,
   serviceHasVersion,
   getSpecificationFilesForService,
   writeVersionedService,
@@ -64,6 +65,7 @@ import {
   domainHasVersion,
   addServiceToDomain,
   addSubDomainToDomain,
+  addEntityToDomain,
   getUbiquitousLanguageFromDomain,
 } from './domains';
 
@@ -93,6 +95,7 @@ import { writeTeam, getTeam, getTeams, rmTeamById, getOwnersForResource } from '
 
 import { writeUser, getUser, getUsers, rmUserById } from './users';
 import { dumpCatalog, getEventCatalogConfigurationFile } from './eventcatalog';
+import { getEntity, getEntities, writeEntity, rmEntity, rmEntityById, versionEntity, entityHasVersion } from './entities';
 
 // Export the types
 export type * from './types';
@@ -605,6 +608,25 @@ export default (path: string) => {
     addQueryToService: addMessageToService(join(path)),
 
     /**
+     * Add an entity to a service by its id.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEntityToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new entity (User) to the InventoryService
+     * await addEntityToService('InventoryService', { id: 'User', version: '1.0.0' });
+     *
+     * // adds a new entity (Product) to a specific version of the InventoryService
+     * await addEntityToService('InventoryService', { id: 'Product', version: '1.0.0' }, '2.0.0');
+     *
+     * ```
+     */
+    addEntityToService: addEntityToService(join(path)),
+
+    /**
      * Check to see if a service exists by it's path.
      *
      * @example
@@ -726,6 +748,15 @@ export default (path: string) => {
      * @returns
      */
     addSubDomainToDomain: addSubDomainToDomain(join(path, 'domains')),
+
+    /**
+     * Adds an entity to a domain
+     * @param id - The id of the domain
+     * @param entity - The id and version of the entity to add
+     * @param version - (Optional) The version of the domain to add the entity to
+     * @returns
+     */
+    addEntityToDomain: addEntityToDomain(join(path, 'domains')),
 
     /**
      * ================================
@@ -893,5 +924,59 @@ export default (path: string) => {
      * @returns { owners: User[] }
      */
     getOwnersForResource: getOwnersForResource(join(path)),
+
+    /**
+     * ================================
+     *            Entities
+     * ================================
+     */
+
+    /**
+     * Returns an entity from EventCatalog
+     * @param id - The id of the entity to retrieve
+     * @param version - Optional id of the version to get (supports semver)
+     * @returns Entity|Undefined
+     */
+    getEntity: getEntity(join(path)),
+    /**
+     * Returns all entities from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Entity[]|Undefined
+     */
+    getEntities: getEntities(join(path)),
+    /**
+     * Adds an entity to EventCatalog
+     *
+     * @param entity - The entity to write
+     * @param options - Optional options to write the entity
+     *
+     */
+    writeEntity: writeEntity(join(path, 'entities')),
+    /**
+     * Remove an entity from EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your entity, e.g. `/User`
+     *
+     */
+    rmEntity: rmEntity(join(path, 'entities')),
+    /**
+     * Remove an entity by an entity id
+     *
+     * @param id - The id of the entity you want to remove
+     *
+     */
+    rmEntityById: rmEntityById(join(path)),
+    /**
+     * Moves a given entity id to the version directory
+     * @param id - The id of the entity to version
+     */
+    versionEntity: versionEntity(join(path)),
+    /**
+     * Check to see if an entity version exists
+     * @param id - The id of the entity
+     * @param version - The version of the entity (supports semver)
+     * @returns
+     */
+    entityHasVersion: entityHasVersion(join(path)),
   };
 };
