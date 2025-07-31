@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.7.0
+
+### Minor Changes
+
+- 7e402f0: feat(sdk): added entity SDK
+
 ## 2.6.9
 
 ### Patch Changes
