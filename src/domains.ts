@@ -390,3 +390,45 @@ export const addSubDomainToDomain =
     await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
   };
+
+/**
+ * Add an entity to a domain by its id.
+ * Optionally specify a version to add the entity to a specific version of the domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds an entity to the domain
+ * const { addEntityToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Adds an entity (User) to the domain (Orders)
+ * await addEntityToDomain('Orders', { id: 'User', version: '1.0.0' });
+ * // Adds an entity (Product) to the domain (Orders) with a specific version
+ * await addEntityToDomain('Orders', { id: 'Product', version: '2.0.0' }, '1.0.0');
+ * ```
+ */
+export const addEntityToDomain =
+  (directory: string) => async (id: string, entity: { id: string; version: string }, version?: string) => {
+    let domain: Domain = await getDomain(directory)(id, version);
+    const domainPath = await getResourcePath(directory, id, version);
+
+    // Get the extension of the file
+    const extension = path.extname(domainPath?.fullPath || '');
+
+    if (domain.entities === undefined) {
+      domain.entities = [];
+    }
+
+    const entityExistsInList = domain.entities.some((e) => e.id === entity.id && e.version === entity.version);
+
+    if (entityExistsInList) {
+      return;
+    }
+
+    // Add entity to the list
+    domain.entities.push(entity);
+
+    await rmDomainById(directory)(id, version, true);
+    await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
+  };

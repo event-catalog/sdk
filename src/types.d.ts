@@ -106,12 +106,14 @@ export interface Specifications {
 export interface Service extends BaseSchema {
   sends?: ResourcePointer[];
   receives?: ResourcePointer[];
+  entities?: ResourcePointer[];
   specifications?: Specifications;
 }
 
 export interface Domain extends BaseSchema {
   services?: ResourcePointer[];
   domains?: ResourcePointer[];
+  entities?: ResourcePointer[];
 }
 
 export interface Team {
@@ -160,6 +162,32 @@ export interface UbiquitousLanguage {
 
 export interface UbiquitousLanguageDictionary {
   dictionary: UbiquitousLanguage[];
+}
+
+interface DetailPanelProperty {
+  visible: boolean;
+}
+
+export interface Entity extends BaseSchema {
+  aggregateRoot?: boolean;
+  identifier?: string;
+  properties?: {
+    name: string;
+    type: string;
+    required?: boolean;
+    description?: string;
+    references?: string;
+    referencesIdentifier?: string;
+    relationType?: string;
+  }[];
+  detailsPanel?: {
+    domains?: DetailPanelProperty;
+    services?: DetailPanelProperty;
+    messages?: DetailPanelProperty;
+    versions?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+  };
 }
 
 export type EventCatalog = {

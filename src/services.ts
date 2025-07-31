@@ -487,3 +487,53 @@ export const isService = (directory: string) => async (path: string) => {
  * ```
  */
 export const toService = (directory: string) => async (file: string) => toResource(directory, file) as Promise<Service>;
+
+/**
+ * Add an entity to a service by its id.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * const { addEntityToService } = utils('/path/to/eventcatalog');
+ *
+ * // adds a new entity (User) to the InventoryService
+ * await addEntityToService('InventoryService', { id: 'User', version: '1.0.0' });
+ *
+ * // adds a new entity (Product) to a specific version of the InventoryService
+ * await addEntityToService('InventoryService', { id: 'Product', version: '1.0.0' }, '2.0.0');
+ *
+ * ```
+ */
+export const addEntityToService =
+  (directory: string) => async (id: string, entity: { id: string; version: string }, version?: string) => {
+    let service: Service = await getService(directory)(id, version);
+    const servicePath = await getResourcePath(directory, id, version);
+    const extension = extname(servicePath?.fullPath || '');
+
+    if (service.entities === undefined) {
+      service.entities = [];
+    }
+
+    // Check if the entity is already in the list
+    for (let i = 0; i < service.entities.length; i++) {
+      if (service.entities[i].id === entity.id && service.entities[i].version === entity.version) {
+        return;
+      }
+    }
+
+    service.entities.push({ id: entity.id, version: entity.version });
+
+    const existingResource = await findFileById(directory, id, version);
+
+    if (!existingResource) {
+      throw new Error(`Cannot find service ${id} in the catalog`);
+    }
+
+    // Get where the service was located, make sure it goes back there.
+    const path = existingResource.split(/[\\/]+services/)[0];
+    const pathToResource = join(path, 'services');
+
+    await rmServiceById(directory)(id, version);
+    await writeService(pathToResource)(service, { format: extension === '.md' ? 'md' : 'mdx' });
+  };
