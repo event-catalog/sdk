@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.7.3
+
+### Patch Changes
+
+- 817998c: fix(sdk): fixed race condition with removing services and all its files
+
 ## 2.7.2
 
 ### Patch Changes
