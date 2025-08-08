@@ -214,6 +214,8 @@ export const rmResourceById = async (
     await Promise.all(
       matchedFiles.map(async (file) => {
         await fs.rm(file, { recursive: true });
+        // Verify file is actually removed
+        await waitForFileRemoval(file);
       })
     );
   } else {
@@ -221,9 +223,27 @@ export const rmResourceById = async (
       matchedFiles.map(async (file) => {
         const directory = dirname(file);
         await fs.rm(directory, { recursive: true, force: true });
+        // Verify directory is actually removed
+        await waitForFileRemoval(directory);
       })
     );
   }
+};
+
+// Helper function to ensure file/directory is completely removed
+const waitForFileRemoval = async (path: string, maxRetries: number = 50, delay: number = 10): Promise<void> => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await fs.access(path);
+      // If access succeeds, file still exists, wait and retry
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    } catch (error) {
+      // If access fails, file is removed
+      return;
+    }
+  }
+  // If we reach here, file still exists after all retries
+  throw new Error(`File/directory ${path} was not removed after ${maxRetries} attempts`);
 };
 
 export const addFileToResource = async (
