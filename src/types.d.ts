@@ -75,18 +75,39 @@ export interface CustomDoc {
   markdown: string;
 }
 
+interface MessageDetailsPanelProperty {
+  producers?: DetailPanelProperty;
+  consumers?: DetailPanelProperty;
+  channels?: DetailPanelProperty;
+  versions?: DetailPanelProperty;
+  repository?: DetailPanelProperty;
+}
+
 export interface Event extends BaseSchema {
   channels?: ChannelPointer[];
+  detailsPanel?: MessageDetailsPanelProperty;
 }
 export interface Command extends BaseSchema {
   channels?: ChannelPointer[];
+  detailsPanel?: MessageDetailsPanelProperty;
 }
 export interface Query extends BaseSchema {
   channels?: ChannelPointer[];
+  detailsPanel?: MessageDetailsPanelProperty;
 }
 export interface Channel extends BaseSchema {
   address?: string;
   protocols?: string[];
+  detailsPanel?: {
+    producers?: DetailPanelProperty;
+    consumers?: DetailPanelProperty;
+    messages?: DetailPanelProperty;
+    protocols?: DetailPanelProperty;
+    versions?: DetailPanelProperty;
+    repository?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+  };
   // parameters?: Record<string, Parameter>;
   parameters?: {
     [key: string]: {
@@ -108,12 +129,34 @@ export interface Service extends BaseSchema {
   receives?: ResourcePointer[];
   entities?: ResourcePointer[];
   specifications?: Specifications;
+  detailsPanel?: {
+    domains?: DetailPanelProperty;
+    messages?: DetailPanelProperty;
+    versions?: DetailPanelProperty;
+    specifications?: DetailPanelProperty;
+    entities?: DetailPanelProperty;
+    repository?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+  };
 }
 
 export interface Domain extends BaseSchema {
   services?: ResourcePointer[];
   domains?: ResourcePointer[];
   entities?: ResourcePointer[];
+  detailsPanel?: {
+    parentDomains?: DetailPanelProperty;
+    subdomains?: DetailPanelProperty;
+    services?: DetailPanelProperty;
+    entities?: DetailPanelProperty;
+    messages?: DetailPanelProperty;
+    ubiquitousLanguage?: DetailPanelProperty;
+    repository?: DetailPanelProperty;
+    versions?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+  };
 }
 
 export interface Team {
