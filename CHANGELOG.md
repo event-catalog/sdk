@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.7.4
+
+### Patch Changes
+
+- 0bb05fc: chore(sdk): added detail panel types to resources
+
 ## 2.7.3
 
 ### Patch Changes
