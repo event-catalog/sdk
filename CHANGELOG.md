@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.7.5
+
+### Patch Changes
+
+- fdf463d: feat(sdk): added attachment types to all supported resources
+
 ## 2.7.4
 
 ### Patch Changes
