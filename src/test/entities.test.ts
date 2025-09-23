@@ -29,6 +29,7 @@ describe('Entities SDK', () => {
         markdown: '# User entity',
         aggregateRoot: true,
         identifier: 'id',
+        attachments: ['https://example.com'],
       });
 
       const test = await getEntity('User');
@@ -41,6 +42,7 @@ describe('Entities SDK', () => {
         markdown: '# User entity',
         aggregateRoot: true,
         identifier: 'id',
+        attachments: ['https://example.com'],
       });
     });
 
