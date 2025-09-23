@@ -41,6 +41,7 @@ describe('Queries SDK', () => {
         version: '0.0.1',
         summary: 'This is a summary',
         markdown: '# Hello world',
+        attachments: ['https://example.com'],
       });
 
       const test = await getQuery('GetOrder');
@@ -51,6 +52,7 @@ describe('Queries SDK', () => {
         version: '0.0.1',
         summary: 'This is a summary',
         markdown: '# Hello world',
+        attachments: ['https://example.com'],
       });
     });
 

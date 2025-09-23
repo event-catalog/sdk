@@ -255,6 +255,7 @@ describe('Domain SDK', () => {
         version: '0.0.1',
         summary: 'All things to do with the payment systems',
         markdown: '# Hello world',
+        attachments: ['https://example.com'],
       });
 
       const domain = await getDomain('Payment');
@@ -267,6 +268,7 @@ describe('Domain SDK', () => {
         version: '0.0.1',
         summary: 'All things to do with the payment systems',
         markdown: '# Hello world',
+        attachments: ['https://example.com'],
       });
     });
 

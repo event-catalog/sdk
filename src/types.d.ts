@@ -28,6 +28,15 @@ export interface BaseSchema {
       label?: string;
     };
   };
+  attachments?:
+    | string[]
+    | {
+        url: string;
+        title?: string;
+        type?: string;
+        description?: string;
+        icon?: string;
+      }[];
   resourceGroups?: ResourceGroup[];
   editUrl?: string;
   draft?: boolean | { title?: string; message?: string };

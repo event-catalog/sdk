@@ -52,6 +52,7 @@ describe('Services SDK', () => {
           language: 'TypeScript',
           url: 'https://github.com/eventcatalog/eventcatalog',
         },
+        attachments: ['https://example.com'],
       });
 
       const test = await getService('InventoryService');
@@ -66,6 +67,7 @@ describe('Services SDK', () => {
           language: 'TypeScript',
           url: 'https://github.com/eventcatalog/eventcatalog',
         },
+        attachments: ['https://example.com'],
       });
     });
 

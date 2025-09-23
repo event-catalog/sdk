@@ -44,6 +44,15 @@ describe('Events SDK', () => {
           title: 'Draft',
           message: 'This is a draft',
         },
+        attachments: [
+          {
+            url: 'https://example.com',
+            title: 'Example',
+            type: 'example',
+            description: 'This is an example',
+            icon: 'example',
+          },
+        ],
       });
 
       const test = await getEvent('InventoryAdjusted');
@@ -58,6 +67,15 @@ describe('Events SDK', () => {
           title: 'Draft',
           message: 'This is a draft',
         },
+        attachments: [
+          {
+            url: 'https://example.com',
+            title: 'Example',
+            type: 'example',
+            description: 'This is an example',
+            icon: 'example',
+          },
+        ],
       });
     });
 
