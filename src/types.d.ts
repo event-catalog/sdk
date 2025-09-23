@@ -131,13 +131,20 @@ export interface Channel extends BaseSchema {
 export interface Specifications {
   asyncapiPath?: string;
   openapiPath?: string;
+  graphqlPath?: string;
+}
+
+export interface Specification {
+  type: 'openapi' | 'asyncapi' | 'graphql';
+  path: string;
+  name?: string;
 }
 
 export interface Service extends BaseSchema {
   sends?: ResourcePointer[];
   receives?: ResourcePointer[];
   entities?: ResourcePointer[];
-  specifications?: Specifications;
+  specifications?: Specifications | Specification[];
   detailsPanel?: {
     domains?: DetailPanelProperty;
     messages?: DetailPanelProperty;
