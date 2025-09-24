@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.7.6
+
+### Patch Changes
+
+- 6c6fde8: feat(core): added support for graphql specs in EventCatalog
+
 ## 2.7.5
 
 ### Patch Changes
