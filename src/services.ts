@@ -334,17 +334,24 @@ export const getSpecificationFilesForService = (directory: string) => async (id:
   let specs = [] as any;
   if (service.specifications) {
     const serviceSpecifications = service.specifications;
-    const specificationFiles = Object.keys(serviceSpecifications);
+    let specificationFiles;
 
-    const getSpecs = specificationFiles.map(async (specFile) => {
-      const fileName = serviceSpecifications[specFile as keyof Specifications];
+    if (Array.isArray(serviceSpecifications)) {
+      specificationFiles = serviceSpecifications.map((spec) => ({ key: spec.type, path: spec.path }));
+    } else {
+      specificationFiles = Object.keys(serviceSpecifications).map((spec) => ({
+        key: spec,
+        path: serviceSpecifications[spec as keyof Specifications] as string,
+      }));
+    }
 
+    const getSpecs = specificationFiles.map(async ({ key, path: fileName }) => {
       if (!fileName) {
-        throw new Error(`Specification file name for ${specFile} is undefined`);
+        throw new Error(`Specification file name for ${fileName} is undefined`);
       }
       const rawFile = await getFileFromResource(directory, id, { fileName }, version);
 
-      return { key: specFile, content: rawFile, fileName: fileName, path: join(dirname(filePathToService), fileName) };
+      return { key, content: rawFile, fileName: fileName, path: join(dirname(filePathToService), fileName) };
     });
 
     specs = await Promise.all(getSpecs);
