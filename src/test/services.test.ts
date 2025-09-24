@@ -1741,6 +1741,46 @@ describe('Services SDK', () => {
       ]);
     });
 
+    it('returns the specification files for a service (if specifications is an array)', async () => {
+      await writeService({
+        id: 'AccountService',
+        name: 'Accounts Service',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        specifications: [
+          {
+            type: 'asyncapi',
+            path: 'spec.yaml',
+          },
+          {
+            type: 'graphql',
+            path: 'spec.graphql',
+          },
+        ],
+      });
+
+      await addFileToService('AccountService', { content: 'fake-async-api-file', fileName: 'spec.yaml' }, '0.0.1');
+      await addFileToService('AccountService', { content: 'fake-graphql-file', fileName: 'spec.graphql' }, '0.0.1');
+
+      const specFiles = await getSpecificationFilesForService('AccountService', '0.0.1');
+
+      expect(specFiles).toEqual([
+        {
+          content: 'fake-async-api-file',
+          fileName: 'spec.yaml',
+          path: expect.stringContaining(path.join('services', 'AccountService', 'spec.yaml')),
+          key: 'asyncapi',
+        },
+        {
+          content: 'fake-graphql-file',
+          fileName: 'spec.graphql',
+          path: expect.stringContaining(path.join('services', 'AccountService', 'spec.graphql')),
+          key: 'graphql',
+        },
+      ]);
+    });
+
     it('returns the specification files for a versioned service', async () => {
       await writeService({
         id: 'AccountService',
