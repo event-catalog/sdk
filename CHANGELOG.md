@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.8.0
+
+### Minor Changes
+
+- 8c29fb2: fix(sdk): fixed nested versioning side effects
+
 ## 2.7.6
 
 ### Patch Changes
