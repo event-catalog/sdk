@@ -19,6 +19,7 @@ const {
   eventHasVersion,
   writeServiceToDomain,
   writeService,
+  versionService,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -1326,6 +1327,52 @@ describe('Events SDK', () => {
         );
 
         expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'schema.json'))).toBe(
+          false
+        );
+      });
+
+      it('when the service and the event is versioned, the event remains in the root of the service but versioned in its own directory', async () => {
+        await writeService({
+          id: 'InventoryService',
+          name: 'Inventory Service',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await writeEventToService(
+          {
+            id: 'InventoryAdjusted',
+            name: 'Inventory Adjusted',
+            version: '0.0.2',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { id: 'InventoryService' }
+        );
+
+        // Add a random file to the service and event
+        await fs.writeFileSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'), 'SCHEMA!');
+        await fs.writeFileSync(
+          path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'schema.json'),
+          'SCHEMA!'
+        );
+
+        await versionService('InventoryService');
+        await versionEvent('InventoryAdjusted');
+
+        expect(
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'index.mdx')
+          )
+        ).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/versioned/0.0.1', 'schema.json'))).toBe(true);
+        expect(
+          fs.existsSync(
+            path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted/versioned/0.0.2', 'schema.json')
+          )
+        ).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService/events/InventoryAdjusted', 'index.mdx'))).toBe(
           false
         );
       });

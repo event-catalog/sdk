@@ -6,6 +6,7 @@ import fsSync from 'node:fs';
 import { Message, Service, CustomDoc } from '../types';
 import { satisfies } from 'semver';
 import { lock, unlock } from 'proper-lockfile';
+import { basename } from 'node:path';
 
 type Resource = Service | Message | CustomDoc;
 
@@ -20,21 +21,33 @@ export const versionResource = async (catalogDir: string, id: string) => {
 
   // Event that is in the route of the project
   const file = matchedFiles[0];
-  const sourceDirectory = dirname(file);
+  const sourceDirectory = dirname(file).replace(/\/versioned?\/[^/]+\//, '/');
   const { data: { version = '0.0.1' } = {} } = matter.read(file);
   const targetDirectory = getVersionedDirectory(sourceDirectory, version);
 
   fsSync.mkdirSync(targetDirectory, { recursive: true });
 
+  const ignoreListToCopy = ['events', 'commands', 'queries', 'versioned'];
+
   // Copy the event to the versioned directory
   await copyDir(catalogDir, sourceDirectory, targetDirectory, (src) => {
-    return !src.includes('versioned');
+    // get the folder name
+    const folderName = basename(src);
+
+    if (ignoreListToCopy.includes(folderName)) {
+      return false;
+    }
+    return true;
   });
 
   // Remove all the files in the root of the resource as they have now been versioned
   await fs.readdir(sourceDirectory).then(async (resourceFiles) => {
     await Promise.all(
       resourceFiles.map(async (file) => {
+        // Dont remove anything in the ignore list
+        if (ignoreListToCopy.includes(file)) {
+          return;
+        }
         if (file !== 'versioned') {
           fsSync.rmSync(join(sourceDirectory, file), { recursive: true });
         }
