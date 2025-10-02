@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.8.2
+
+### Patch Changes
+
+- 765d008: feat(sdk): added support to write containers(data-stores) to eventcat…
+
 ## 2.8.1
 
 ### Patch Changes
