@@ -96,6 +96,17 @@ import { writeTeam, getTeam, getTeams, rmTeamById, getOwnersForResource } from '
 import { writeUser, getUser, getUsers, rmUserById } from './users';
 import { dumpCatalog, getEventCatalogConfigurationFile } from './eventcatalog';
 import { getEntity, getEntities, writeEntity, rmEntity, rmEntityById, versionEntity, entityHasVersion } from './entities';
+import {
+  addFileToContainer,
+  containerHasVersion,
+  getContainer,
+  getContainers,
+  rmContainer,
+  rmContainerById,
+  versionContainer,
+  writeContainer,
+  writeContainerToService,
+} from './containers';
 
 // Export the types
 export type * from './types';
@@ -978,5 +989,76 @@ export default (path: string) => {
      * @returns
      */
     entityHasVersion: entityHasVersion(join(path)),
+
+    /**
+     * ================================
+     *            Data Stores
+     * ================================
+     */
+    /**
+     * Adds a data store to EventCatalog
+     * @param dataStore - The data store to write
+     * @param options - Optional options to write the data store
+     *
+     */
+    writeDataStore: writeContainer(join(path, 'containers')),
+
+    /**
+     * Returns a container from EventCatalog
+     * @param id - The id of the container to retrieve
+     * @param version - Optional id of the version to get (supports semver)
+     * @returns Container|Undefined
+     */
+    getDataStore: getContainer(join(path)),
+
+    /**
+     * Returns all data stores from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Container[]|Undefined
+     */
+    getDataStores: getContainers(join(path)),
+
+    /**
+     * Version a data store by its id
+     * @param id - The id of the data store to version
+     */
+    versionDataStore: versionContainer(join(path, 'containers')),
+
+    /**
+     * Remove a data store by its path
+     * @param path - The path to the data store to remove
+     */
+    rmDataStore: rmContainer(join(path, 'containers')),
+
+    /**
+     * Remove a data store by its id
+     * @param id - The id of the data store to remove
+     */
+    rmDataStoreById: rmContainerById(join(path)),
+
+    /**
+     * Check to see if a data store version exists
+     * @param id - The id of the data store
+     * @param version - The version of the data store (supports semver)
+     * @returns
+     */
+    dataStoreHasVersion: containerHasVersion(join(path)),
+
+    /**
+     * Adds a file to a data store by its id
+     * @param id - The id of the data store to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the data store to add the file to
+     * @returns
+     */
+    addFileToDataStore: addFileToContainer(join(path)),
+
+    /**
+     * Writes a data store to a service by its id
+     * @param dataStore - The data store to write
+     * @param service - The service to write the data store to
+     * @returns
+     */
+    writeDataStoreToService: writeContainerToService(join(path)),
   };
 };

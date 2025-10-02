@@ -249,6 +249,29 @@ export interface Entity extends BaseSchema {
   };
 }
 
+enum DataClassification {
+  Public = 'public',
+  Internal = 'internal',
+  Confidential = 'confidential',
+  Regulated = 'regulated',
+}
+
+export interface Container extends BaseSchema {
+  container_type: 'database' | 'cache' | 'objectStore' | 'searchIndex' | 'dataWarehouse' | 'dataLake' | 'externalSaaS' | 'other';
+  technology?: string;
+  authoritative?: boolean;
+  access_mode?: string;
+  classification?: DataClassification;
+  residency?: string;
+  retention?: string;
+  detailsPanel?: {
+    versions?: DetailPanelProperty;
+    repository?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+  };
+}
+
 export type EventCatalog = {
   version: string;
   catalogVersion: string;
