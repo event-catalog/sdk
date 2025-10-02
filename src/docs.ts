@@ -37,4 +37,4 @@ export * from './users';
 export * from './eventcatalog';
 export * from './messages';
 export * from './entities';
-export * from './containers';
+export * from './data-stores';
