@@ -545,3 +545,74 @@ export const addEntityToService =
     await rmServiceById(directory)(id, version);
     await writeService(pathToResource)(service, { format: extension === '.md' ? 'md' : 'mdx' });
   };
+
+/**
+ * Add a data store to a service by it's id.
+ *
+ * Optionally specify a version to add the data store to a specific version of the service.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds an data store to the service
+ * const { addDataStoreToService } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a new data store (orders-db) that the InventoryService will write to
+ * await addDataStoreToService('InventoryService', 'writesTo', { id: 'orders-db', version: '2.0.0' });
+ *
+ * * // Adds a new data store (OrderComplete) that the InventoryService will read from
+ * await addDataStoreToService('InventoryService', 'readsFrom', { id: 'orders-db', version: '1.0.0' });
+ *
+ * ```
+ */
+
+export const addDataStoreToService =
+  (directory: string) =>
+  async (id: string, operation: 'writesTo' | 'readsFrom', dataStore: { id: string; version: string }, version?: string) => {
+    let service: Service = await getService(directory)(id, version);
+    const servicePath = await getResourcePath(directory, id, version);
+    const extension = extname(servicePath?.fullPath || '');
+
+    if (operation === 'writesTo') {
+      if (service.writesTo === undefined) {
+        service.writesTo = [];
+      }
+
+      // We first check if the data store is already in the list
+      for (let i = 0; i < service.writesTo.length; i++) {
+        if (service.writesTo[i].id === dataStore.id && service.writesTo[i].version === dataStore.version) {
+          return;
+        }
+      }
+
+      service.writesTo.push({ id: dataStore.id, version: dataStore.version });
+    } else if (operation === 'readsFrom') {
+      if (service.readsFrom === undefined) {
+        service.readsFrom = [];
+      }
+
+      // We first check if the data store is already in the list
+      for (let i = 0; i < service.readsFrom.length; i++) {
+        if (service.readsFrom[i].id === dataStore.id && service.readsFrom[i].version === dataStore.version) {
+          return;
+        }
+      }
+      service.readsFrom.push({ id: dataStore.id, version: dataStore.version });
+    } else {
+      throw new Error(`Operation ${operation} is invalid, only 'writesTo' and 'readsFrom' are supported`);
+    }
+
+    const existingResource = await findFileById(directory, id, version);
+
+    if (!existingResource) {
+      throw new Error(`Cannot find service ${id} in the catalog`);
+    }
+
+    // Get where the service was located, make sure it goes back there.
+    const path = existingResource.split(/[\\/]+services/)[0];
+    const pathToResource = join(path, 'services');
+
+    await rmServiceById(directory)(id, version);
+    await writeService(pathToResource)(service, { format: extension === '.md' ? 'md' : 'mdx' });
+  };

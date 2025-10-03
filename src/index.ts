@@ -52,6 +52,7 @@ import {
   getServiceByPath,
   isService,
   toService,
+  addDataStoreToService,
 } from './services';
 import {
   writeDomain,
@@ -578,6 +579,24 @@ export default (path: string) => {
      * ```
      */
     addEventToService: addMessageToService(join(path)),
+
+    /**
+     * Add a data store to a service by it's id.
+     *
+     * Optionally specify a version to add the data store to a specific version of the service.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addDataStoreToService } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new data store (orders-db) that the InventoryService will write to
+     * await addDataStoreToService('InventoryService', 'writesTo', { id: 'orders-db', version: '2.0.0' });
+     *
+     * ```
+     */
+    addDataStoreToService: addDataStoreToService(join(path)),
     /**
      * Add a command to a service by it's id.
      *
