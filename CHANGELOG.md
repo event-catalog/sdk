@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.8.3
+
+### Patch Changes
+
+- dbf4816: feat(sdk): added ability to add datatore to service
+
 ## 2.8.2
 
 ### Patch Changes
