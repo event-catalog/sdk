@@ -144,6 +144,8 @@ export interface Service extends BaseSchema {
   sends?: ResourcePointer[];
   receives?: ResourcePointer[];
   entities?: ResourcePointer[];
+  writesTo?: ResourcePointer[];
+  readsFrom?: ResourcePointer[];
   specifications?: Specifications | Specification[];
   detailsPanel?: {
     domains?: DetailPanelProperty;

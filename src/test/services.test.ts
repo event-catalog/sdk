@@ -27,6 +27,8 @@ const {
   getSpecificationFilesForService,
   isService,
   toService,
+  addDataStoreToService,
+  writeDataStore,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -1950,6 +1952,89 @@ describe('Services SDK', () => {
       });
 
       await addEventToService('InventoryService', 'sends', { id: 'InventoryAdjusted', version: '0.0.1' }, '0.0.1');
+
+      const pathToService = path.join(CATALOG_PATH, 'services', 'InventoryService');
+      expect(fs.existsSync(pathToService)).toEqual(true);
+    });
+  });
+
+  describe('addDataStoreToService (addDataStoreToService)', () => {
+    it('adds the given data store to the service (writesTo)', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeDataStore({
+        id: 'orders-db',
+        name: 'Orders Database',
+        version: '0.0.1',
+        markdown: '# Orders',
+        container_type: 'database',
+      });
+
+      await addDataStoreToService('InventoryService', 'writesTo', { id: 'orders-db', version: '0.0.1' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service.writesTo).toEqual([
+        {
+          id: 'orders-db',
+          version: '0.0.1',
+        },
+      ]);
+    });
+
+    it('adds the given data store to the service (readsFrom)', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeDataStore({
+        id: 'orders-db',
+        name: 'Orders Database',
+        version: '0.0.1',
+        markdown: '# Orders',
+        container_type: 'database',
+      });
+
+      await addDataStoreToService('InventoryService', 'readsFrom', { id: 'orders-db', version: '0.0.1' }, '0.0.1');
+
+      const service = await getService('InventoryService');
+
+      expect(service.readsFrom).toEqual([
+        {
+          id: 'orders-db',
+          version: '0.0.1',
+        },
+      ]);
+    });
+
+    it('the folder location of the service does not change when adding a data store to the service', async () => {
+      await writeService({
+        id: 'InventoryService',
+        name: 'Inventory Service',
+        version: '0.0.1',
+        summary: 'Service that handles the inventory',
+        markdown: '# Hello world',
+      });
+
+      await writeDataStore({
+        id: 'orders-db',
+        name: 'Orders Database',
+        version: '0.0.1',
+        markdown: '# Orders',
+        container_type: 'database',
+      });
+
+      await addDataStoreToService('InventoryService', 'writesTo', { id: 'orders-db', version: '0.0.1' }, '0.0.1');
 
       const pathToService = path.join(CATALOG_PATH, 'services', 'InventoryService');
       expect(fs.existsSync(pathToService)).toEqual(true);
