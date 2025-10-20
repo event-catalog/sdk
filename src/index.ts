@@ -88,7 +88,7 @@ import {
   getProducersOfSchema,
 } from './messages';
 
-import { getResourcePath } from './internal/resources';
+import { getResourcePath, getResourceFolderName } from './internal/resources';
 
 import { writeCustomDoc, getCustomDoc, getCustomDocs, rmCustomDoc } from './custom-docs';
 
@@ -911,6 +911,11 @@ export default (path: string) => {
      * Returns the path to a given resource by id and version
      */
     getResourcePath: getResourcePath,
+
+    /**
+     * Returns the folder name of a given resource
+     */
+    getResourceFolderName: getResourceFolderName,
 
     /**
      * ================================

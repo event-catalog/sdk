@@ -7,6 +7,7 @@ import { Message, Service, CustomDoc } from '../types';
 import { satisfies } from 'semver';
 import { lock, unlock } from 'proper-lockfile';
 import { basename } from 'node:path';
+import path from 'node:path';
 
 type Resource = Service | Message | CustomDoc;
 
@@ -159,6 +160,12 @@ export const getResourcePath = async (catalogDir: string, id: string, version?: 
     relativePath: file.replace(catalogDir, ''),
     directory: dirname(file.replace(catalogDir, '')),
   };
+};
+
+export const getResourceFolderName = async (catalogDir: string, id: string, version?: string) => {
+  const paths = await getResourcePath(catalogDir, id, version);
+  if (!paths) return;
+  return paths?.directory.split(path.sep).filter(Boolean).pop();
 };
 
 export const toResource = async (catalogDir: string, rawContents: string) => {
