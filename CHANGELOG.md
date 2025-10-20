@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.8.4
+
+### Patch Changes
+
+- ea6e8d4: feat(sdk): added new function to get folder name by resource
+
 ## 2.8.3
 
 ### Patch Changes
