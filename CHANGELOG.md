@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.0
+
+### Minor Changes
+
+- 1bf7167: fix(sdk): version checking now works with non semver versions
+
 ## 2.8.4
 
 ### Patch Changes
