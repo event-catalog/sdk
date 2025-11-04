@@ -31,24 +31,34 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
     return { ...data, path };
   }) as any[];
 
+  // Handle 'latest' version - return the latest (non-versioned) file
+  if (version === 'latest') {
+    return latestVersion;
+  }
+
+  // First, check for exact version match (handles non-semver versions like '1', '2', etc.)
+  const exactMatch = parsedFiles.find((c) => c.version === version);
+  if (exactMatch) {
+    return exactMatch.path;
+  }
+
+  // Try semver range matching
   const semverRange = validRange(version);
 
-  if (semverRange && valid(version)) {
-    const match = parsedFiles.filter((c) => satisfies(c.version, semverRange));
+  if (semverRange) {
+    const match = parsedFiles.filter((c) => {
+      try {
+        return satisfies(c.version, semverRange);
+      } catch (error) {
+        // If satisfies fails (e.g., comparing semver range with non-semver version), skip this file
+        return false;
+      }
+    });
     return match.length > 0 ? match[0].path : undefined;
   }
 
-  // Order by version
-  const sorted = parsedFiles.sort((a, b) => {
-    return a.version.localeCompare(b.version);
-  });
-
-  // latest version
-  const match = sorted.length > 0 ? [sorted[sorted.length - 1]] : [];
-
-  if (match.length > 0) {
-    return match[0].path;
-  }
+  // If no exact match and no valid semver range, return undefined
+  return undefined;
 };
 
 export const getFiles = async (pattern: string, ignore: string | string[] = '') => {

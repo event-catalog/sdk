@@ -133,6 +133,36 @@ describe('Events SDK', () => {
       });
     });
 
+    it('returns the given event id from EventCatalog and the requested version when a version is given (non-semver),', async () => {
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await versionEvent('InventoryAdjusted');
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '2',
+        summary: 'This is version 1.0.0',
+        markdown: '# Hello world',
+      });
+
+      const test = await getEvent('InventoryAdjusted', '1');
+
+      expect(test).toEqual({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+    });
+
     it('returns the latest version of the event if the version matches the latest version', async () => {
       await writeEvent({
         id: 'InventoryAdjusted',
