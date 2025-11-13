@@ -399,6 +399,7 @@ describe('Channels SDK', () => {
         markdown: '# Hello world',
         address: 'inventory.{env}.events',
         protocols: ['kafka'],
+        routes: [{ id: 'InventoryChannel', version: '1.0.0' }],
         parameters: {
           env: {
             enum: ['dev', 'staging', 'prod'],
@@ -420,6 +421,7 @@ describe('Channels SDK', () => {
         markdown: '# Hello world',
         address: 'inventory.{env}.events',
         protocols: ['kafka'],
+        routes: [{ id: 'InventoryChannel', version: '1.0.0' }],
         parameters: {
           env: {
             enum: ['dev', 'staging', 'prod'],
