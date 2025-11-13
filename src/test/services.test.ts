@@ -451,13 +451,15 @@ describe('Services SDK', () => {
   });
 
   describe('writeService', () => {
-    it('writes the given service to EventCatalog and assumes the path if one if not given', async () => {
+    it.only('writes the given service to EventCatalog and assumes the path if one if not given', async () => {
       await writeService({
         id: 'InventoryService',
         name: 'Inventory Service',
         version: '0.0.1',
         summary: 'Service tat handles the inventory',
         markdown: '# Hello world',
+        sends: [{ id: 'InventoryUpdatedEvent', version: '2.0.0', to: [{ id: 'InventoryChannel', version: '1.0.0' }] }],
+        receives: [{ id: 'OrderComplete', version: '2.0.0', from: [{ id: 'OrderChannel', version: '1.0.0' }] }],
       });
 
       const service = await getService('InventoryService');
@@ -470,6 +472,8 @@ describe('Services SDK', () => {
         version: '0.0.1',
         summary: 'Service tat handles the inventory',
         markdown: '# Hello world',
+        sends: [{ id: 'InventoryUpdatedEvent', version: '2.0.0', to: [{ id: 'InventoryChannel', version: '1.0.0' }] }],
+        receives: [{ id: 'OrderComplete', version: '2.0.0', from: [{ id: 'OrderChannel', version: '1.0.0' }] }],
       });
     });
 

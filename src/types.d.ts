@@ -50,6 +50,18 @@ export type ResourcePointer = {
   type?: string;
 };
 
+export type SendsPointer = {
+  id: string;
+  version?: string;
+  to?: ChannelPointer[];
+};
+
+export type ReceivesPointer = {
+  id: string;
+  version?: string;
+  from?: ChannelPointer[];
+};
+
 export interface ResourceGroup {
   id?: string;
   title?: string;
@@ -141,8 +153,8 @@ export interface Specification {
 }
 
 export interface Service extends BaseSchema {
-  sends?: ResourcePointer[];
-  receives?: ResourcePointer[];
+  sends?: SendsPointer[];
+  receives?: ReceivesPointer[];
   entities?: ResourcePointer[];
   writesTo?: ResourcePointer[];
   readsFrom?: ResourcePointer[];
