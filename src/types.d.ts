@@ -119,6 +119,7 @@ export interface Query extends BaseSchema {
 export interface Channel extends BaseSchema {
   address?: string;
   protocols?: string[];
+  routes?: ChannelPointer[];
   detailsPanel?: {
     producers?: DetailPanelProperty;
     consumers?: DetailPanelProperty;
