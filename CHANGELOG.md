@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.2
+
+### Patch Changes
+
+- b6762c6: feat(sdk): added routes to channels
+
 ## 2.9.1
 
 ### Patch Changes
