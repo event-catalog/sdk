@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.1
+
+### Patch Changes
+
+- 835d5f7: feat(sdk): added to and from for channels for services
+
 ## 2.9.0
 
 ### Minor Changes
