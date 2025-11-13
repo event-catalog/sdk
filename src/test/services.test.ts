@@ -451,7 +451,7 @@ describe('Services SDK', () => {
   });
 
   describe('writeService', () => {
-    it.only('writes the given service to EventCatalog and assumes the path if one if not given', async () => {
+    it('writes the given service to EventCatalog and assumes the path if one if not given', async () => {
       await writeService({
         id: 'InventoryService',
         name: 'Inventory Service',
