@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.3
+
+### Patch Changes
+
+- f208149: chore(sdk): testing release
+
 ## 2.9.2
 
 ### Patch Changes
