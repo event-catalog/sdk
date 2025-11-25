@@ -50,4 +50,4 @@ See the [SDK docs](https://www.eventcatalog.dev/docs/sdk) for more information a
 
 Interested in collaborating with us? Our offerings include dedicated support, priority assistance, feature development, custom integrations, and more.
 
-Find more details on our [services page](https://eventcatalog.dev/services)
+Find more details on our [services page](https://eventcatalog.dev/services).
