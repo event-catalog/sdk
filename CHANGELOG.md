@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.5
+
+### Patch Changes
+
+- a02abd9: chore(code): moving to npm OIDC
+
 ## 2.9.4
 
 ### Patch Changes
