@@ -8,17 +8,23 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
     runs-on: ubuntu-latest
     if: github.repository == 'event-catalog/sdk'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Use Node.js 20.x
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          always-auth: true # required so npm uses OIDC creds for publish
+      - name: Use pnpm 10.x
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
       - name: Installation
         run: pnpm install
       - name: Build
@@ -29,4 +35,3 @@ jobs:
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
