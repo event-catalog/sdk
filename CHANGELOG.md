@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.6
+
+### Patch Changes
+
+- bac2293: chore(core): updated packages
+
 ## 2.9.5
 
 ### Patch Changes
