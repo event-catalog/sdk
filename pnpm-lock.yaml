@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@changesets/cli':
-        specifier: ^2.29.6
-        version: 2.29.6(@types/node@20.16.5)
+        specifier: ^2.29.8
+        version: 2.29.8(@types/node@20.16.5)
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -70,8 +70,8 @@ packages:
   '@changesets/changelog-git@0.2.1':
     resolution: {integrity: sha512-x/xEleCFLH28c3bQeQIyeZf8lFXyDFVn1SgcBiR2Tw/r4IAWlk1fzxCEZ6NxQAjF2Nwtczoen3OA2qR+UawQ8Q==}
 
-  '@changesets/cli@2.29.6':
-    resolution: {integrity: sha512-6qCcVsIG1KQLhpQ5zE8N0PckIx4+9QlHK3z6/lwKnw7Tir71Bjw8BeOZaxA/4Jt00pcgCnCSWZnyuZf5Il05QQ==}
+  '@changesets/cli@2.29.8':
+    resolution: {integrity: sha512-1weuGZpP63YWUYjay/E84qqwcnt5yJMM0tep10Up7Q5cS/DGe2IZ0Uj3HNMxGhCINZuR7aO9WBMdKnPit5ZDPA==}
     hasBin: true
 
   '@changesets/config@3.1.2':
@@ -1500,7 +1500,7 @@ snapshots:
     dependencies:
       '@changesets/types': 6.1.0
 
-  '@changesets/cli@2.29.6(@types/node@20.16.5)':
+  '@changesets/cli@2.29.8(@types/node@20.16.5)':
     dependencies:
       '@changesets/apply-release-plan': 7.0.14
       '@changesets/assemble-release-plan': 6.0.9
