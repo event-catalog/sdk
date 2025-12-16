@@ -22,7 +22,8 @@ export const versionResource = async (catalogDir: string, id: string) => {
 
   // Event that is in the route of the project
   const file = matchedFiles[0];
-  const sourceDirectory = dirname(file).replace(/\/versioned?\/[^/]+\//, '/');
+  // Handle both forward and back slashes for cross-platform compatibility (Windows uses \, Unix uses /)
+  const sourceDirectory = dirname(file).replace(/[/\\]versioned[/\\][^/\\]+[/\\]/, path.sep);
   const { data: { version = '0.0.1' } = {} } = matter.read(file);
   const targetDirectory = getVersionedDirectory(sourceDirectory, version);
 

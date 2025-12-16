@@ -843,6 +843,58 @@ describe('Services SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'index.mdx'))).toBe(false);
       expect(fs.existsSync(path.join(CATALOG_PATH, 'services/InventoryService', 'schema.json'))).toBe(false);
     });
+
+    describe('when services are within a domain directory', () => {
+      it('versions a service within a domain correctly (cross-platform path handling)', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        await versionService('InventoryService');
+
+        // Service should be versioned within the domain directory
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/versioned/0.0.1', 'index.mdx'))
+        ).toBe(true);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(false);
+      });
+
+      it('versions a service within a domain and preserves associated files', async () => {
+        await writeServiceToDomain(
+          {
+            id: 'InventoryService',
+            name: 'Inventory Service',
+            version: '0.0.1',
+            summary: 'Service that handles the inventory',
+            markdown: '# Hello world',
+          },
+          { id: 'Shopping' }
+        );
+
+        // Add a file to the service
+        fs.writeFileSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'schema.json'), 'SCHEMA!');
+
+        await versionService('InventoryService');
+
+        // Both the index and schema should be versioned
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/versioned/0.0.1', 'index.mdx'))
+        ).toBe(true);
+        expect(
+          fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService/versioned/0.0.1', 'schema.json'))
+        ).toBe(true);
+        // Original files should be removed
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'index.mdx'))).toBe(false);
+        expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Shopping/services/InventoryService', 'schema.json'))).toBe(false);
+      });
+    });
   });
 
   describe('rmService', () => {
