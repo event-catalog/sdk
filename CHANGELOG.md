@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.7
+
+### Patch Changes
+
+- b4d25c4: fix(sdk): fixed path finding for windows when versioning resources
+
 ## 2.9.6
 
 ### Patch Changes
