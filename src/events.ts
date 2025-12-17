@@ -249,8 +249,9 @@ export const versionEvent = (directory: string) => async (id: string) => version
  * ```
  */
 export const addFileToEvent =
-  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
-    addFileToResource(directory, id, file, version);
+  (directory: string) =>
+  async (id: string, file: { content: string; fileName: string }, version?: string, options?: { path?: string }) =>
+    addFileToResource(directory, id, file, version, options);
 
 /**
  * Add a schema to an event by it's id.
@@ -287,8 +288,9 @@ export const addFileToEvent =
  * ```
  */
 export const addSchemaToEvent =
-  (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
-    await addFileToEvent(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
+  (directory: string) =>
+  async (id: string, schema: { schema: string; fileName: string }, version?: string, options?: { path?: string }) => {
+    await addFileToEvent(directory)(id, { content: schema.schema, fileName: schema.fileName }, version, options);
   };
 
 /**

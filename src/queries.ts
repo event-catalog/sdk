@@ -250,8 +250,9 @@ export const versionQuery = (directory: string) => async (id: string) => version
  * ```
  */
 export const addFileToQuery =
-  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
-    addFileToResource(directory, id, file, version);
+  (directory: string) =>
+  async (id: string, file: { content: string; fileName: string }, version?: string, options?: { path?: string }) =>
+    addFileToResource(directory, id, file, version, options);
 
 /**
  * Add a schema to a query by it's id.
@@ -288,8 +289,9 @@ export const addFileToQuery =
  * ```
  */
 export const addSchemaToQuery =
-  (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
-    await addFileToQuery(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
+  (directory: string) =>
+  async (id: string, schema: { schema: string; fileName: string }, version?: string, options?: { path?: string }) => {
+    await addFileToQuery(directory)(id, { content: schema.schema, fileName: schema.fileName }, version, options);
   };
 
 /**
