@@ -1451,6 +1451,22 @@ describe('Events SDK', () => {
       expect(addFileToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
     });
 
+    it('writes a file to a custom path when path option is provided', async () => {
+      const file = { content: 'hello', fileName: 'test.txt' };
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addFileToEvent('InventoryAdjusted', file, undefined, { path: 'events/InventoryAdjusted' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'test.txt'))).toBe(true);
+    });
+
     describe('when events are within a service directory', () => {
       it('takes a given file and writes it to the location of the given event', async () => {
         const file = { content: 'hello', fileName: 'test.txt' };
@@ -1577,6 +1593,30 @@ describe('Events SDK', () => {
       const file = { schema: 'hello', fileName: 'test.txt' };
 
       expect(addSchemaToEvent('InventoryAdjusted', file)).rejects.toThrowError('Cannot find directory to write file to');
+    });
+
+    it('writes a schema to a custom path when path option is provided', async () => {
+      const schema = `{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }`;
+      const file = { schema, fileName: 'schema.json' };
+
+      await writeEvent({
+        id: 'InventoryAdjusted',
+        name: 'Inventory Adjusted',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addSchemaToEvent('InventoryAdjusted', file, undefined, { path: 'events/InventoryAdjusted' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted', 'schema.json'))).toBe(true);
     });
 
     it('if the file can be parsed into JSON, it will be parsed into JSON and written to the file formatted', async () => {

@@ -277,14 +277,7 @@ export const addFileToResource = async (
   let pathToResource: string | undefined;
 
   if (options?.path) {
-    // Use the provided path directly (bypasses global lookup)
-    const mdxPath = join(catalogDir, options.path, 'index.mdx');
-    const mdPath = join(catalogDir, options.path, 'index.md');
-    if (fsSync.existsSync(mdxPath)) {
-      pathToResource = mdxPath;
-    } else if (fsSync.existsSync(mdPath)) {
-      pathToResource = mdPath;
-    }
+    pathToResource = join(catalogDir, options.path, 'index.mdx');
   } else {
     // Fall back to global lookup (existing behavior)
     pathToResource = await findFileById(catalogDir, id, version);
