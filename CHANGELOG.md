@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.9
+
+### Patch Changes
+
+- 083ec77: feat(core): writing resources allows path override
+
 ## 2.9.8
 
 ### Patch Changes
