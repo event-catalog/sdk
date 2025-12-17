@@ -271,9 +271,24 @@ export const addFileToResource = async (
   catalogDir: string,
   id: string,
   file: { content: string; fileName: string },
-  version?: string
+  version?: string,
+  options?: { path?: string }
 ) => {
-  const pathToResource = await findFileById(catalogDir, id, version);
+  let pathToResource: string | undefined;
+
+  if (options?.path) {
+    // Use the provided path directly (bypasses global lookup)
+    const mdxPath = join(catalogDir, options.path, 'index.mdx');
+    const mdPath = join(catalogDir, options.path, 'index.md');
+    if (fsSync.existsSync(mdxPath)) {
+      pathToResource = mdxPath;
+    } else if (fsSync.existsSync(mdPath)) {
+      pathToResource = mdPath;
+    }
+  } else {
+    // Fall back to global lookup (existing behavior)
+    pathToResource = await findFileById(catalogDir, id, version);
+  }
 
   if (!pathToResource) throw new Error('Cannot find directory to write file to');
 

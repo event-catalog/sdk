@@ -250,8 +250,9 @@ export const versionCommand = (directory: string) => async (id: string) => versi
  * ```
  */
 export const addFileToCommand =
-  (directory: string) => async (id: string, file: { content: string; fileName: string }, version?: string) =>
-    addFileToResource(directory, id, file, version);
+  (directory: string) =>
+  async (id: string, file: { content: string; fileName: string }, version?: string, options?: { path?: string }) =>
+    addFileToResource(directory, id, file, version, options);
 
 /**
  * Add a schema to a command by it's id.
@@ -288,8 +289,9 @@ export const addFileToCommand =
  * ```
  */
 export const addSchemaToCommand =
-  (directory: string) => async (id: string, schema: { schema: string; fileName: string }, version?: string) => {
-    await addFileToCommand(directory)(id, { content: schema.schema, fileName: schema.fileName }, version);
+  (directory: string) =>
+  async (id: string, schema: { schema: string; fileName: string }, version?: string, options?: { path?: string }) => {
+    await addFileToCommand(directory)(id, { content: schema.schema, fileName: schema.fileName }, version, options);
   };
 
 /**
