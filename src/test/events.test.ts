@@ -1445,6 +1445,14 @@ describe('Events SDK', () => {
       expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'test.txt'))).toBe(true);
     });
 
+    it('if the directory does not exist, it will be created', async () => {
+      const file = { content: 'hello', fileName: 'test.txt' };
+
+      await addFileToEvent('InventoryAdjusted', file, undefined, { path: 'events/InventoryAdjusted/versioned/0.0.1' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'events/InventoryAdjusted/versioned/0.0.1', 'test.txt'))).toBe(true);
+    });
+
     it('throws an error when trying to write to a event that does not exist', () => {
       const file = { content: 'hello', fileName: 'test.txt' };
 

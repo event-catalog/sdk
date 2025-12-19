@@ -285,6 +285,9 @@ export const addFileToResource = async (
 
   if (!pathToResource) throw new Error('Cannot find directory to write file to');
 
+  // Create the directory if it doesn't exist
+  fsSync.mkdirSync(path.dirname(pathToResource), { recursive: true });
+
   let fileContent = file.content.trim();
 
   try {
