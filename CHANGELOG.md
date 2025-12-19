@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.10
+
+### Patch Changes
+
+- e7bbb0a: fix(sdk): ensure directory when writing resources
+
 ## 2.9.9
 
 ### Patch Changes
