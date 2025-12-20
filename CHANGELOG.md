@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.9.11
+
+### Patch Changes
+
+- 2480c01: fix(sdk): removed jsdocs links to old documentation links
+
 ## 2.9.10
 
 ### Patch Changes
