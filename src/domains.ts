@@ -348,7 +348,7 @@ export const addServiceToDomain =
 
 /**
  * Add a subdomain to a domain by it's id.
- * Optionally specify a version to add the subdomain to a specific version of the domain.
+ * Optionally specify a version to add the subdomain to a specific version of the domain
  *
  * @example
  * ```ts
