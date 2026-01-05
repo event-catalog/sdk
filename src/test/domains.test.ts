@@ -11,6 +11,7 @@ const {
   getDomain,
   getDomains,
   writeService,
+  writeChannel,
   versionDomain,
   rmDomain,
   rmDomainById,
@@ -193,6 +194,39 @@ describe('Domain SDK', () => {
           id: 'Inventory',
           name: 'Inventory',
           version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+      ]);
+    });
+
+    it('when channels are nested into the domains folder it only returns the domains', async () => {
+      // Create a domain
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      // Create a channel inside the domain directory
+      await writeChannel({
+        id: 'inventory.{env}.events',
+        name: 'Inventory Channel',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      }, { path: '/domains/Orders/channels/inventory.{env}.events' });
+
+      const domains = await getDomains();
+
+      // Verify that channels are not included in the domains list
+      expect(domains).toEqual([
+        {
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '1.0.0',
           summary: 'This is a summary',
           markdown: '# Hello world',
         },
