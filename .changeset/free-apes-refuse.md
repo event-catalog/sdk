@@ -1,5 +1,4 @@
 ---
 '@eventcatalog/sdk': patch
 ---
-
-Bugfix: Fix channels beong incorrectly returned by getDomains
+fix(sdk): channels are not longer returned by the getDomains SDK call
