@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.10.0
+
+### Minor Changes
+
+- 2854c62: feat(sdk): added diagram types to base schema
+
 ## 2.9.11
 
 ### Patch Changes
