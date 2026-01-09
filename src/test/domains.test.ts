@@ -42,6 +42,7 @@ describe('Domain SDK', () => {
         version: '0.0.1',
         summary: 'All things to do with the payment systems',
         markdown: '# Hello world',
+        diagrams: [{ id: 'PaymentDiagram', version: '1.0.0' }],
       });
 
       const test = await getDomain('Payment');
@@ -52,6 +53,7 @@ describe('Domain SDK', () => {
         version: '0.0.1',
         summary: 'All things to do with the payment systems',
         markdown: '# Hello world',
+        diagrams: [{ id: 'PaymentDiagram', version: '1.0.0' }],
       });
     });
 

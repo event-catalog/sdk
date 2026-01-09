@@ -55,6 +55,7 @@ describe('Services SDK', () => {
           url: 'https://github.com/eventcatalog/eventcatalog',
         },
         attachments: ['https://example.com'],
+        diagrams: [{ id: 'InventoryServiceDiagram', version: '1.0.0' }],
       });
 
       const test = await getService('InventoryService');
@@ -70,6 +71,7 @@ describe('Services SDK', () => {
           url: 'https://github.com/eventcatalog/eventcatalog',
         },
         attachments: ['https://example.com'],
+        diagrams: [{ id: 'InventoryServiceDiagram', version: '1.0.0' }],
       });
     });
 
