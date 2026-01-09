@@ -30,6 +30,7 @@ describe('Entities SDK', () => {
         aggregateRoot: true,
         identifier: 'id',
         attachments: ['https://example.com'],
+        diagrams: [{ id: 'UserDiagram', version: '1.0.0' }],
       });
 
       const test = await getEntity('User');
@@ -43,6 +44,7 @@ describe('Entities SDK', () => {
         aggregateRoot: true,
         identifier: 'id',
         attachments: ['https://example.com'],
+        diagrams: [{ id: 'UserDiagram', version: '1.0.0' }],
       });
     });
 

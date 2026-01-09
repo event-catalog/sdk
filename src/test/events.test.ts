@@ -54,6 +54,7 @@ describe('Events SDK', () => {
             icon: 'example',
           },
         ],
+        diagrams: [{ id: 'InventoryAdjustedDiagram', version: '1.0.0' }],
       });
 
       const test = await getEvent('InventoryAdjusted');
@@ -77,6 +78,7 @@ describe('Events SDK', () => {
             icon: 'example',
           },
         ],
+        diagrams: [{ id: 'InventoryAdjustedDiagram', version: '1.0.0' }],
       });
     });
 

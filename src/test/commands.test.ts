@@ -40,6 +40,7 @@ describe('Commands SDK', () => {
         summary: 'This is a summary',
         markdown: '# Hello world',
         attachments: ['https://example.com'],
+        diagrams: [{ id: 'UpdateInventoryDiagram', version: '1.0.0' }],
       });
 
       const test = await getCommand('UpdateInventory');
@@ -51,6 +52,7 @@ describe('Commands SDK', () => {
         summary: 'This is a summary',
         markdown: '# Hello world',
         attachments: ['https://example.com'],
+        diagrams: [{ id: 'UpdateInventoryDiagram', version: '1.0.0' }],
       });
     });
 

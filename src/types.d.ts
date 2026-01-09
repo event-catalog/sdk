@@ -38,6 +38,7 @@ export interface BaseSchema {
         icon?: string;
       }[];
   resourceGroups?: ResourceGroup[];
+  diagrams?: ResourcePointer[];
   editUrl?: string;
   draft?: boolean | { title?: string; message?: string };
   // SDK types
