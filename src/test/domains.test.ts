@@ -211,13 +211,16 @@ describe('Domain SDK', () => {
       });
 
       // Create a channel inside the domain directory
-      await writeChannel({
-        id: 'inventory.{env}.events',
-        name: 'Inventory Channel',
-        version: '0.0.1',
-        summary: 'This is a summary',
-        markdown: '# Hello world',
-      }, { path: '/domains/Orders/channels/inventory.{env}.events' });
+      await writeChannel(
+        {
+          id: 'inventory.{env}.events',
+          name: 'Inventory Channel',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { path: '/domains/Orders/channels/inventory.{env}.events' }
+      );
 
       const domains = await getDomains();
 
