@@ -177,6 +177,8 @@ export interface Domain extends BaseSchema {
   services?: ResourcePointer[];
   domains?: ResourcePointer[];
   entities?: ResourcePointer[];
+  sends?: SendsPointer[];
+  receives?: ReceivesPointer[];
   detailsPanel?: {
     parentDomains?: DetailPanelProperty;
     subdomains?: DetailPanelProperty;

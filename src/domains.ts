@@ -137,6 +137,14 @@ export const writeDomain =
       resource.domains = uniqueVersions(domain.domains as { id: string; version: string }[]);
     }
 
+    if (Array.isArray(domain.sends)) {
+      resource.sends = uniqueVersions(domain.sends as { id: string; version: string }[]);
+    }
+
+    if (Array.isArray(domain.receives)) {
+      resource.receives = uniqueVersions(domain.receives as { id: string; version: string }[]);
+    }
+
     return await writeResource(directory, resource, { ...options, type: 'domain' });
   };
 
@@ -429,4 +437,77 @@ export const addEntityToDomain =
 
     await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
+  };
+
+/**
+ * Add an event/command/query to a domain by its id.
+ *
+ * Optionally specify a version to add the message to a specific version of the domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds an event to the domain
+ * const { addEventToDomain, addCommandToDomain, addQueryToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a new event (OrderCreated) that the Orders domain will send
+ * await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '2.0.0' });
+ *
+ * // Adds a new event (PaymentProcessed) that the Orders domain will receive
+ * await addEventToDomain('Orders', 'receives', { id: 'PaymentProcessed', version: '1.0.0' });
+ *
+ * // Adds a new command (ProcessOrder) that the Orders domain will receive
+ * await addCommandToDomain('Orders', 'receives', { id: 'ProcessOrder', version: '1.0.0' });
+ *
+ * // Adds a message to a specific version of the domain
+ * await addEventToDomain('Orders', 'sends', { id: 'OrderShipped', version: '1.0.0' }, '2.0.0');
+ * ```
+ */
+export const addMessageToDomain =
+  (directory: string) => async (id: string, direction: string, message: { id: string; version: string }, version?: string) => {
+    let domain: Domain = await getDomain(directory)(id, version);
+    const domainPath = await getResourcePath(directory, id, version);
+    const extension = path.extname(domainPath?.fullPath || '');
+
+    if (direction === 'sends') {
+      if (domain.sends === undefined) {
+        domain.sends = [];
+      }
+      // Check if the message is already in the list
+      for (let i = 0; i < domain.sends.length; i++) {
+        if (domain.sends[i].id === message.id && domain.sends[i].version === message.version) {
+          return;
+        }
+      }
+      domain.sends.push({ id: message.id, version: message.version });
+    } else if (direction === 'receives') {
+      if (domain.receives === undefined) {
+        domain.receives = [];
+      }
+      // Check if the message is already in the list
+      for (let i = 0; i < domain.receives.length; i++) {
+        if (domain.receives[i].id === message.id && domain.receives[i].version === message.version) {
+          return;
+        }
+      }
+      domain.receives.push({ id: message.id, version: message.version });
+    } else {
+      throw new Error(`Direction ${direction} is invalid, only 'receives' and 'sends' are supported`);
+    }
+
+    const existingResource = await findFileById(directory, id, version);
+
+    if (!existingResource) {
+      throw new Error(`Cannot find domain ${id} in the catalog`);
+    }
+
+    // Get where the domain was located, make sure it goes back there (handles subdomains)
+    // Use lastIndexOf to find the last /domains/ in the path (for nested domains)
+    const normalizedPath = existingResource.replace(/\\/g, '/');
+    const lastDomainsIndex = normalizedPath.lastIndexOf('/domains/');
+    const pathToResource = existingResource.substring(0, lastDomainsIndex + '/domains'.length);
+
+    await rmDomainById(directory)(id, version, true);
+    await writeDomain(pathToResource)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
   };
