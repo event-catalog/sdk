@@ -68,6 +68,7 @@ import {
   addSubDomainToDomain,
   addEntityToDomain,
   getUbiquitousLanguageFromDomain,
+  addMessageToDomain,
 } from './domains';
 
 import {
@@ -788,6 +789,63 @@ export default (path: string) => {
      * @returns
      */
     addEntityToDomain: addEntityToDomain(join(path, 'domains')),
+
+    /**
+     * Add an event to a domain by its id.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addEventToDomain } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new event (OrderCreated) that the Orders domain will send
+     * await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '2.0.0' });
+     *
+     * // adds a new event (PaymentProcessed) that the Orders domain will receive
+     * await addEventToDomain('Orders', 'receives', { id: 'PaymentProcessed', version: '2.0.0' });
+     *
+     * ```
+     */
+    addEventToDomain: addMessageToDomain(join(path, 'domains')),
+
+    /**
+     * Add a command to a domain by its id.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addCommandToDomain } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new command (ProcessOrder) that the Orders domain will send
+     * await addCommandToDomain('Orders', 'sends', { id: 'ProcessOrder', version: '2.0.0' });
+     *
+     * // adds a new command (CancelOrder) that the Orders domain will receive
+     * await addCommandToDomain('Orders', 'receives', { id: 'CancelOrder', version: '2.0.0' });
+     *
+     * ```
+     */
+    addCommandToDomain: addMessageToDomain(join(path, 'domains')),
+
+    /**
+     * Add a query to a domain by its id.
+     *
+     * @example
+     * ```ts
+     * import utils from '@eventcatalog/utils';
+     *
+     * const { addQueryToDomain } = utils('/path/to/eventcatalog');
+     *
+     * // adds a new query (GetOrderStatus) that the Orders domain will send
+     * await addQueryToDomain('Orders', 'sends', { id: 'GetOrderStatus', version: '2.0.0' });
+     *
+     * // adds a new query (GetInventory) that the Orders domain will receive
+     * await addQueryToDomain('Orders', 'receives', { id: 'GetInventory', version: '2.0.0' });
+     *
+     * ```
+     */
+    addQueryToDomain: addMessageToDomain(join(path, 'domains')),
 
     /**
      * ================================

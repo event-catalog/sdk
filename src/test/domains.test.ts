@@ -21,6 +21,9 @@ const {
   addServiceToDomain,
   addSubDomainToDomain,
   addEntityToDomain,
+  addEventToDomain,
+  addCommandToDomain,
+  addQueryToDomain,
 } = utils(CATALOG_PATH);
 
 // clean the catalog before each test
@@ -1017,6 +1020,364 @@ describe('Domain SDK', () => {
       const latestDomain = await getDomain('Orders4');
 
       expect(versionedDomain.entities).toEqual([{ id: 'User', version: '1.0.0' }]);
+    });
+  });
+
+  describe('addMessageToDomain', () => {
+    describe('sends', () => {
+      it('adds an event to the sends of an existing domain', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.sends).toEqual([{ id: 'OrderCreated', version: '1.0.0' }]);
+      });
+
+      it('adds a command to the sends of an existing domain', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addCommandToDomain('Orders', 'sends', { id: 'ProcessOrder', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.sends).toEqual([{ id: 'ProcessOrder', version: '1.0.0' }]);
+      });
+
+      it('adds a query to the sends of an existing domain', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addQueryToDomain('Orders', 'sends', { id: 'GetOrderStatus', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.sends).toEqual([{ id: 'GetOrderStatus', version: '1.0.0' }]);
+      });
+
+      it('does not add duplicate sends (same id and version)', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.sends).toEqual([{ id: 'OrderCreated', version: '1.0.0' }]);
+      });
+
+      it('preserves existing sends when adding new ones', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          sends: [{ id: 'ExistingEvent', version: '1.0.0' }],
+        });
+
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.sends).toEqual([
+          { id: 'ExistingEvent', version: '1.0.0' },
+          { id: 'OrderCreated', version: '1.0.0' },
+        ]);
+      });
+    });
+
+    describe('receives', () => {
+      it('adds an event to the receives of an existing domain', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addEventToDomain('Orders', 'receives', { id: 'PaymentProcessed', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.receives).toEqual([{ id: 'PaymentProcessed', version: '1.0.0' }]);
+      });
+
+      it('adds a command to the receives of an existing domain', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addCommandToDomain('Orders', 'receives', { id: 'CancelOrder', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.receives).toEqual([{ id: 'CancelOrder', version: '1.0.0' }]);
+      });
+
+      it('adds a query to the receives of an existing domain', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addQueryToDomain('Orders', 'receives', { id: 'GetInventory', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.receives).toEqual([{ id: 'GetInventory', version: '1.0.0' }]);
+      });
+
+      it('does not add duplicate receives (same id and version)', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addEventToDomain('Orders', 'receives', { id: 'PaymentProcessed', version: '1.0.0' });
+        await addEventToDomain('Orders', 'receives', { id: 'PaymentProcessed', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.receives).toEqual([{ id: 'PaymentProcessed', version: '1.0.0' }]);
+      });
+
+      it('preserves existing receives when adding new ones', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+          receives: [{ id: 'ExistingEvent', version: '1.0.0' }],
+        });
+
+        await addEventToDomain('Orders', 'receives', { id: 'PaymentProcessed', version: '1.0.0' });
+
+        const domain = await getDomain('Orders');
+
+        expect(domain.receives).toEqual([
+          { id: 'ExistingEvent', version: '1.0.0' },
+          { id: 'PaymentProcessed', version: '1.0.0' },
+        ]);
+      });
+    });
+
+    describe('error handling', () => {
+      it('throws an error for invalid direction', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await expect(addEventToDomain('Orders', 'invalid', { id: 'OrderCreated', version: '1.0.0' })).rejects.toThrow(
+          "Direction invalid is invalid, only 'receives' and 'sends' are supported"
+        );
+      });
+
+      it('throws an error when domain does not exist', async () => {
+        await expect(addEventToDomain('NonExistent', 'sends', { id: 'OrderCreated', version: '1.0.0' })).rejects.toThrow();
+      });
+    });
+
+    describe('file handling', () => {
+      it('preserves .md format when adding messages', async () => {
+        await writeDomain(
+          {
+            id: 'Orders',
+            name: 'Orders Domain',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { format: 'md' }
+        );
+
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+
+        const domainFile = path.join(CATALOG_PATH, 'domains', 'Orders', 'index.md');
+        expect(fs.existsSync(domainFile)).toBe(true);
+      });
+
+      it('preserves .mdx format when adding messages', async () => {
+        await writeDomain(
+          {
+            id: 'Orders',
+            name: 'Orders Domain',
+            version: '0.0.1',
+            summary: 'This is a summary',
+            markdown: '# Hello world',
+          },
+          { format: 'mdx' }
+        );
+
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+
+        const domainFile = path.join(CATALOG_PATH, 'domains', 'Orders', 'index.mdx');
+        expect(fs.existsSync(domainFile)).toBe(true);
+      });
+
+      it('works with versioned domains', async () => {
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await versionDomain('Orders');
+
+        await writeDomain({
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '1.0.0',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        });
+
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' }, '0.0.1');
+
+        const versionedDomain = await getDomain('Orders', '0.0.1');
+
+        expect(versionedDomain.sends).toEqual([{ id: 'OrderCreated', version: '1.0.0' }]);
+      });
+
+      it('works with domains nested inside other domains (subdomains)', async () => {
+        // Create parent domain with a subdomain
+        await writeDomain({
+          id: 'E-Commerce',
+          name: 'E-Commerce Domain',
+          version: '0.0.1',
+          summary: 'Parent domain',
+          markdown: '# E-Commerce',
+          domains: [{ id: 'Orders', version: '0.0.1' }],
+        });
+
+        // Create subdomain inside parent domain folder
+        await writeDomain(
+          {
+            id: 'Orders',
+            name: 'Orders Domain',
+            version: '0.0.1',
+            summary: 'Subdomain',
+            markdown: '# Orders',
+          },
+          { path: 'E-Commerce/domains' }
+        );
+
+        // Add event to subdomain
+        await addEventToDomain('Orders', 'sends', { id: 'OrderCreated', version: '1.0.0' });
+
+        // Verify the subdomain is still in the correct location
+        const subdomainFile = path.join(CATALOG_PATH, 'domains', 'E-Commerce', 'domains', 'Orders', 'index.mdx');
+        expect(fs.existsSync(subdomainFile)).toBe(true);
+
+        // Verify the event was added
+        const subdomain = await getDomain('Orders');
+        expect(subdomain.sends).toEqual([{ id: 'OrderCreated', version: '1.0.0' }]);
+      });
+    });
+  });
+
+  describe('writeDomain with sends/receives', () => {
+    it('deduplicates sends when writing domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [
+          { id: 'OrderCreated', version: '1.0.0' },
+          { id: 'OrderCreated', version: '1.0.0' },
+          { id: 'OrderShipped', version: '1.0.0' },
+        ],
+      });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.sends).toEqual([
+        { id: 'OrderCreated', version: '1.0.0' },
+        { id: 'OrderShipped', version: '1.0.0' },
+      ]);
+    });
+
+    it('deduplicates receives when writing domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        receives: [
+          { id: 'PaymentProcessed', version: '1.0.0' },
+          { id: 'PaymentProcessed', version: '1.0.0' },
+          { id: 'InventoryChecked', version: '1.0.0' },
+        ],
+      });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.receives).toEqual([
+        { id: 'PaymentProcessed', version: '1.0.0' },
+        { id: 'InventoryChecked', version: '1.0.0' },
+      ]);
+    });
+
+    it('preserves sends and receives when writing domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        sends: [{ id: 'OrderCreated', version: '1.0.0' }],
+        receives: [{ id: 'PaymentProcessed', version: '1.0.0' }],
+      });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.sends).toEqual([{ id: 'OrderCreated', version: '1.0.0' }]);
+      expect(domain.receives).toEqual([{ id: 'PaymentProcessed', version: '1.0.0' }]);
     });
   });
 });
