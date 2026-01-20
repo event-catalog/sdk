@@ -21,6 +21,7 @@ const {
   addServiceToDomain,
   addSubDomainToDomain,
   addEntityToDomain,
+  addDataProductToDomain,
   addEventToDomain,
   addCommandToDomain,
   addQueryToDomain,
@@ -1020,6 +1021,118 @@ describe('Domain SDK', () => {
       const latestDomain = await getDomain('Orders4');
 
       expect(versionedDomain.entities).toEqual([{ id: 'User', version: '1.0.0' }]);
+    });
+  });
+
+  describe('addDataProductToDomain', () => {
+    it('adds a data product to the domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addDataProductToDomain('Orders', { id: 'CustomerDataProduct', version: '1.0.0' });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.dataProducts).toEqual([{ id: 'CustomerDataProduct', version: '1.0.0' }]);
+    });
+
+    it('adds multiple data products to the domain', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addDataProductToDomain('Orders', { id: 'CustomerDataProduct', version: '1.0.0' });
+      await addDataProductToDomain('Orders', { id: 'SalesDataProduct', version: '2.0.0' });
+
+      const domain = await getDomain('Orders');
+
+      expect(domain.dataProducts).toEqual([
+        { id: 'CustomerDataProduct', version: '1.0.0' },
+        { id: 'SalesDataProduct', version: '2.0.0' },
+      ]);
+    });
+
+    it('adds a data product to the domain, if the extension of the domain is `md` then the extension is maintained', async () => {
+      await writeDomain(
+        {
+          id: 'Orders',
+          name: 'Orders Domain',
+          version: '0.0.1',
+          summary: 'This is a summary',
+          markdown: '# Hello world',
+        },
+        { format: 'md' }
+      );
+
+      await addDataProductToDomain('Orders', { id: 'CustomerDataProduct', version: '1.0.0' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Orders', 'index.md'))).toBe(true);
+    });
+
+    it('adds a data product to the domain, if the extension of the domain is `mdx (default)` then the extension is maintained', async () => {
+      await writeDomain({
+        id: 'Orders',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addDataProductToDomain('Orders', { id: 'CustomerDataProduct', version: '1.0.0' });
+
+      expect(fs.existsSync(path.join(CATALOG_PATH, 'domains/Orders', 'index.mdx'))).toBe(true);
+    });
+
+    it('does not add a data product to the domain if the data product is already on the list', async () => {
+      await writeDomain({
+        id: 'Orders6',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+        dataProducts: [{ id: 'CustomerDataProduct', version: '1.0.0' }],
+      });
+
+      await addDataProductToDomain('Orders6', { id: 'CustomerDataProduct', version: '1.0.0' });
+
+      const domain = await getDomain('Orders6');
+
+      expect(domain.dataProducts).toEqual([{ id: 'CustomerDataProduct', version: '1.0.0' }]);
+    });
+
+    it('adds a data product to a specific version of the domain', async () => {
+      await writeDomain({
+        id: 'Orders5',
+        name: 'Orders Domain',
+        version: '0.0.1',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await versionDomain('Orders5');
+
+      await writeDomain({
+        id: 'Orders5',
+        name: 'Orders Domain',
+        version: '1.0.0',
+        summary: 'This is a summary',
+        markdown: '# Hello world',
+      });
+
+      await addDataProductToDomain('Orders5', { id: 'CustomerDataProduct', version: '1.0.0' }, '0.0.1');
+
+      const versionedDomain = await getDomain('Orders5', '0.0.1');
+
+      expect(versionedDomain.dataProducts).toEqual([{ id: 'CustomerDataProduct', version: '1.0.0' }]);
     });
   });
 

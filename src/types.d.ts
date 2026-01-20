@@ -177,6 +177,7 @@ export interface Domain extends BaseSchema {
   services?: ResourcePointer[];
   domains?: ResourcePointer[];
   entities?: ResourcePointer[];
+  dataProducts?: ResourcePointer[];
   sends?: SendsPointer[];
   receives?: ReceivesPointer[];
   detailsPanel?: {
@@ -262,6 +263,30 @@ export interface Entity extends BaseSchema {
     services?: DetailPanelProperty;
     messages?: DetailPanelProperty;
     versions?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+  };
+}
+
+export type DataProductOutputPointer = {
+  id: string;
+  version?: string;
+  contract?: {
+    path: string;
+    name: string;
+    type?: string;
+  };
+};
+
+export interface DataProduct extends BaseSchema {
+  inputs?: ResourcePointer[];
+  outputs?: DataProductOutputPointer[];
+  detailsPanel?: {
+    domains?: DetailPanelProperty;
+    inputs?: DetailPanelProperty;
+    outputs?: DetailPanelProperty;
+    versions?: DetailPanelProperty;
+    repository?: DetailPanelProperty;
     owners?: DetailPanelProperty;
     changelog?: DetailPanelProperty;
   };

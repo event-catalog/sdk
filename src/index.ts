@@ -67,6 +67,7 @@ import {
   addServiceToDomain,
   addSubDomainToDomain,
   addEntityToDomain,
+  addDataProductToDomain,
   getUbiquitousLanguageFromDomain,
   addMessageToDomain,
 } from './domains';
@@ -110,6 +111,18 @@ import {
   addFileToDataStore,
   writeDataStoreToService,
 } from './data-stores';
+
+import {
+  getDataProduct,
+  getDataProducts,
+  writeDataProduct,
+  writeDataProductToDomain,
+  versionDataProduct,
+  rmDataProduct,
+  rmDataProductById,
+  dataProductHasVersion,
+  addFileToDataProduct,
+} from './data-products';
 
 // Export the types
 export type * from './types';
@@ -1143,5 +1156,87 @@ export default (path: string) => {
      * @returns
      */
     writeDataStoreToService: writeDataStoreToService(join(path)),
+
+    /**
+     * ================================
+     *            Data Products
+     * ================================
+     */
+    /**
+     * Adds a data product to EventCatalog
+     * @param dataProduct - The data product to write
+     * @param options - Optional options to write the data product
+     *
+     */
+    writeDataProduct: writeDataProduct(join(path, 'data-products')),
+
+    /**
+     * Writes a data product to a domain in EventCatalog
+     * @param dataProduct - The data product to write
+     * @param domain - The domain to write the data product to
+     * @param options - Optional options to write the data product
+     *
+     */
+    writeDataProductToDomain: writeDataProductToDomain(join(path, 'domains')),
+
+    /**
+     * Returns a data product from EventCatalog
+     * @param id - The id of the data product to retrieve
+     * @param version - Optional id of the version to get (supports semver)
+     * @returns DataProduct|Undefined
+     */
+    getDataProduct: getDataProduct(join(path)),
+
+    /**
+     * Returns all data products from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns DataProduct[]|Undefined
+     */
+    getDataProducts: getDataProducts(join(path)),
+
+    /**
+     * Version a data product by its id
+     * @param id - The id of the data product to version
+     */
+    versionDataProduct: versionDataProduct(join(path)),
+
+    /**
+     * Remove a data product by its path
+     * @param path - The path to the data product to remove
+     */
+    rmDataProduct: rmDataProduct(join(path, 'data-products')),
+
+    /**
+     * Remove a data product by its id
+     * @param id - The id of the data product to remove
+     * @param version - Optional version of the data product to remove
+     */
+    rmDataProductById: rmDataProductById(join(path)),
+
+    /**
+     * Check to see if a data product version exists
+     * @param id - The id of the data product
+     * @param version - The version of the data product (supports semver)
+     * @returns
+     */
+    dataProductHasVersion: dataProductHasVersion(join(path)),
+
+    /**
+     * Adds a file to a data product by its id
+     * @param id - The id of the data product to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the data product to add the file to
+     * @returns
+     */
+    addFileToDataProduct: addFileToDataProduct(join(path)),
+
+    /**
+     * Adds a data product to a domain
+     * @param id - The id of the domain
+     * @param dataProduct - The id and version of the data product to add
+     * @param version - (Optional) The version of the domain to add the data product to
+     * @returns
+     */
+    addDataProductToDomain: addDataProductToDomain(join(path, 'domains')),
   };
 };

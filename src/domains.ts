@@ -145,6 +145,10 @@ export const writeDomain =
       resource.receives = uniqueVersions(domain.receives as { id: string; version: string }[]);
     }
 
+    if (Array.isArray(domain.dataProducts)) {
+      resource.dataProducts = uniqueVersions(domain.dataProducts as { id: string; version: string }[]);
+    }
+
     return await writeResource(directory, resource, { ...options, type: 'domain' });
   };
 
@@ -434,6 +438,50 @@ export const addEntityToDomain =
 
     // Add entity to the list
     domain.entities.push(entity);
+
+    await rmDomainById(directory)(id, version, true);
+    await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
+  };
+
+/**
+ * Add a data product to a domain by its id.
+ * Optionally specify a version to add the data product to a specific version of the domain.
+ *
+ * @example
+ * ```ts
+ * import utils from '@eventcatalog/utils';
+ *
+ * // Adds a data product to the domain
+ * const { addDataProductToDomain } = utils('/path/to/eventcatalog');
+ *
+ * // Adds a data product (CustomerDataProduct) to the domain (Orders)
+ * await addDataProductToDomain('Orders', { id: 'CustomerDataProduct', version: '1.0.0' });
+ * // Adds a data product (SalesDataProduct) to the domain (Orders) with a specific version
+ * await addDataProductToDomain('Orders', { id: 'SalesDataProduct', version: '2.0.0' }, '1.0.0');
+ * ```
+ */
+export const addDataProductToDomain =
+  (directory: string) => async (id: string, dataProduct: { id: string; version: string }, version?: string) => {
+    let domain: Domain = await getDomain(directory)(id, version);
+    const domainPath = await getResourcePath(directory, id, version);
+
+    // Get the extension of the file
+    const extension = path.extname(domainPath?.fullPath || '');
+
+    if (domain.dataProducts === undefined) {
+      domain.dataProducts = [];
+    }
+
+    const dataProductExistsInList = domain.dataProducts.some(
+      (dp) => dp.id === dataProduct.id && dp.version === dataProduct.version
+    );
+
+    if (dataProductExistsInList) {
+      return;
+    }
+
+    // Add data product to the list
+    domain.dataProducts.push(dataProduct);
 
     await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
