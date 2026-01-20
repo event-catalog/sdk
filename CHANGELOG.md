@@ -1,5 +1,15 @@
 # @eventcatalog/sdk
 
+## 2.11.0
+
+### Minor Changes
+
+- 0859ebb: Add sends and receives support to domains, allowing domains to directly document event flows with addEventToDomain, addCommandToDomain, and addQueryToDomain functions
+
+### Patch Changes
+
+- 76482a4: feat(sdk): added data product support to sdk
+
 ## 2.10.0
 
 ### Minor Changes
