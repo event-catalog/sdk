@@ -1,6 +1,6 @@
 ## @eventcatalog/sdk
 
-JavaScript/TypeScript SDK to interact with your EventCatalog. This SDK exposes various methods to help you automate your EventCatalog.
+SDK and CLI tool to interact with your EventCatalog. Use programmatically in JavaScript/TypeScript or directly from the command line to automate your EventCatalog.
 
 ### Motivation
 
@@ -43,6 +43,91 @@ await versionEvent('InventoryEvent');
 // Returns the service /services/PaymentService
 const service await getService('PaymentService');
 ```
+
+### CLI Usage
+
+The SDK includes a command-line interface for executing SDK functions directly from your terminal.
+
+#### Running with npx (no installation required)
+
+You can run the CLI directly using `npx` without installing the package:
+
+```bash
+npx @eventcatalog/sdk --dir <catalog-path> <function-name> [args...]
+```
+
+#### Running after installation
+
+If you've installed the package, the `eventcatalog` command is available:
+
+```bash
+eventcatalog --dir <catalog-path> <function-name> [args...]
+```
+
+#### Common Operations
+
+**List all available functions:**
+
+```bash
+npx @eventcatalog/sdk list
+```
+
+**Get an event:**
+
+```bash
+npx @eventcatalog/sdk --dir ./my-catalog getEvent "OrderCreated"
+npx @eventcatalog/sdk --dir ./my-catalog getEvent "OrderCreated" "1.0.0"
+```
+
+**Get all events:**
+
+```bash
+npx @eventcatalog/sdk --dir ./my-catalog getEvents
+npx @eventcatalog/sdk --dir ./my-catalog getEvents '{"latestOnly":true}'
+```
+
+**Write an event:**
+
+```bash
+npx @eventcatalog/sdk --dir ./my-catalog writeEvent '{"id":"OrderCreated","name":"Order Created","version":"1.0.0","markdown":"# Order Created Event"}'
+```
+
+**Get a service:**
+
+```bash
+npx @eventcatalog/sdk --dir ./my-catalog getService "InventoryService"
+```
+
+**Add an event to a service:**
+
+```bash
+npx @eventcatalog/sdk --dir ./my-catalog addEventToService "InventoryService" "sends" '{"id":"OrderCreated","version":"1.0.0"}'
+```
+
+#### Piping to Other Tools
+
+Output is JSON by default, making it easy to pipe to tools like `jq`:
+
+```bash
+# Get all events and filter by version
+npx @eventcatalog/sdk --dir ./my-catalog getEvents | jq '.[] | select(.version == "1.0.0")'
+
+# Count total events
+npx @eventcatalog/sdk --dir ./my-catalog getEvents | jq 'length'
+
+# Extract event IDs
+npx @eventcatalog/sdk --dir ./my-catalog getEvents | jq '.[].id'
+```
+
+#### Arguments Format
+
+Arguments are automatically parsed:
+
+- **JSON objects:** `'{"key":"value"}'` - parsed as object
+- **JSON arrays:** `'["item1","item2"]'` - parsed as array
+- **Booleans:** `true` or `false` - parsed as boolean
+- **Numbers:** `42` or `3.14` - parsed as number
+- **Strings:** anything else - kept as string
 
 See the [SDK docs](https://www.eventcatalog.dev/docs/sdk) for more information and examples
 

@@ -3,3 +3,5 @@ node_modules/
 todo.js
 eventcatalog.json
 .DS_Store
+.claude/commands
+.claude/agents
