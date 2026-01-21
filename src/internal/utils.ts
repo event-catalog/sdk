@@ -21,6 +21,10 @@ export const findFileById = async (catalogDir: string, id: string, version?: str
   const latestVersion = matchedFiles.find((path) => !path.includes('versioned'));
 
   // If no version is provided, return the latest version
+  if(version === 'latest') {
+    return latestVersion;
+  }
+
   if (!version) {
     return latestVersion;
   }
@@ -164,7 +168,7 @@ export const copyDir = async (catalogDir: string, source: string, target: string
   fsSync.rmSync(tmpDirectory, { recursive: true });
 };
 
-// Makes sure values in sends/recieves are unique
+// Makes sure values in sends/receives are unique
 export const uniqueVersions = (messages: { id: string; version: string }[]): { id: string; version: string }[] => {
   const uniqueSet = new Set();
 
