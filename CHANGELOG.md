@@ -1,5 +1,12 @@
 # @eventcatalog/sdk
 
+## 2.12.0
+
+### Minor Changes
+
+- 53feaf4: Add CLI interface to execute SDK functions from the command line
+- 0d86505: feat(sdk): added CLI interface for SDK
+
 ## 2.11.0
 
 ### Minor Changes
