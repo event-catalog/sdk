@@ -39,3 +39,4 @@ export * from './messages';
 export * from './entities';
 export * from './data-stores';
 export * from './data-products';
+export * from './diagrams';
