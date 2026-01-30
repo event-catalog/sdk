@@ -1,5 +1,11 @@
 # @eventcatalog/sdk
 
+## 2.12.1
+
+### Patch Changes
+
+- aff77e3: feat: add diagrams collection support to SDK
+
 ## 2.12.0
 
 ### Minor Changes
