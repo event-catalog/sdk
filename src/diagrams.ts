@@ -2,7 +2,14 @@ import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { findFileById } from './internal/utils';
 import type { Diagram } from './types';
-import { getResource, getResources, rmResourceById, versionResource, writeResource, addFileToResource } from './internal/resources';
+import {
+  getResource,
+  getResources,
+  rmResourceById,
+  versionResource,
+  writeResource,
+  addFileToResource,
+} from './internal/resources';
 
 /**
  * Returns a diagram from EventCatalog.

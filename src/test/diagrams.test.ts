@@ -339,14 +339,7 @@ describe('Diagrams SDK', () => {
 
       await addFileToDiagram('ArchitectureDiagram', { content: 'test content v1', fileName: 'diagram.svg' }, '0.0.1');
 
-      const versionedPath = path.join(
-        CATALOG_PATH,
-        'diagrams',
-        'ArchitectureDiagram',
-        'versioned',
-        '0.0.1',
-        'diagram.svg'
-      );
+      const versionedPath = path.join(CATALOG_PATH, 'diagrams', 'ArchitectureDiagram', 'versioned', '0.0.1', 'diagram.svg');
       expect(fs.existsSync(versionedPath)).toBe(true);
       expect(fs.readFileSync(versionedPath, 'utf-8')).toBe('test content v1');
     });
