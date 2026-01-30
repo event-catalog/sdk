@@ -1458,6 +1458,109 @@ export const cliFunctions: CLIFunctionDoc[] = [
   },
 
   // ================================
+  //            Diagrams
+  // ================================
+  {
+    name: 'getDiagram',
+    description: 'Returns a diagram from EventCatalog by its ID',
+    category: 'Diagrams',
+    args: [
+      { name: 'id', type: 'string', required: true, description: 'The ID of the diagram to retrieve' },
+      { name: 'version', type: 'string', required: false, description: 'Specific version to retrieve' },
+    ],
+    examples: [
+      { description: 'Get the latest diagram', command: 'npx @eventcatalog/sdk getDiagram "ArchitectureDiagram"' },
+      { description: 'Get a specific version', command: 'npx @eventcatalog/sdk getDiagram "ArchitectureDiagram" "1.0.0"' },
+    ],
+  },
+  {
+    name: 'getDiagrams',
+    description: 'Returns all diagrams from EventCatalog',
+    category: 'Diagrams',
+    args: [{ name: 'options', type: 'json', required: false, description: 'Options: {latestOnly?}' }],
+    examples: [
+      { description: 'Get all diagrams', command: 'npx @eventcatalog/sdk getDiagrams' },
+      { description: 'Get only latest versions', command: 'npx @eventcatalog/sdk getDiagrams \'{"latestOnly":true}\'' },
+    ],
+  },
+  {
+    name: 'writeDiagram',
+    description: 'Writes a diagram to EventCatalog',
+    category: 'Diagrams',
+    args: [
+      {
+        name: 'diagram',
+        type: 'json',
+        required: true,
+        description: 'Diagram object with id, name, version, and markdown',
+      },
+      { name: 'options', type: 'json', required: false, description: 'Options: {path?, override?, versionExistingContent?}' },
+    ],
+    examples: [
+      {
+        description: 'Write a new diagram',
+        command:
+          'npx @eventcatalog/sdk writeDiagram \'{"id":"ArchitectureDiagram","name":"Architecture Diagram","version":"1.0.0","markdown":"# Architecture Diagram"}\'',
+      },
+    ],
+  },
+  {
+    name: 'rmDiagram',
+    description: 'Removes a diagram by its path',
+    category: 'Diagrams',
+    args: [{ name: 'path', type: 'string', required: true, description: 'Path to the diagram' }],
+    examples: [{ description: 'Remove a diagram', command: 'npx @eventcatalog/sdk rmDiagram "/ArchitectureDiagram"' }],
+  },
+  {
+    name: 'rmDiagramById',
+    description: 'Removes a diagram by its ID',
+    category: 'Diagrams',
+    args: [
+      { name: 'id', type: 'string', required: true, description: 'The ID of the diagram to remove' },
+      { name: 'version', type: 'string', required: false, description: 'Specific version to remove' },
+    ],
+    examples: [{ description: 'Remove a diagram', command: 'npx @eventcatalog/sdk rmDiagramById "ArchitectureDiagram"' }],
+  },
+  {
+    name: 'versionDiagram',
+    description: 'Moves the current diagram to a versioned directory',
+    category: 'Diagrams',
+    args: [{ name: 'id', type: 'string', required: true, description: 'The ID of the diagram to version' }],
+    examples: [{ description: 'Version a diagram', command: 'npx @eventcatalog/sdk versionDiagram "ArchitectureDiagram"' }],
+  },
+  {
+    name: 'addFileToDiagram',
+    description: 'Adds a file to a diagram',
+    category: 'Diagrams',
+    args: [
+      { name: 'id', type: 'string', required: true, description: 'The ID of the diagram' },
+      { name: 'file', type: 'json', required: true, description: 'File object: {content, fileName}' },
+      { name: 'version', type: 'string', required: false, description: 'Specific version' },
+    ],
+    examples: [
+      {
+        description: 'Add a file to a diagram',
+        command: 'npx @eventcatalog/sdk addFileToDiagram "ArchitectureDiagram" \'{"content":"...","fileName":"diagram.png"}\'',
+      },
+    ],
+  },
+  {
+    name: 'diagramHasVersion',
+    description: 'Checks if a specific version of a diagram exists',
+    category: 'Diagrams',
+    args: [
+      { name: 'id', type: 'string', required: true, description: 'The ID of the diagram' },
+      { name: 'version', type: 'string', required: true, description: 'Version to check' },
+    ],
+    examples: [
+      {
+        description: 'Check if version exists',
+        command: 'npx @eventcatalog/sdk diagramHasVersion "ArchitectureDiagram" "1.0.0"',
+      },
+    ],
+  },
+
+  // ================================
   //            Messages
   // ================================
   {

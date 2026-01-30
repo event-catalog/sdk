@@ -268,6 +268,15 @@ export interface Entity extends BaseSchema {
   };
 }
 
+export interface Diagram extends BaseSchema {
+  detailsPanel?: {
+    versions?: DetailPanelProperty;
+    owners?: DetailPanelProperty;
+    changelog?: DetailPanelProperty;
+    attachments?: DetailPanelProperty;
+  };
+}
+
 export type DataProductOutputPointer = {
   id: string;
   version?: string;

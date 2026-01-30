@@ -124,6 +124,17 @@ import {
   addFileToDataProduct,
 } from './data-products';
 
+import {
+  getDiagram,
+  getDiagrams,
+  writeDiagram,
+  rmDiagram,
+  rmDiagramById,
+  versionDiagram,
+  diagramHasVersion,
+  addFileToDiagram,
+} from './diagrams';
+
 // Export the types
 export type * from './types';
 
@@ -1238,5 +1249,67 @@ export default (path: string) => {
      * @returns
      */
     addDataProductToDomain: addDataProductToDomain(join(path, 'domains')),
+
+    /**
+     * ================================
+     *            Diagrams
+     * ================================
+     */
+
+    /**
+     * Returns a diagram from EventCatalog
+     * @param id - The id of the diagram to retrieve
+     * @param version - Optional id of the version to get (supports semver)
+     * @returns Diagram|Undefined
+     */
+    getDiagram: getDiagram(join(path)),
+    /**
+     * Returns all diagrams from EventCatalog
+     * @param latestOnly - optional boolean, set to true to get only latest versions
+     * @returns Diagram[]|Undefined
+     */
+    getDiagrams: getDiagrams(join(path)),
+    /**
+     * Adds a diagram to EventCatalog
+     *
+     * @param diagram - The diagram to write
+     * @param options - Optional options to write the diagram
+     *
+     */
+    writeDiagram: writeDiagram(join(path, 'diagrams')),
+    /**
+     * Remove a diagram from EventCatalog (modeled on the standard POSIX rm utility)
+     *
+     * @param path - The path to your diagram, e.g. `/ArchitectureDiagram`
+     *
+     */
+    rmDiagram: rmDiagram(join(path, 'diagrams')),
+    /**
+     * Remove a diagram by a diagram id
+     *
+     * @param id - The id of the diagram you want to remove
+     *
+     */
+    rmDiagramById: rmDiagramById(join(path)),
+    /**
+     * Moves a given diagram id to the version directory
+     * @param id - The id of the diagram to version
+     */
+    versionDiagram: versionDiagram(join(path)),
+    /**
+     * Check to see if a diagram version exists
+     * @param id - The id of the diagram
+     * @param version - The version of the diagram (supports semver)
+     * @returns
+     */
+    diagramHasVersion: diagramHasVersion(join(path)),
+    /**
+     * Adds a file to the given diagram
+     * @param id - The id of the diagram to add the file to
+     * @param file - File contents to add including the content and the file name
+     * @param version - Optional version of the diagram to add the file to
+     * @returns
+     */
+    addFileToDiagram: addFileToDiagram(join(path)),
   };
 };
