@@ -11,6 +11,7 @@ import {
   versionResource,
   writeResource,
 } from './internal/resources';
+import { satisfies } from 'semver';
 import { findFileById, readMdxFile, uniqueVersions } from './internal/utils';
 import matter from 'gray-matter';
 
@@ -345,14 +346,22 @@ export const addServiceToDomain =
       domain.services = [];
     }
 
-    const serviceExistsInList = domain.services.some((s) => s.id === service.id && s.version === service.version);
+    const serviceInDomain = domain.services.find((s) => s.id === service.id);
 
-    if (serviceExistsInList) {
-      return;
+    if (serviceInDomain) {
+        if (satisfies(service.version, `>${serviceInDomain.version}`)) {
+            //Update service in the list
+            const index = domain.services.indexOf(serviceInDomain);
+            if (~index) {
+                domain.services[index] = service;
+            }
+        } else {
+            return;
+        }
+    } else {
+        // Add service to the list
+        domain.services.push(service);
     }
-
-    // Add service to the list
-    domain.services.push(service);
 
     await rmDomainById(directory)(id, version, true);
     await writeDomain(directory)(domain, { format: extension === '.md' ? 'md' : 'mdx' });
